@@ -1,0 +1,17 @@
+/*
+Estilos para herramientas administrador y front SICC
+2021-08-05
+-----------------------------------------------------------------------------
+*/
+
+.label-cat-1000{
+    background-color: blue;
+    color: white;
+}
+
+/* Tipos de cdocumentos incrustados */
+/*-----------------------------------------------------------------------------*/
+.embed-documento {background-color: blue;}
+.embed-presentacion {background-color: yellow;}
+.embed-hoja-calculo {background-color: green;}
+.embed-video {background-color: red;}

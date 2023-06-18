@@ -1,0 +1,21 @@
+{
+    "formDestination":"admin/repositorio/save",
+    "fields":
+    [
+        {
+            "type":"text",
+            "title":"Título del contenido",
+            "name":"titulo",
+            "required": true,
+            "class": "form-control"
+        },
+        {
+            "type":"textarea",
+            "title":"Palabras clave",
+            "name":"palabras_clave",
+            "required": true,
+            "class": "form-control",
+            "rows": 5
+        }
+    ]
+}
