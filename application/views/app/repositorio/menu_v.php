@@ -20,6 +20,12 @@ var sections = [
         cf: 'repositorio/detalles/' + nav2RowId,
         roles: [1,2,3,99]
     },
+    {
+        id: 'repositorio_edit',
+        text: 'Editar',
+        cf: 'repositorio/edit/' + nav2RowId,
+        roles: [1,2,3]
+    },
 ]
     
 //Filter role sections
@@ -30,6 +36,8 @@ nav_2.forEach((section,i) => {
     nav_2[i].class = ''
     if ( section.id == sectionId ) nav_2[i].class = 'active'
 })
+//Especial
+if ( sectionId == 'repositorio_edit_details' ) nav_2[3].class = 'active'
 </script>
 
 <?php

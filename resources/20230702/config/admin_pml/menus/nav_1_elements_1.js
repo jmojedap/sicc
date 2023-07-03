@@ -63,23 +63,6 @@ var nav_1_elements = [
         subelements: []
     },
     {
-        text: 'Escuela de Cuidado',
-        active: false,
-        icon: 'fa fa-solid fa-hands-holding',
-        cf: '',
-        sections: [],
-        subelements: [
-            {
-                text: 'Actividades', active: false, icon: 'fa fa-regular fa-calendar', cf: 'cuidado/explore',
-                sections: ['cuidado/explore','cuidado/details','cuidado/add','cuidado/actividad_asistentes','cuidado/actividad_sesiones','cuidado/edit']
-            },
-            {
-                text: 'Exportar', active: false, icon: 'fa fa-download', cf: 'cuidado/export_panel',
-                sections: ['cuidado/export_panel']
-            },
-        ]
-    },
-    {
         text: 'Ajustes',
         active: false,
         style: '',

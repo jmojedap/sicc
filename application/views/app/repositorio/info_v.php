@@ -13,22 +13,25 @@
                         </a>
                     </div>
                     <div class="d-flex">
-                        <div class="w240p me-2">
+                        <div class="me-3 text-center">
                             <a href="<?= URL_APP . "repositorio/ver/{$row->id}/{$row->slug}" ?>">
                                 <img
                                     src="<?= $row->url_thumbnail ?>"
-                                    class="rounded w100pc"
+                                    class="rounded w240p mb-2 shadow-sm"
                                     alt="portada contenido"
                                     onerror="this.src='<?= URL_IMG ?>app/repo_contenido_nd.png'"
                                 >
                             </a>
+                            <a href="<?= URL_APP . "repositorio/ver/{$row->id}/{$row->slug}" ?>" class="btn btn-main w120p">
+                                Abrir
+                            </a>
                         </div>    
                         <div>
-                            <h2><?= $row->titulo ?></h2>
-                            <h3 class="text-primary"><?= $row->anio_publicacion ?></h3>
+                            <h2 class="h4"><?= $row->titulo ?></h2>
                             <p>
-                                <?= $row->descripcion ?>
+                                <span class="badge bg-warning"><?= $row->anio_publicacion ?></span>
                             </p>
+                            <p><?= $row->descripcion ?></p>
                         </div>
                     </div>
 

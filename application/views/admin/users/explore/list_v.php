@@ -9,8 +9,9 @@
             <th width="50px"></th>
             <th>Usuario</th>
             <th>Username</th>
-            <th>Equipo</th>
             <th>Rol</th>
+            <th>Equipo</th>
+            <th>Actividad</th>
             <th width="50px"></th>
         </thead>
         <tbody>
@@ -37,6 +38,12 @@
                     </span>
                 </td>
                 <td>{{ element.username }}</td>
+                <td>
+                    <i class="fa fa-check-circle text-success" v-show="element.status == 1"></i>
+                    <i class="fa fa-check-circle text-warning" v-show="element.status == 2"></i>
+                    <i class="fa fa-circle-o text-danger" v-show="element.status == 0"></i>
+                    {{ roleName(element.role) }}
+                </td>
                 <td>
                     {{ element.team_1 }}
                     <br>

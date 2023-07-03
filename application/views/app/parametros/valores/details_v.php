@@ -18,12 +18,20 @@
                             <td>{{ item.cod }}</td>
                         </tr>
                         <tr>
+                            <td class="td-title">Código padre/ascendente</td>
+                            <td>{{ item.parent_id }}</td>
+                        </tr>
+                        <tr>
                             <td class="td-title">Abreviatura</td>
                             <td>{{ item.abbreviation }}</td>
                         </tr>
                         <tr>
                             <td class="td-title">Nombre</td>
                             <td>{{ item.item_name }}</td>
+                        </tr>
+                        <tr>
+                            <td class="td-title">Nombre completo</td>
+                            <td>{{ item.long_name }}</td>
                         </tr>
                         <tr>
                             <td class="td-title">Nombre corto</td>

@@ -43,7 +43,7 @@ class Users extends CI_Controller{
             $data = $this->User_model->explore_data($filters, $num_page);
             
         //Arrays con valores para contenido en lista
-            $data['arr_role'] = $this->Item_model->arr_options('category_id = 58');
+            $data['arrRole'] = $this->Item_model->arr_options('category_id = 58');
             
         //Cargar vista
             $this->App_model->view(TPL_ADMIN, $data);
@@ -244,6 +244,7 @@ class Users extends CI_Controller{
         $data['arrGender'] = $this->Item_model->arr_options('category_id = 59 AND cod <= 20');
         $data['options_city'] = $this->App_model->options_place('type_id = 4', 'cr', 'Ciudad');
         $data['arrDocumentType'] = $this->Item_model->arr_options('category_id = 53');
+        $data['arrStatus'] = $this->Item_model->arr_options('category_id = 52');
         
         $view_a = $this->views_folder . "edit/{$section}_v";
         if ( $section == 'cropping' )
@@ -527,5 +528,4 @@ class Users extends CI_Controller{
             $this->output->set_content_type('application/json')->set_output(json_encode($data));
         }
     }
-
 }

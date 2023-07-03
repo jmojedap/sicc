@@ -43,7 +43,7 @@ class Repositorio extends CI_Controller{
         //Datos básicos de la exploración
             $data = $this->Repositorio_model->explore_data($filters, $num_page, $perPage);
             $data['view_a'] = $this->views_folder . 'explorar/explore_v';
-            $data['nav_2'] = $this->views_folder . 'explorar/menu_v';
+            $data['nav_2'] = $this->views_folder . 'menus/explorar_v';
             $data['cf'] = 'repositorio/explorar/';                      //Nombre del controlador
             $data['views_folder'] = 'app/repositorio/explorar/';      //Carpeta donde están las vistas de exploración
             $data['perPage'] = $perPage;      //Carpeta donde están las vistas de exploración
@@ -155,7 +155,7 @@ class Repositorio extends CI_Controller{
         $data['view_a'] = 'app/repositorio/ver_v';
         $data['back_link'] = $this->url_controller . 'explorar/1/';
 
-        $this->App_model->view(TPL_FRONT, $data);
+        $this->App_model->view(TPL_FRONT . '_fluid', $data);
     }
 
     /**
@@ -169,7 +169,7 @@ class Repositorio extends CI_Controller{
         $data['view_a'] = $this->views_folder . 'info_v';
         $data['nav_2'] = 'app/repositorio/menu_v';
 
-        $this->App_model->view(TPL_FRONT, $data);
+        $this->App_model->view(TPL_FRONT . '_fluid', $data);
     }
 
     /**
@@ -184,7 +184,7 @@ class Repositorio extends CI_Controller{
         $data['view_a'] = 'common/row_details_v';
         $data['nav_2'] = 'app/repositorio/menu_v';
 
-        $this->App_model->view(TPL_FRONT, $data);
+        $this->App_model->view(TPL_FRONT . '_fluid', $data);
     }
 
 // CREACIÓN DE UN CONTENIDO
@@ -199,23 +199,14 @@ class Repositorio extends CI_Controller{
         $data['arrFormato'] = $this->Item_model->arr_options('category_id = 410');
         $data['arrTema'] = $this->Item_model->arr_options('category_id = 415');
         $data['arrSubtema'] = $this->Item_model->arr_options('category_id = 416');
+        $data['arrEntidad'] = $this->Item_model->arr_options('category_id = 213');
 
         //Variables generales
             $data['head_title'] = 'Nuevo contenido';
-            $data['nav_2'] = $this->views_folder . 'explore/menu_v';
+            $data['nav_2'] = $this->views_folder . 'menus/explorar_v';
             $data['view_a'] = $this->views_folder . 'add/add_v';
 
         $this->App_model->view(TPL_FRONT, $data);
-    }
-
-    /**
-     * AJAX JSON
-     * Crear o actualizar el registro de un post
-     */
-    function save()
-    {
-        $data = $this->Repositorio_model->save();
-        $this->output->set_content_type('application/json')->set_output(json_encode($data));
     }
     
     
@@ -242,8 +233,10 @@ class Repositorio extends CI_Controller{
         //Array data espefícicas
             $data['back_link'] = $this->url_controller . 'explorar/1/';
             $data['view_a'] = $this->views_folder . "edit/{$section}_v";
+            $data['nav_2'] = 'app/repositorio/menu_v';
+            $data['nav_3'] = $this->views_folder . 'menus/edit_v';
         
-        $this->App_model->view(TPL_FRONT, $data);
+        $this->App_model->view(TPL_FRONT . '_fluid', $data);
     }
 
 
@@ -267,10 +260,11 @@ class Repositorio extends CI_Controller{
         //Configuración de campos
         $data['requiredFields'] = ['titulo', 'slug', 'descripcion', 'palabras_clave'];
 
-        $data['back_link'] = $this->url_controller . 'explore/1/';
+        $data['back_link'] = $this->url_controller . 'explorar/1/';
         $data['view_a'] = 'common/bs5/fast_form_v';
+        $data['nav_3'] = $this->views_folder . 'menus/edit_v';
         
-        $this->App_model->view(TPL_FRONT, $data);
+        $this->App_model->view(TPL_FRONT . '_fluid', $data);
     }
 
 // POST IMAGES

@@ -30,7 +30,7 @@
                     </a>
                 </h4>
                 <div>
-                    <a v-bind:href="`<?= URL_ADMIN . "repositorio/edit/" ?>` + row.id" class="a4" target="_blank">
+                    <a v-bind:href="`<?= URL_APP . "repositorio/edit/" ?>` + row.id" class="a4">
                         <i class="fa-solid fa-pencil"></i>
                     </a>
                 </div>

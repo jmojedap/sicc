@@ -19,6 +19,15 @@
                     </div>
 
                     <div class="mb-3 row">
+                        <label for="status" class="col-md-4 col-form-label text-right">Estado <span class="text-danger">*</span></label>
+                        <div class="col-md-8">
+                            <select name="status" v-model="fields.status" class="form-select form-control" required>
+                                <option v-for="optionStatus in arrStatus" v-bind:value="optionStatus.cod">{{ optionStatus.name }}</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="mb-3 row">
                         <label for="first_name" class="col-md-4 col-form-label text-right">Nombre y Apellidos</label>
                         <div class="col-md-4">
                             <input
@@ -173,6 +182,44 @@
                         </div>
                     </div>
 
+                    <hr>
+
+                    <div class="mb-3 row">
+                        <label for="team_1" class="col-md-4 col-form-label text-right">Dependencia</label>
+                        <div class="col-md-8">
+                            <input
+                                name="team_1" type="text" class="form-control"
+                                required
+                                title="Dependencia" placeholder="Dependencia"
+                                v-model="fields.team_1"
+                            >
+                        </div>
+                    </div>
+
+                    <div class="mb-3 row">
+                        <label for="team_2" class="col-md-4 col-form-label text-right">Equipo</label>
+                        <div class="col-md-8">
+                            <input
+                                name="team_2" type="text" class="form-control"
+                                required
+                                title="Equipo" placeholder="Equipo"
+                                v-model="fields.team_2"
+                            >
+                        </div>
+                    </div>
+
+                    <div class="mb-3 row">
+                        <label for="job_role" class="col-md-4 col-form-label text-right">Rol en equipo</label>
+                        <div class="col-md-8">
+                            <input
+                                name="job_role" type="text" class="form-control"
+                                required
+                                title="Rol en equipo" placeholder="Rol en equipo"
+                                v-model="fields.job_role"
+                            >
+                        </div>
+                    </div>
+
                     <div class="mb-3 row">
                         <div class="offset-md-4 col-md-8">
                             <button class="btn btn-primary w120p" type="submit">Guardar</button>
@@ -192,6 +239,7 @@ var fields = {
     last_name: '<?= $row->last_name ?>',
     display_name: '<?= $row->display_name ?>',
     username: '<?= $row->username ?>',
+    status: '<?= $row->status ?>',
     email: '<?= $row->email ?>',
     role: '0<?= $row->role ?>',
     document_number: '<?= $row->document_number ?>',
@@ -202,6 +250,9 @@ var fields = {
     address: '<?= $row->address ?>',
     phone_number: '<?= $row->phone_number ?>',
     admin_notes: '<?= $row->admin_notes ?>',
+    team_1: '<?= $row->team_1 ?>',
+    team_2: '<?= $row->team_2 ?>',
+    job_role: '<?= $row->job_role ?>',
 };
 
 // Vue App
@@ -220,6 +271,7 @@ var editUserApp = new Vue({
         arrRole: <?= json_encode($arrRole) ?>,
         arrGender: <?= json_encode($arrGender) ?>,
         arrDocumentType: <?= json_encode($arrDocumentType) ?>,
+        arrStatus: <?= json_encode($arrStatus) ?>,
         options_city: <?= json_encode($options_city) ?>,
     },
     methods: {

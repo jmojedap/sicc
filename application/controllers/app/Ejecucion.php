@@ -115,7 +115,7 @@ class Ejecucion extends CI_Controller {
     {
         $this->load->library('excel');            
 
-        $arrAcciones = $this->excel->get_array(PATH_CONTENT . 'ejecucion/acciones.xlsx', 'Acciones');
+        $arrAcciones = $this->excel->get_array(PATH_CONTENT . 'ejecucion/acciones.xlsx', 'acciones');
 
         $data['arrAcciones'] = $arrAcciones;
         $data['head_title'] = 'Plan de acción';
@@ -125,5 +125,21 @@ class Ejecucion extends CI_Controller {
 
         //Salida JSON
         //$this->output->set_content_type('application/json')->set_output(json_encode($data));
+    }
+
+    function avance_plan()
+    {
+        //Datos
+
+        $this->load->library('google_sheets');
+        //$data['obligaciones'] = $this->google_sheets->sheetToArray('12zTfIv_bnhRnMf8BoMhHdAT0J6mDrV6ZxxPux73cKKM', 0);
+        $data['acciones'] = $this->google_sheets->sheetToArray('12zTfIv_bnhRnMf8BoMhHdAT0J6mDrV6ZxxPux73cKKM', 2064995061);
+        $data['actividades'] = $this->google_sheets->sheetToArray('12zTfIv_bnhRnMf8BoMhHdAT0J6mDrV6ZxxPux73cKKM', 66831367);
+
+        $data['view_a'] = 'app/ejecucion/2023/avance_plan';
+        $data['head_title'] = 'Avance plan de acción';
+
+        $this->load->view('templates/print/main', $data);
+        //$this->load->view('templates/easypml/main', $data);
     }
 }

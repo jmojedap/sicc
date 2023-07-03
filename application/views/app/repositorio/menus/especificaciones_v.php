@@ -20,6 +20,12 @@ var sections = [
         cf: 'repositorio/detalles/' + nav2RowId,
         roles: [1,2,3,99]
     },
+    {
+        id: 'repositorio_edit',
+        text: 'Detalles',
+        cf: 'repositorio/edit/' + nav2RowId,
+        roles: [1,2,3]
+    },
 ]
     
 //Filter role sections

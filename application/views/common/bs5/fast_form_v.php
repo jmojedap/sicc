@@ -5,9 +5,9 @@
                 <form accept-charset="utf-8" method="POST" id="generatedForm" @submit.prevent="handleSubmit">
                     <fieldset v-bind:disabled="loading">
                         <input type="hidden" name="id" value="<?= $row->id ?>">
-                        <div class="mb-3 row">
+                        <div class="mb-1 row">
                             <div class="col-md-8 offset-md-4">
-                                <button class="btn btn-primary w120p" type="submit">Guardar</button>
+                                <button class="btn btn-success w120p" type="submit">Guardar</button>
                             </div>
                         </div>
 
@@ -24,8 +24,8 @@
     
                                     $required = in_array($fieldName, $requiredFields);
                                 ?>
-                                <div class="mb-3 row">
-                                    <label for="<?= $fieldName ?>" class="col-md-4 col-form-label text-right">
+                                <div class="mb-1 row">
+                                    <label for="<?= $fieldName ?>" class="col-md-4 col-form-label text-end">
                                         <?= $title ?>
                                         <?php if ( $required ) : ?><span class="text-danger">*</span><?php endif; ?>
                                     </label>
@@ -66,9 +66,9 @@
                             <?php endif; ?>
                         <?php endforeach ?>
 
-                        <div class="mb-3 row">
+                        <div class="mb-1 row">
                             <div class="col-md-8 offset-md-4">
-                                <button class="btn btn-primary w120p" type="submit">Guardar</button>
+                                <button class="btn btn-success w120p" type="submit">Guardar</button>
                             </div>
                         </div>
                     <fieldset>
@@ -79,14 +79,12 @@
 </div>
 
 <script>
-var formGeneratorApp = new Vue({
-    el: '#formGeneratorApp',
-    created: function(){
-        //this.get_list()
-    },
-    data: {
-        formValues: <?= json_encode($row) ?>,
-        loading: false,
+var formGeneratorApp = createApp({
+    data(){
+        return{
+            formValues: <?= json_encode($row) ?>,
+            loading: false,
+        }
     },
     methods: {
         handleSubmit: function(){
@@ -103,6 +101,9 @@ var formGeneratorApp = new Vue({
             })
             .catch( function(error) {console.log(error)} )
         },
+    },
+    mounted(){
+        //this.getList()
     }
-})
+}).mount('#formGeneratorApp')
 </script>

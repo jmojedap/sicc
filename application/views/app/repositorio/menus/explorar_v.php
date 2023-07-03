@@ -8,7 +8,7 @@
             roles: [1,2,3,8,99]
         },
         {
-            text: 'Crear',
+            text: '+ Nuevo',
             id: 'repositorio_add',
             cf: 'repositorio/add',
             roles: [1,2]

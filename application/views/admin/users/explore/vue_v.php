@@ -16,12 +16,6 @@ Vue.filter('status_icon', function (value) {
     return value
 })
 
-Vue.filter('role_name', function (value) {
-    if (!value) return ''
-    value = role_names[value]
-    return value
-})
-
 Vue.filter('ago', function (date) {
     if (!date) return ''
     return moment(date, "YYYY-MM-DD HH:mm:ss").fromNow()
@@ -55,7 +49,7 @@ var app_explore = new Vue({
         display_filters: false,
         loading: false,
         active_filters: false,
-        arrRole: <?= json_encode($arr_role) ?>,
+        arrRole: <?= json_encode($arrRole) ?>,
         today: '<?= date('Y-m-d') ?>',
     },
     methods: {
@@ -142,14 +136,11 @@ var app_explore = new Vue({
         },
         // Especiales users
         //-----------------------------------------------------------------------------
-        roleLabel: function(value, field){
-            if (!value) return 'ND'
-            var role = this.arrRole.find(item => item.cod == value)
-            if ( role === undefined ) {
-                return 'ND'
-            } else {
-                return role[field]
-            }
+        roleName: function(value = '', field = 'name'){
+            var roleName = ''
+            var item = this.arrRole.find(row => row.cod == value)
+            if ( item != undefined ) roleName = item[field]
+            return roleName
         },
     }
 })

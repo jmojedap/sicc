@@ -3,22 +3,29 @@
 /* Fuentes */
 /*-----------------------------------------------------------------------------*/
 @import url('https://fonts.googleapis.com/css2?family=Rubik:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Encode+Sans:wght@400;700&display=swap');
 
 
 :root{
-    --color-main-app: #5e4293;
-    --color-dark: #27135b;
+    --color-main-app: #C53C99;
+    --color-dark: #452a3c;
     --color-bg: #FCFCFC;
-    --color-secondary: #fab62f;
+    --color-secondary: #fbb62d;
 
-    --font-main: 'Rubik', sans-serif;
+    --color-nav-bg: #FFF;
+    --color-nav-font: #C53C99;
+    --color-nav-active: #EEE2EA;
+    --color-nav-font-active: #A3327F;
 
-    --color-bg-primary: #0256d5;
-    --color-bg-primary-alt: #346fbd;
-    --color-bg-secondary: #0256d5;
-    --color-bg-secondary-alt: #346fbd;
-    --color-bg-success: #30a338;
-    --color-bg-success-alt: #2dc44e;
+    --font-main: 'Encode sans', sans-serif;
+
+    --color-bg-primary: #C53C99;
+    --color-bg-primary-alt: #D43FA5;
+    --color-bg-secondary: #58b66d;
+    --color-bg-secondary-alt: #64c77a;
+    --color-bg-success: #58b66d;
+    --color-bg-success-alt: #64c77a;
     --color-bg-warning: #e6a000;
     --color-bg-warning-alt: #fbb62d;
     --color-bg-ligth: #ced4da;
@@ -106,3 +113,13 @@
 
 .bg-success {background-color: var(--color-bg-success);}
 .bg-danger {background-color: var(--color-bg-danger);}
+
+.card {
+    border: 0px;
+    border-radius: 11px;
+}
+
+.form-control {
+    border-color: #ebedf2;
+    border-radius: 5px;
+}
