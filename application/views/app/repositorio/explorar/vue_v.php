@@ -8,6 +8,7 @@ var arrFormato = <?= json_encode($arrFormato) ?>;
 var arrTipo = <?= json_encode($arrTipo) ?>;
 var arrTema = <?= json_encode($arrTema) ?>;
 var arrSubtema = <?= json_encode($arrSubtema) ?>;
+var arrArea = <?= json_encode($arrArea) ?>;
 var arrEntidad = <?= json_encode($arrEntidad) ?>;
 var arrSiNoNa = <?= json_encode($arrSiNoNa) ?>;
 
@@ -36,6 +37,7 @@ var appExplore = createApp({
             arrTipo: arrTipo,
             arrTema: arrTema,
             arrSubtema: arrSubtema,
+            arrArea: arrArea,
             arrEntidad: arrEntidad,
             arrSiNoNa: arrSiNoNa,
             viewFormat: 'list',

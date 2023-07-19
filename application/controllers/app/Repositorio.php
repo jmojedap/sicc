@@ -56,6 +56,7 @@ class Repositorio extends CI_Controller{
             $data['arrSubtema'] = $this->Item_model->arr_options('category_id = 416');
             $data['arrEntidad'] = $this->Item_model->arr_options('category_id = 213 AND item_group = 1');
             $data['arrSiNoNa'] = $this->Item_model->arr_options('category_id = 55 AND cod <= 1');
+            $data['arrArea'] = $this->Item_model->arr_options('category_id = 616');
             
         //Cargar vista
             $this->App_model->view(TPL_FRONT, $data);
@@ -130,6 +131,25 @@ class Repositorio extends CI_Controller{
 // INFORMACÍON LECTURA Y APERTURA
 //-----------------------------------------------------------------------------
 
+    function inicio()
+    {
+        $data['head_title'] = 'Contenidos CultuRed_Bogotá';
+        $data['view_a'] = $this->views_folder . 'inicio/inicio_v';
+
+        $data['arrFormato'] = $this->Item_model->arr_options('category_id = 410');
+        $data['arrSubtema'] = $this->Item_model->arr_options('category_id = 416');
+        $data['arrArea'] = $this->Item_model->arr_options('category_id = 616');
+        
+        $this->load->model('Search_model');
+        $filters = $this->Search_model->filters();
+        $filters['fe2'] = 1;
+
+        $dataContenidos = $this->Repositorio_model->get($filters, 1, 200);
+        $data = array_merge($data,$dataContenidos);
+
+        $this->App_model->view(TPL_FRONT . '_fluid', $data);
+    }
+
     /**
      * Abrir o redireccionar a la vista pública de un post
      */
@@ -200,6 +220,9 @@ class Repositorio extends CI_Controller{
         $data['arrTema'] = $this->Item_model->arr_options('category_id = 415');
         $data['arrSubtema'] = $this->Item_model->arr_options('category_id = 416');
         $data['arrEntidad'] = $this->Item_model->arr_options('category_id = 213');
+        $data['arrCampo'] = $this->Item_model->arr_options('category_id = 612');
+        $data['arrSubcampo'] = $this->Item_model->arr_options('category_id = 614');
+        $data['arrArea'] = $this->Item_model->arr_options('category_id = 616');
 
         //Variables generales
             $data['head_title'] = 'Nuevo contenido';
@@ -229,6 +252,9 @@ class Repositorio extends CI_Controller{
         $data['arrMetodologia'] = $this->Item_model->arr_options('category_id = 414');
         $data['arrTema'] = $this->Item_model->arr_options('category_id = 415');
         $data['arrSubtema'] = $this->Item_model->arr_options('category_id = 416');
+        $data['arrCampo'] = $this->Item_model->arr_options('category_id = 612');
+        $data['arrSubcampo'] = $this->Item_model->arr_options('category_id = 614');
+        $data['arrArea'] = $this->Item_model->arr_options('category_id = 616');
         
         //Array data espefícicas
             $data['back_link'] = $this->url_controller . 'explorar/1/';
@@ -360,5 +386,4 @@ class Repositorio extends CI_Controller{
         $data['view_a'] = $this->views_folder . 'especificaciones/diccionario_de_datos_v';
         $this->App_model->view(TPL_FRONT, $data);
     }
-
 }

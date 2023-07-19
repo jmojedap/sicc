@@ -62,13 +62,40 @@
                         </div>
                     </div>
 
-
                     <div class="mb-3 row">
                         <label for="subtema_1" class="col-md-4 col-form-label text-end">Subtema</label>
                         <div class="col-md-8">
                             <select name="subtema_1" v-model="fields.subtema_1" class="form-select form-control">
                                 <option v-for="optionSubtema in arrSubtema" v-bind:value="optionSubtema.str_cod">
                                     {{ optionSubtema.name }}</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <hr>
+                    <div class="mb-3 row">
+                        <label for="sector_campo" class="col-md-4 col-form-label text-end">Campo</label>
+                        <div class="col-md-8">
+                            <select name="sector_campo" v-model="fields.sector_campo" class="form-select form-control" v-on:change="unsetSubcampo">
+                                <option v-for="optionCampo in arrCampo" v-bind:value="optionCampo.cod">{{ optionCampo.name }}</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="mb-3 row">
+                        <label for="sector_subcampo" class="col-md-4 col-form-label text-end">Subcampo</label>
+                        <div class="col-md-8">
+                            <select name="sector_subcampo" v-model="fields.sector_subcampo" class="form-select form-control" v-on:change="unsetArea">
+                                <option v-for="optionSubcampo in filteredSubcampos" v-bind:value="optionSubcampo.cod">{{ optionSubcampo.name }}</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="mb-3 row">
+                        <label for="sector_area" class="col-md-4 col-form-label text-end">Área</label>
+                        <div class="col-md-8">
+                            <select name="sector_area" v-model="fields.sector_area" class="form-select form-control">
+                                <option v-for="optionArea in filteredAreas" v-bind:value="optionArea.cod">{{ optionArea.name }}</option>
                             </select>
                         </div>
                     </div>

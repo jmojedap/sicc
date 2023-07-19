@@ -67,6 +67,7 @@ class Search_model extends CI_Model{
             'repo_tema',    //Repo, 
             'repo_subtema', //Repo, 
             'repo_formato', //Repo,
+            'repo_area', //Repo,
 
         );
         

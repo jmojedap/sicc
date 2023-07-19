@@ -6,11 +6,19 @@ var nav_1_elements = [
         cf: '',
         subelements: [
             {
+                text: 'Inicio',
+                active: false,
+                icon: '',
+                cf: 'repositorio/inicio/',
+                sections: ['repositorio/inicio'],
+                anchor: true
+            },
+            {
                 text: 'Explorar',
                 active: false,
                 icon: '',
                 cf: 'repositorio/explorar/1/',
-                sections: ['repositorio/explorar', 'repositorio/detalles', 'repositorio/edit', 'repositorio/crear'],
+                sections: ['repositorio/explorar', 'repositorio/detalles'],
                 anchor: true
             },
             {
@@ -50,7 +58,7 @@ var nav_1_elements = [
                 anchor: true
             },
         ],
-        sections: ['mediciones/explorar', 'mediciones/diccionario_de_datos', 'mediciones/detalles'],
+        sections: [],
         anchor: true
     },
     {
@@ -63,8 +71,8 @@ var nav_1_elements = [
                 text: 'Acciones CC',
                 active: false,
                 icon: '',
-                cf: 'acciones/explorar/1/?m=202306&',
-                sections: ['acciones/explorar', 'acciones/info', 'acciones/edit', 'acciones/add', 'acciones/usuarios', 'acciones/asistentes_itinerantes'],
+                cf: 'acciones/explorar',
+                sections: ['acciones/explorar', 'acciones/info', 'acciones/edit', 'acciones/add'],
                 anchor: true
             },
             {

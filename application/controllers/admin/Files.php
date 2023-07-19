@@ -37,7 +37,7 @@ class Files extends CI_Controller{
             //$data['options_type'] = $this->Item_model->options('category_id = 33', 'Todos');
             
         //Arrays con valores para contenido en lista
-            //$data['arr_types'] = $this->Item_model->arr_cod('category_id = 33');
+            //$data['arrTypes'] = $this->Item_model->arr_cod('category_id = 33');
             
         //Cargar vista
             $this->App_model->view(TPL_ADMIN, $data);

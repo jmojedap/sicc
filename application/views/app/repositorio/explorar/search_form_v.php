@@ -23,10 +23,17 @@
             </select>
         </div>
         <div class="mb-2">
-            <label for="type">Tema específico</label>
+            <label for="type">Tema</label>
             <select name="repo_subtema" v-model="filters.repo_subtema" class="form-select">
                 <option value="">[ Todos los temas ]</option>
                 <option v-for="optionSubtema in arrSubtema" v-bind:value="optionSubtema.cod">{{ optionSubtema.name }}</option>
+            </select>
+        </div>
+        <div class="mb-2">
+            <label for="repo_area">Área</label>
+            <select name="repo_area" v-model="filters.repo_area" class="form-select">
+                <option value="">[ Todas las áreas ]</option>
+                <option v-for="optionArea in arrArea" v-bind:value="optionArea.cod">{{ optionArea.name }}</option>
             </select>
         </div>
 

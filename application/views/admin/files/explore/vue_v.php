@@ -1,107 +1,94 @@
 
 <script>
-// Variables
+// Vue App
 //-----------------------------------------------------------------------------
-
-
-// Filters
-//-----------------------------------------------------------------------------
-
-// App
-//-----------------------------------------------------------------------------
-
-var app_explore = new Vue({
-    el: '#app_explore',
+var appExplore = new Vue({
+    el: '#appExplore',
     created: function(){
-        this.calculate_active_filters()
+        this.calculateShowFilters()
     },
     data: {
         cf: '<?= $cf ?>',
         controller: '<?= $controller ?>',
-        search_num_rows: <?= $search_num_rows ?>,
-        num_page: <?= $num_page ?>,
-        max_page: <?= $max_page ?>,
+        qtyResults: <?= $qtyResults ?>,
+        perPage: 10,
+        numPage: <?= $numPage ?>,
+        maxPage: <?= $maxPage ?>,
         list: <?= json_encode($list) ?>,
         element: [],
         selected: [],
-        all_selected: false,
+        allSelected: false,
         filters: <?= json_encode($filters) ?>,
-        str_filters: '<?= $str_filters ?>',
-        display_filters: false,
+        strFilters: '<?= $strFilters ?>',
+        showFilters: false,
         loading: false,
-        active_filters: false,
+        activeFilters: false,
     },
     methods: {
-        get_list: function(e, num_page = 1){
+        getList: function(e, numPage = 1){
             this.loading = true
-            axios.post(URL_APP + this.controller + '/get/' + num_page, $('#search_form').serialize())
+            var formValues = new FormData(document.getElementById('searchForm'))
+            axios.post(URL_APP + this.controller + '/get/' + numPage + '/' + this.perPage, formValues)
             .then(response => {
-                this.num_page = num_page
+                this.numPage = numPage
                 this.list = response.data.list
-                this.max_page = response.data.max_page
-                this.search_num_rows = response.data.search_num_rows
-                this.str_filters = response.data.str_filters
-                history.pushState(null, null, URL_APP + this.cf + this.num_page +'/?' + response.data.str_filters)
-                this.all_selected = false
+                this.maxPage = response.data.maxPage
+                this.qtyResults = response.data.qtyResults
+                this.strFilters = response.data.strFilters
+                history.pushState(null, null, URL_APP + this.cf + this.numPage + '/?' + response.data.strFilters)
+                this.allSelected = false
                 this.selected = []
                 this.loading = false
-
-                this.calculate_active_filters()
             })
             .catch(function (error) { console.log(error) })
         },
-        select_all: function() {
-            if ( this.all_selected )
+        selectAll: function() {
+            if ( this.allSelected )
             { this.selected = this.list.map(function(element){ return element.id }) }
             else
             { this.selected = [] }
         },
-        sum_page: function(sum){
-            var new_num_page = Pcrn.limit_between(this.num_page + sum, 1, this.max_page)
-            this.get_list(null, new_num_page)
+        sumPage: function(sum){
+            var newNumPage = Pcrn.limit_between(this.numPage + sum, 1, this.maxPage)
+            this.getList(null, newNumPage)
         },
-        delete_selected: function(){
-            var params = new FormData()
-            params.append('selected', this.selected)
-            
-            axios.post(URL_APP + this.controller + '/delete_selected', params)
+        deleteSelected: function(){
+            this.loading = true
+            var formValues = new FormData()
+            formValues.append('selected', this.selected)
+            axios.post(URL_APP + this.controller + '/delete_selected', formValues)
             .then(response => {
-                this.hide_deleted()
+                this.hideDeleted()
                 this.selected = []
                 if ( response.data.qty_deleted > 0 )
                 {
                     toastr['info']('Registros eliminados: ' + response.data.qty_deleted)
                 }
+                this.loading = false
             })
             .catch(function (error) { console.log(error) })
         },
-        hide_deleted: function(){
-            for ( let index = 0; index < this.selected.length; index++ )
-            {
-                const element = this.selected[index]
-                console.log('ocultando: row_' + element)
-                $('#row_' + element).addClass('table-danger')
-                $('#row_' + element).hide('slow')
-            }
+        hideDeleted: function(){
+            this.selected.forEach(rowId => {
+                $('#row_' + rowId).addClass('table-danger')
+                $('#row_' + rowId).hide('slow')
+            })
         },
-        set_current: function(key){
+        setCurrent: function(key){
             this.element = this.list[key]
         },
-        toggle_filters: function(){
-            this.display_filters = !this.display_filters
-            $('#adv_filters').toggle('fast')
+        toggleFilters: function(){
+            this.showFilters = !this.showFilters
         },
-        remove_filters: function(){
-            this.filters.q = ''
-            this.display_filters = false
-            //$('#adv_filters').hide()
-            setTimeout(() => { this.get_list() }, 100)
+        clearFilters: function(){
+            Object.keys(this.filters).forEach(key => {
+                this.filters[key] = ''
+            })
+            this.showFilters = false
+            setTimeout(() => { this.getList() }, 100)
         },
-        calculate_active_filters: function(){
-            var calculated_active_filters = false
-            if ( this.filters.q ) calculated_active_filters = true
-
-            this.active_filters = calculated_active_filters
+        calculateShowFilters: function(){
+            if ( this.strFilters.length > 0 ) this.showFilters = true
         },
     }
 })

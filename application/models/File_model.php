@@ -36,7 +36,7 @@ class File_model extends CI_Model{
             $data['controller'] = 'files';                      //Nombre del controlador
             $data['cf'] = 'files/explore/';                      //Nombre del controlador
             $data['views_folder'] = 'admin/files/explore/';           //Carpeta donde están las vistas de exploración
-            $data['num_page'] = $num_page;                      //Número de la página
+            $data['numPage'] = $num_page;                      //Número de la página
             
         //Vistas
             $data['head_title'] = 'Archivos';
@@ -46,6 +46,10 @@ class File_model extends CI_Model{
         return $data;
     }
 
+    /**
+     * Array con resultados e información sobre búsqueda de archivos
+     * 2023-07-09
+     */
     function get($filters, $num_page, $per_page = 10)
     {
         //Load
@@ -58,9 +62,9 @@ class File_model extends CI_Model{
         
         //Cargar datos
             $data['list'] = $elements->result();
-            $data['str_filters'] = $this->Search_model->str_filters($filters);
-            $data['search_num_rows'] = $this->search_num_rows($filters);
-            $data['max_page'] = ceil($this->pml->if_zero($data['search_num_rows'],1) / $per_page);   //Cantidad de páginas
+            $data['strFilters'] = $this->Search_model->str_filters($filters, TRUE);
+            $data['qtyResults'] = $this->qty_results($filters);
+            $data['maxPage'] = ceil($this->pml->if_zero($data['qtyResults'],1) / $per_page);   //Cantidad de páginas
 
         return $data;
     }
@@ -73,7 +77,6 @@ class File_model extends CI_Model{
     {
         $arr_select['general'] = '*';
         $arr_select['export'] = '*';
-        $arr_select['asentimiento'] = 'id, file_name, title, type, url, is_image';
 
         return $arr_select[$format];
     }
@@ -141,8 +144,9 @@ class File_model extends CI_Model{
     /**
      * Devuelve la cantidad de registros encontrados en la tabla con los filtros
      * establecidos en la búsqueda
+     * 2023-07-09
      */
-    function search_num_rows($filters)
+    function qty_results($filters)
     {
         $this->db->select('id');
         $search_condition = $this->search_condition($filters);

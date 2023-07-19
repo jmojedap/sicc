@@ -49,6 +49,6 @@
 <script src="<?= URL_RESOURCES ?>config/easypml/menus/nav_1_elements_<?= $this->session->userdata('role') ?>.js"></script>
 
 <link rel="stylesheet" href="<?= URL_RESOURCES ?>templates/easypml/style.css">
-<link rel="stylesheet" href="<?= URL_RESOURCES ?>templates/easypml/theme-dogcc.css">
+<link rel="stylesheet" href="<?= URL_RESOURCES ?>templates/easypml/theme-crb.css">
 <link rel="stylesheet" href="<?= URL_RESOURCES ?>templates/easypml/app.css">
 <link rel="stylesheet" href="<?= URL_RESOURCES ?>templates/easypml/mobile.css">

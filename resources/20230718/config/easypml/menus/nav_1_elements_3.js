@@ -6,6 +6,14 @@ var nav_1_elements = [
         cf: '',
         subelements: [
             {
+                text: 'Inicio',
+                active: false,
+                icon: '',
+                cf: 'repositorio/inicio/',
+                sections: ['repositorio/inicio'],
+                anchor: true
+            },
+            {
                 text: 'Explorar',
                 active: false,
                 icon: '',

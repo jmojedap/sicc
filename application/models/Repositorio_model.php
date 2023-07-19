@@ -63,9 +63,9 @@ class Repositorio_model extends CI_Model{
      */
     function select($format = 'general')
     {
-        $arr_select['general'] = 'id, titulo, descripcion, slug, anio_publicacion, url_thumbnail,
+        $arr_select['general'] = 'id, titulo, descripcion, slug, anio_publicacion, url_thumbnail, url_image,
             estado_publicacion, revision_ruta_disco, palabras_clave, url_contenido_externo, entidad,
-            entidad_sigla, tipo_contenido, subtema_1';
+            entidad_sigla, tipo_contenido, subtema_1, subtema_2, formato_cod, sector_area';
         $arr_select['export'] = '*';
         $arr_select['dataviz'] = 'id, titulo, descripcion, estado_publicacion, anio_publicacion, entidad_sigla,
             dependencia, tema_cod, subtema_1, tipo_archivo, tipo_formato_cod, formato_cod, tipo_contenido,
@@ -133,6 +133,7 @@ class Repositorio_model extends CI_Model{
         if ( $filters['repo_subtema'] != '' ) {
             $condition .= "(subtema_1 = {$filters['repo_subtema']} OR subtema_2 = {$filters['repo_subtema']}) AND ";
         }
+        if ( $filters['repo_area'] != '' ) { $condition .= "sector_area = {$filters['repo_area']} AND "; }
         if ( $filters['fe1'] != '' ) { $condition .= "entidad_sigla = '{$filters['fe1']}' AND "; }
 
         if ( $filters['u'] != '' ) { $condition .= "creator_id = {$filters['u']} AND "; }

@@ -6,11 +6,19 @@ var nav_1_elements = [
         cf: '',
         subelements: [
             {
+                text: 'Inicio',
+                active: false,
+                icon: '',
+                cf: 'repositorio/inicio/',
+                sections: ['repositorio/inicio'],
+                anchor: true
+            },
+            {
                 text: 'Explorar',
                 active: false,
                 icon: '',
-                cf: 'repositorio/explorar',
-                sections: ['mediciones/explorar', 'mediciones/detalles', 'mediciones/edit'],
+                cf: 'repositorio/explorar/1/',
+                sections: ['repositorio/explorar', 'repositorio/detalles', 'repositorio/edit', 'repositorio/crear'],
                 anchor: true
             },
             {
@@ -32,6 +40,16 @@ var nav_1_elements = [
         cf: '',
         subelements: [
             {
+                text: 'Mediciones',
+                active: false,
+                icon: '',
+                cf: 'mediciones/explorar',
+                sections: ['mediciones/explorar', 'mediciones/detalles', 'mediciones/edit', 'mediciones/powerbi',
+                    'mediciones/formulario'
+                ],
+                anchor: true
+            },
+            {
                 text: 'Diccionarios',
                 active: false,
                 icon: '',
@@ -40,7 +58,7 @@ var nav_1_elements = [
                 anchor: true
             },
         ],
-        sections: [],
+        sections: ['mediciones/explorar', 'mediciones/diccionario_de_datos', 'mediciones/detalles'],
         anchor: true
     },
     {

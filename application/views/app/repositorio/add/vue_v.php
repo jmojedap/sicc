@@ -13,6 +13,9 @@ var fields = {
     tema_cod: '',
     formato_cod: '',
     subtema_1: '',
+    sector_campo: '',
+    sector_subcampo: '',
+    sector_area: '',
 };
 
 if ( test == '1' ) {
@@ -27,6 +30,9 @@ if ( test == '1' ) {
         tema_cod: '012',
         formato_cod: '020',
         subtema_1: '012140',
+        sector_campo: '10',
+        sector_subcampo: '100',
+        sector_area: '10010',
     };
 }
 
@@ -43,6 +49,9 @@ var addContenidoApp = createApp({
             arrSubtema: <?= json_encode($arrSubtema) ?>,
             arrTipoArchivo: <?= json_encode($arrTipoArchivo) ?>,
             arrEntidad: <?= json_encode($arrEntidad) ?>,
+            arrCampo: <?= json_encode($arrCampo) ?>,
+            arrSubcampo: <?= json_encode($arrSubcampo) ?>,
+            arrArea: <?= json_encode($arrArea) ?>,
         }
     },
     methods: {
@@ -76,6 +85,29 @@ var addContenidoApp = createApp({
             if ( item != undefined ) entidadName = item[field]
             return entidadName
         },
+        unsetSubcampo: function(){
+            this.fields.sector_subcampo = ''
+            this.fields.sector_area = ''
+        },
+        unsetArea: function(){
+            this.fields.sector_area = ''
+        },
+    },
+    computed: {
+        filteredSubcampos: function (){
+            //Solo subcampos que pertentecen al campo padre
+            if ( this.fields.sector_campo.length > 0 ) {
+                return this.arrSubcampo.filter(item => item.parent_id == this.fields.sector_campo)
+            }
+            return this.arrSubcampo
+        },
+        filteredAreas: function (){
+            //Solo áreas que pertentecen al subcampo padre
+            if ( this.fields.sector_subcampo.length > 0 ) {
+                return this.arrArea.filter(item => item.parent_id == this.fields.sector_subcampo)
+            }
+            return this.arrArea
+        }
     },
     mounted(){
         //this.getList()

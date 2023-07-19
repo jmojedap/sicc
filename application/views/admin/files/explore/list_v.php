@@ -2,7 +2,7 @@
     <table class="table bg-white">
         <thead>
             <th width="10px">
-                <input  type="checkbox" id="checkbox_all_selected" @change="select_all" v-model="all_selected">
+                <input type="checkbox" @change="selectAll" v-model="allSelected">
             </th>
             <th width="60px"></th>
             <th>Título</th>

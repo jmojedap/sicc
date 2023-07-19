@@ -6,11 +6,19 @@ var nav_1_elements = [
         cf: '',
         subelements: [
             {
+                text: 'Inicio',
+                active: false,
+                icon: '',
+                cf: 'repositorio/inicio/',
+                sections: ['repositorio/inicio'],
+                anchor: true
+            },
+            {
                 text: 'Explorar',
                 active: false,
                 icon: '',
-                cf: 'repositorio/explorar/1/',
-                sections: ['repositorio/explorar', 'repositorio/detalles'],
+                cf: 'repositorio/explorar',
+                sections: ['mediciones/explorar', 'mediciones/detalles', 'mediciones/edit'],
                 anchor: true
             },
             {
@@ -31,16 +39,6 @@ var nav_1_elements = [
         icon: '',
         cf: '',
         subelements: [
-            {
-                text: 'Mediciones',
-                active: false,
-                icon: '',
-                cf: 'mediciones/explorar',
-                sections: ['mediciones/explorar', 'mediciones/detalles', 'mediciones/edit', 'mediciones/powerbi',
-                    'mediciones/formulario'
-                ],
-                anchor: true
-            },
             {
                 text: 'Diccionarios',
                 active: false,
@@ -63,8 +61,8 @@ var nav_1_elements = [
                 text: 'Acciones CC',
                 active: false,
                 icon: '',
-                cf: 'acciones/explorar',
-                sections: ['acciones/explorar', 'acciones/info', 'acciones/edit', 'acciones/add'],
+                cf: 'acciones/explorar/1/?m=202306&',
+                sections: ['acciones/explorar', 'acciones/info', 'acciones/edit', 'acciones/add', 'acciones/usuarios', 'acciones/asistentes_itinerantes'],
                 anchor: true
             },
             {

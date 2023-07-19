@@ -26,6 +26,9 @@ var editContenidoApp = createApp({
             arrSubtema: <?= json_encode($arrSubtema) ?>,
             arrTipoArchivo: <?= json_encode($arrTipoArchivo) ?>,
             arrEstadoPublicacion: <?= json_encode($arrEstadoPublicacion) ?>,
+            arrCampo: <?= json_encode($arrCampo) ?>,
+            arrSubcampo: <?= json_encode($arrSubcampo) ?>,
+            arrArea: <?= json_encode($arrArea) ?>,
         }
     },
     methods: {
@@ -41,6 +44,29 @@ var editContenidoApp = createApp({
             })
             .catch( function(error) {console.log(error)} )
         },
+        unsetSubcampo: function(){
+            this.fields.sector_subcampo = ''
+            this.fields.sector_area = ''
+        },
+        unsetArea: function(){
+            this.fields.sector_area = ''
+        },
+    },
+    computed: {
+        filteredSubcampos: function (){
+            //Solo subcampos que pertentecen al campo padre
+            if ( this.fields.sector_campo.length > 0 ) {
+                return this.arrSubcampo.filter(item => item.parent_id == this.fields.sector_campo)
+            }
+            return this.arrSubcampo
+        },
+        filteredAreas: function (){
+            //Solo áreas que pertentecen al subcampo padre
+            if ( this.fields.sector_subcampo.length > 0 ) {
+                return this.arrArea.filter(item => item.parent_id == this.fields.sector_subcampo)
+            }
+            return this.arrArea
+        }
     },
     mounted(){
         //this.getList()

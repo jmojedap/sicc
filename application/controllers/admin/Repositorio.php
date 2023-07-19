@@ -47,6 +47,7 @@ class Repositorio extends CI_Controller{
             $data['arrEstadoPublicacion'] = $this->Item_model->arr_options('category_id = 406');
             $data['arrFormato'] = $this->Item_model->arr_options('category_id = 410');
             $data['arrTipo'] = $this->Item_model->arr_options('category_id = 412');
+            $data['arrArea'] = $this->Item_model->arr_options('category_id = 616');
             
         //Cargar vista
             $this->App_model->view(TPL_ADMIN, $data);
@@ -212,6 +213,9 @@ class Repositorio extends CI_Controller{
         $data['arrFormato'] = $this->Item_model->arr_options('category_id = 410');
         $data['arrTema'] = $this->Item_model->arr_options('category_id = 415');
         $data['arrSubtema'] = $this->Item_model->arr_options('category_id = 416');
+        $data['arrCampo'] = $this->Item_model->arr_options('category_id = 612');
+        $data['arrSubcampo'] = $this->Item_model->arr_options('category_id = 614');
+        $data['arrArea'] = $this->Item_model->arr_options('category_id = 616');
 
         //Variables generales
             $data['head_title'] = 'Nuevo contenido';
