@@ -286,24 +286,85 @@ class Acciones extends CI_Controller {
             //Construir registro del nuevo user
                 $arr_row = $this->input->post();
                 unset($arr_row['g-recaptcha-response']);
-                $arr_row['display_name'] = $this->input->post('first_name') . ' ' . $this->input->post('last_name');
+                //$arr_row['display_name'] = $this->input->post('first_name') . ' ' . $this->input->post('last_name');
                 $arr_row['username'] = $this->User_model->email_to_username($this->input->post('email'));
-                /*$arr_row['first_name'] = $this->input->post('first_name');
-                $arr_row['last_name'] = $this->input->post('last_name');
-                $arr_row['email'] = $this->input->post('email');
-                $arr_row['document_number'] = $this->input->post('document_number');
-                $arr_row['document_type'] = $this->input->post('document_type');
-                $arr_row['phone_number'] = $this->input->post('phone_number');*/
                 $arr_row['role'] = 22; //Estudiante
 
             //Crerar usuario, tabla users
                 $data['saved_id'] = $this->User_model->save($arr_row);
                 if ( $data['saved_id'] > 0 ) {
                     $data['username'] = $arr_row['username'];
+                    $data['activation_key'] = $this->Account_model->activation_key($data['saved_id']);
                 }
         }
 
         $this->output->set_content_type('application/json')->set_output(json_encode($data));
     }
+
+    /**
+     * AJAX JSON
+     * Actualizar los datos de un usuario rol estudiante
+     * 2023-07-20
+     */
+    function update_user()
+    {
+        $aRow = $this->input->post();
+        $aRow['display_name'] = $this->input->post('first_name') . ' ' . $this->input->post('last_name');
+        $condition = "id = {$aRow['id']} AND activation_key = '{$aRow['activation_key']}' AND role = 22";
+        $data['saved_id'] = $this->Db_model->save('users', $condition, $aRow);
+
+        if ( $data['saved_id'] > 0 ) {
+            //Si se guardó, resetear activation_key
+            $this->load->model('Account_model');
+            $this->Account_model->activation_key($data['saved_id']);
+        }
+
+        //Salida JSON
+        $this->output->set_content_type('application/json')->set_output(json_encode($data));
+    }
+
+    /**
+     * Actualización masiva de datos de las acciones de la escuela de cuidado
+     * Leyendo archivo cronograma de la escuela
+     * 2023-07-29
+     */
+    function update_rows_ehc($readDrive = 0)
+    {
+        $updatedRows = [];
+        $qtyUpdated = 0;
+        
+        $this->load->model('Cuidado_model');
+        $filePath = $this->Cuidado_model->create_acciones_json($readDrive);
+
+        // Verificar si el archivo existe
+        if (file_exists($filePath)) {
+            $jsonAcciones = file_get_contents($filePath);
+            $arrAcciones = json_decode($jsonAcciones, true);
+            
+            if ($arrAcciones != null) {
+                foreach ($arrAcciones as $key => $accion) {
+                    $aRow = $accion;
+                    unset($aRow['id']);
+
+                    $this->db->where('id', $accion['id']);
+                    $this->db->update('mecc_acciones', $aRow);
+                    $affectedRows = $this->db->affected_rows();
+                    
+                    $updatedRows[$accion['id']] = $affectedRows;
+                    $qtyUpdated += $affectedRows;
+                }
+            }
+        }
+
+        $data['file_path'] = $filePath;
+        $data['qty_updated'] = $qtyUpdated;
+        $data['results'] = $updatedRows;
+        $data['status'] = 1;
+        $data['message'] = 'Registros actualizados en mecc_acciones: ' . $qtyUpdated;
+
+        //Salida JSON
+        $this->output->set_content_type('application/json')->set_output(json_encode($data));
+    }
+
 
 }

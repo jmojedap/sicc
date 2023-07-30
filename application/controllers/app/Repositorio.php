@@ -377,7 +377,7 @@ class Repositorio extends CI_Controller{
      * Diccionario de datos, detalle datos de campos de tabla
      * 2023-04-09
      */
-    function diccionario_de_datos($table = 'repo_contenidos', $format = '')
+    function diccionario_de_datos_ant($table = 'repo_contenidos', $format = '')
     {
         //$data['page_slug'] = $page_slug;
         $this->load->model('Post_model');
@@ -385,5 +385,28 @@ class Repositorio extends CI_Controller{
         $data['table'] = $table;
         $data['view_a'] = $this->views_folder . 'especificaciones/diccionario_de_datos_v';
         $this->App_model->view(TPL_FRONT, $data);
+    }
+
+    /**
+     * Diccionario de datos, detalle datos de campos de tabla
+     * 2023-04-09
+     */
+    function diccionario_de_datos($table = 'contenidos', $format = '')
+    {
+        $this->load->library('google_sheets');
+        $driveFileId = '1cJRxQDfGPj6qDIKxRgekUYEj1kH7CxAcLutbg5DqZ68';
+        $data['tables'] = $this->google_sheets->sheetToArray($driveFileId, 0);
+
+        $data['table'] = $table;
+        $data['head_title'] = 'Diccionario de datos';
+        $data['file_id'] = $driveFileId;
+
+        if ( $format == 'print' ) {
+            $data['view_a'] = "app/app/diccionario_print_v";
+            $this->App_model->view('templates/print/main', $data);
+        } else {
+            $data['view_a'] = "app/app/diccionario_v";
+            $this->App_model->view(TPL_FRONT, $data);
+        }
     }
 }

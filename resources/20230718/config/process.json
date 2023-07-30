@@ -13,5 +13,10 @@
         "process_name":"Actualizar partes med_pregunta.codigo",
         "process_link":"preguntas/run_process/update_codigo_parts",
         "description":"Actualiza tabla med_pregunta, campos: tematica_id, subtematica_id, consecutivo_tematica y consecutivo_grupo"
+    },
+    {
+        "process_name":"Actualizar Acciones Escuela de cuidado",
+        "process_link":"acciones/update_rows_ehc/1",
+        "description":"Lee datos en archivo de Google Drive, y actualiza datos type 102 en la tabla mecc_acciones"
     }
 ]

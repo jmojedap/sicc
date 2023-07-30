@@ -54,7 +54,7 @@
 var registroUsuarioApp = createApp({
     data(){
         return{
-            step: 'form1',
+            step: 'form',
             loading: false,
             fields: fields,
             arrDocumentTypes: <?= json_encode($arrDocumentTypes) ?>,
@@ -63,21 +63,14 @@ var registroUsuarioApp = createApp({
             arrGenders: <?= json_encode($arrGenders) ?>,
             arrSexualOrientation: <?= json_encode($arrSexualOrientation) ?>,
             arrOcupaciones: <?= json_encode($arrOcupaciones) ?>,
-            validated: false,
             validation: {
                 email_unique: -1,
                 document_number_unique: -1
             },
             savedId: 0,
-            activationKey: '',
-            withoutEmail: false,
-            randomEmail: 'no_tiene_<?= strtolower(random_string('alpha', 8)); ?>@notiene.com',
         }
     },
     methods: {
-        setStep: function(newStep){
-            this.step = newStep
-        },
         validateForm: function() {
             var formValues = new FormData(document.getElementById('registroUsuarioForm'))
             axios.post(URL_API + 'accounts/validate_signup/', formValues)
@@ -97,10 +90,9 @@ var registroUsuarioApp = createApp({
                 .then(response => {
                     this.loading = false
                     this.savedId = response.data.saved_id
-                    this.activationKey = response.data.activation_key
 
                     if ( this.savedId > 0 ) {
-                        this.step = 'form2'
+                        this.step = 'success'
                     }
 
                     if ( response.data.recaptcha == -1 ) {
@@ -114,30 +106,10 @@ var registroUsuarioApp = createApp({
             } else {
                 toastr['error']('Revisa las casillas en rojo')
             }
-        },
-        updateCreatedUser: function(){
-            this.loading = true
-            var formValues = new FormData(document.getElementById('formUpdateUser'))
-            axios.post(URL_API + 'acciones/update_user/', formValues)
-            .then(response => {
-                if ( parseInt(response.data.saved_id) > 0 ) {
-                    toastr['success']('Usuario actualizado')
-                    this.step = 'success'
-                } else {
-                    toastr['error']('Algo salió mal, inténtalo de nuevo')
-                }
-                this.loading = false
-            })
-            .catch( function(error) {console.log(error)} )
-        },
-        setRandomEmail: function(){
-            console.log(this.withoutEmail)
-            if (this.withoutEmail == true) {
-                this.fields.email = this.randomEmail
-            } else {
-                this.fields.email = ''
-            }
-        },
+        },   
     },
+    mounted(){
+        //this.getList()
+    }
 }).mount('#registroUsuarioApp')
 </script>

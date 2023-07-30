@@ -69,7 +69,7 @@ var processes_app = new Vue({
             this.loading = true
             this.restart_result()
             this.result.message = 'Ejecutando'
-            var url_process = url_admin + this.curr_process.process_link
+            var url_process = URL_ADMIN + this.curr_process.process_link
             console.log(url_process)
             axios.get(url_process)
             .then(response => {

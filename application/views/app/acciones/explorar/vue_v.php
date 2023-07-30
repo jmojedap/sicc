@@ -32,7 +32,7 @@ var appExplore = createApp({
             arrPeriodo: arrPeriodo,
             arrLocalidad: arrLocalidad,
             appRid: parseInt(APP_RID),
-            viewFormat: 'cards',
+            viewFormat: 'table',
         }
     },
     methods: {

@@ -283,6 +283,8 @@ function mapa()
         $data['arrOcupaciones'] = $this->Item_model->arr_options('category_id = 517');
         $data['arrLocalidades'] = $this->Item_model->arr_options('category_id = 121');
 
+        $this->load->helper('string');
+
         $this->App_model->view(TPL_FRONT, $data);
     }
 

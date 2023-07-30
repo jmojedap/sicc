@@ -187,7 +187,7 @@ class Accounts extends CI_Controller {
     /**
      * Formulario para reestablecer contraseña, se solicita nueva contraseña y 
      * confirmación
-     * 2020-08-21
+     * 2023-07-20
      */
     function recover($activation_key)
     {
@@ -207,8 +207,11 @@ class Accounts extends CI_Controller {
                 $data['user_id'] = $row_user->id;
             }
 
-        //Verificar que no tenga sesión iniciada
-            if ( $this->session->userdata('logged') ) redirect('app/logged');
+        //Si tiene sesión iniciada, se finaliza
+            if ( $this->session->userdata('logged') ) {
+                $this->load->model('Account_model');
+                $this->Account_model->logout();
+            }
 
         //Cargar vista
             $data['view_a'] = $this->views_folder . 'recover_v';

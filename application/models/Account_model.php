@@ -52,10 +52,6 @@ class Account_model extends CI_Model{
                 $this->Db_model->save('events', "id = {$row_event->id}", $arr_row);
             }
         }
-    
-        //Eliminar cookie
-            /*$this->load->helper('cookie');
-            delete_cookie('lelisesionrc');*/
             
         //Destruir sesión existente
             $this->session->sess_destroy();

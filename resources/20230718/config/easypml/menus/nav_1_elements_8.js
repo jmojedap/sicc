@@ -61,7 +61,7 @@ var nav_1_elements = [
                 text: 'Acciones CC',
                 active: false,
                 icon: '',
-                cf: 'acciones/explorar/1/?m=202306&',
+                cf: 'acciones/explorar/1/?m=202307&',
                 sections: ['acciones/explorar', 'acciones/info', 'acciones/edit', 'acciones/add', 'acciones/usuarios', 'acciones/asistentes_itinerantes'],
                 anchor: true
             },
