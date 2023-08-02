@@ -6,7 +6,7 @@
                 <fieldset v-bind:disabled="loading">
                     <div class="mb-1 row">
                         <div class="offset-md-4 col-md-8 col-sm-12">
-                            <button class="btn btn-success w120p" type="submit">
+                            <button class="btn btn-primary w120p" type="submit">
                                 <span><i class="fa fa-spin fa-spinner" v-show="loading"></i></span>
                                 Guardar
                             </button>
@@ -14,21 +14,48 @@
                     </div>
 
                     <div class="mb-1 row">
-                        <label for="dependencia" class="col-md-4 col-form-label text-end">Área</label>
+                        <label for="programa" class="col-md-4 col-form-label text-end">Programa</label>
                         <div class="col-md-8">
-                            <select name="dependencia" v-model="fields.dependencia" class="form-select form-control" required>
-                                <option value="">[ Todos ]</option>
-                                <option v-for="optionDependencia in arrDependencia" v-bind:value="optionDependencia.name">{{ optionDependencia.name }}</option>
+                            <select name="programa" v-model="fields.programa" class="form-select" v-on:change="clearEstrategia">
+                                <option value="">[ND/NA]</option>
+                                <option v-for="optionPrograma in arrPrograma" v-bind:value="optionPrograma.cod">{{ optionPrograma.name }}</option>
                             </select>
                         </div>
                     </div>
 
                     <div class="mb-1 row">
-                        <label for="equipo_trabajo" class="col-md-4 col-form-label text-end">Equipo</label>
+                        <label for="estrategia" class="col-md-4 col-form-label text-end">Estrategia</label>
                         <div class="col-md-8">
-                            <select name="equipo_trabajo" v-model="fields.equipo_trabajo" class="form-select form-control" required>
+                            <select name="estrategia" v-model="fields.estrategia" class="form-select">
+                                <option value="">[ND/NA]</option>
+                                <option v-for="optionEstrategia in arrEstrategiaFiltered" v-bind:value="optionEstrategia.str_cod">
+                                    {{ optionEstrategia.name }}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="mb-1 row">
+                        <label for="tipo_accion" class="col-md-4 col-form-label text-end">Tipo acción</label>
+                        <div class="col-md-8">
+                            <select name="tipo_accion" v-model="fields.tipo_accion" class="form-select">
+                                <option value="">[ND/NA]</option>
+                                <option v-for="tipoAccion in arrTipoAccionFiltered"
+                                    v-bind:value="tipoAccion.cod">
+                                    {{ tipoAccion.name }}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    <div class="mb-1 row">
+                        <label for="dependencia" class="col-md-4 col-form-label text-end">Dependencia</label>
+                        <div class="col-md-8">
+                            <select name="dependencia" v-model="fields.dependencia" class="form-select form-control" required>
                                 <option value="">[ Todos ]</option>
-                                <option v-for="optionEquipoTrabajo in arrEquipoTrabajo" v-bind:value="optionEquipoTrabajo.name">{{ optionEquipoTrabajo.name }}</option>
+                                <option v-for="optionDependencia in arrDependencia" v-bind:value="optionDependencia.name">{{ optionDependencia.name }}</option>
                             </select>
                         </div>
                     </div>
@@ -122,28 +149,6 @@
                                 title="Radicado Orfeo" placeholder="Radicado Orfeo"
                                 v-model="fields.radicado_orfeo"
                             >
-                        </div>
-                    </div>
-
-                    <div class="mb-1 row">
-                        <label for="programa" class="col-md-4 col-form-label text-end">Programa</label>
-                        <div class="col-md-8">
-                            <select name="programa" v-model="fields.programa" class="form-select" v-on:change="clearEstrategia">
-                                <option value="">[ND/NA]</option>
-                                <option v-for="optionPrograma in arrPrograma" v-bind:value="optionPrograma.cod">{{ optionPrograma.name }}</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="mb-1 row">
-                        <label for="estrategia" class="col-md-4 col-form-label text-end">Estrategia</label>
-                        <div class="col-md-8">
-                            <select name="estrategia" v-model="fields.estrategia" class="form-select">
-                                <option value="">[ND/NA]</option>
-                                <option v-for="optionEstrategia in arrEstrategiaFiltered" v-bind:value="optionEstrategia.str_cod">
-                                    {{ optionEstrategia.name }}
-                                </option>
-                            </select>
                         </div>
                     </div>
 
@@ -257,7 +262,7 @@
                         <label for="cod_localidad" class="col-md-4 col-form-label text-end">Localidad</label>
                         <div class="col-md-8">
                             <select name="cod_localidad" v-model="fields.cod_localidad" class="form-select form-control" required>
-                                <option value="">[ ND/NA ]</option>
+                                <option value="99">[ ND/NA ]</option>
                                 <option v-for="optionLocalidad in arrLocalidad" v-bind:value="optionLocalidad.cod">{{ optionLocalidad.name }}</option>
                             </select>
                         </div>
@@ -281,7 +286,6 @@
                         <div class="col-md-8">
                             <input
                                 name="direccion" type="text" class="form-control"
-                                required
                                 title="Dirección lugar" placeholder="Dirección lugar"
                                 v-model="fields.direccion"
                             >
@@ -293,7 +297,7 @@
 
                     <div class="mb-1 row">
                         <div class="offset-md-4 col-md-8 col-sm-12">
-                            <button class="btn btn-success w120p" type="submit">
+                            <button class="btn btn-primary w120p" type="submit">
                                 <span><i class="fa fa-spin fa-spinner" v-show="loading"></i></span>
                                 Guardar
                             </button>

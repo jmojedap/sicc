@@ -33,6 +33,13 @@
             roles: [1,2,3,8],
             anchor: true,
         },
+        {
+            text: 'Detalle itinerantes',
+            id: 'acciones_acciones_asistentes_itinerantes',
+            cf: 'acciones/acciones_asistentes_itinerantes',
+            roles: [1,2,3,8],
+            anchor: true,
+        },
     ]
     
 //Filter role sections

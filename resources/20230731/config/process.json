@@ -18,5 +18,10 @@
         "process_name":"Actualizar Acciones Escuela de cuidado",
         "process_link":"acciones/update_rows_ehc/1",
         "description":"Lee datos en archivo de Google Drive, y actualiza datos type 102 en la tabla mecc_acciones"
+    },
+    {
+        "process_name":"Actualizar repo_contenidos.extension_archivo",
+        "process_link":"repositorio/update_extension_archivo",
+        "description":"Actualiza el campo repo_contenidos.extension_archivo"
     }
 ]

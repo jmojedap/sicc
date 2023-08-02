@@ -79,7 +79,8 @@ class Accounts extends CI_Controller {
             $arr_destination = array(
                 1 => 'admin/app/dashboard/',  //Desarrollador
                 2 => 'admin/app/dashboard/',  //Administrador
-                3 => 'admin/users/explore',   //Entrenador
+                3 => 'admin/users/explore',   //Editor
+                8 => 'app/acciones/explorar',   //Editor MeCC
                 22 => 'app/accounts/profile/'     //Estudiante
             );
                 

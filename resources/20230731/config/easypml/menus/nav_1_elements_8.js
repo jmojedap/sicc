@@ -17,8 +17,8 @@ var nav_1_elements = [
                 text: 'Explorar',
                 active: false,
                 icon: '',
-                cf: 'repositorio/explorar/1/',
-                sections: ['repositorio/explorar', 'repositorio/detalles', 'repositorio/edit', 'repositorio/crear'],
+                cf: 'repositorio/explorar',
+                sections: ['mediciones/explorar', 'mediciones/detalles', 'mediciones/edit'],
                 anchor: true
             },
             {
@@ -27,6 +27,14 @@ var nav_1_elements = [
                 icon: '',
                 cf: 'repositorio/especificaciones',
                 sections: ['repositorio/especificaciones'],
+                anchor: true
+            },
+            {
+                text: 'Diccionario de datos',
+                active: false,
+                icon: '',
+                cf: 'repositorio/diccionario_de_datos',
+                sections: ['repositorio/diccionario_de_datos'],
                 anchor: true
             },
         ],
@@ -40,16 +48,6 @@ var nav_1_elements = [
         cf: '',
         subelements: [
             {
-                text: 'Mediciones',
-                active: false,
-                icon: '',
-                cf: 'mediciones/explorar',
-                sections: ['mediciones/explorar', 'mediciones/detalles', 'mediciones/edit', 'mediciones/powerbi',
-                    'mediciones/formulario'
-                ],
-                anchor: true
-            },
-            {
                 text: 'Diccionarios',
                 active: false,
                 icon: '',
@@ -58,7 +56,7 @@ var nav_1_elements = [
                 anchor: true
             },
         ],
-        sections: ['mediciones/explorar', 'mediciones/diccionario_de_datos', 'mediciones/detalles'],
+        sections: [],
         anchor: true
     },
     {
@@ -81,6 +79,14 @@ var nav_1_elements = [
                 icon: '',
                 cf: 'acciones/diccionario_de_datos',
                 sections: ['acciones/diccionario_de_datos'],
+                anchor: true
+            },
+            {
+                text: 'Ayuda',
+                active: false,
+                icon: '',
+                cf: 'acciones/ayuda',
+                sections: ['acciones/ayuda'],
                 anchor: true
             },
             {

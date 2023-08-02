@@ -408,4 +408,49 @@ class Repositorio extends CI_Controller{
         //Salida JSON
         $this->output->set_content_type('application/json')->set_output(json_encode($data));
     }
+
+    /**
+     * Actualizar masivamente campo repo_contenidos.extension_archivo
+     * 2023-0730
+     */
+    function update_extension_archivo()
+    {
+        $data = array('status' => 0, 'message' => 'No se actualizaron registros');
+
+        $this->db->select('id, titulo, url_contenido, tipo_archivo');
+        $this->db->where('LENGTH(url_contenido) > 0');
+        $contenidos = $this->db->get('repo_contenidos');
+
+        $qty_updated = 0;
+
+        $this->load->helper('string');
+
+        foreach ($contenidos->result() as $contenido)
+        {
+            $path = parse_url($contenido->url_contenido, PHP_URL_PATH);
+            $extension = pathinfo($path, PATHINFO_EXTENSION);
+
+            $arr_row['id'] = $contenido->id;
+            $arr_row['tipo_archivo'] = $contenido->tipo_archivo;
+            
+            //Construyendo array actualizado
+            $arr_row['extension_archivo'] = $extension;
+            if ( $extension == 'pdf' ) $arr_row['tipo_archivo'] = 10;
+            if ( in_array($extension,['mp4']) ) {
+                $arr_row['tipo_archivo'] = 20;
+            }
+            if ( in_array($extension,['doc','docx','csv','html','ods','odt','pptx','rtf','xlk','xls','xslx','zip']) ) {
+                $arr_row['tipo_archivo'] = 50;
+            }
+            $this->Repositorio_model->save($arr_row);
+            $qty_updated++;
+        }
+        
+        if ( $qty_updated > 0 ) {
+            $data = array('status' => 1, 'message' => 'Registros actualizados: ' . $qty_updated);
+        }
+
+        //Salida JSON
+        $this->output->set_content_type('application/json')->set_output(json_encode($data));
+    }
 }

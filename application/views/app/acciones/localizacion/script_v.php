@@ -1,57 +1,64 @@
 <script>
 const arcGisApiKey = '<?= K_ARCGIS ?>';
-var actividad = {
+var accion = {
         id: <?= $row->id ?>,
         nombre_lugar: <?= json_encode($row->nombre_lugar) ?>,
         direccion: <?= json_encode($row->direccion) ?>,
         longitud: <?= $row->longitud ?>,
         latitud: <?= $row->latitud ?>,
     };
-var withLocation = true;
-if ( actividad.latitud == 0 ) withLocation = false;
-if ( actividad.longitud == 0 ) withLocation = false;
+
+var withLocation = false;
+var savingStatus = 0;
+
+if ( accion.latitud != 0 && accion.longitud != 0 ) {
+    withLocation = true;
+    savingStatus = 1;
+}
 
 var startPoint = [-74.247,4.778];
 var centerPoint = [-74.12,4.65];
 var startZoom = 11.0;
 var markerColor = '#5e4296';
 
-/*if ( withLocation == true ) {
-    centerPoint = [actividad.longitud,actividad.latitud];
-    startZoom = 11.2;
-}*/
+if ( withLocation == true ) {
+    centerPoint = [accion.longitud,accion.latitud];
+    //startZoom = 11.2;
+}
 
 var localizacionApp = createApp({
     data(){
         return{
-            actividad: actividad,
+            accion: accion,
             withLocation: withLocation,
             filters:{
-                q: actividad.direccion,
+                q: '',
             },
             zoom: startZoom,
             places: [],
             currentPlace: {},
             noPlaces: -1,
             loading: false,
+            savingStatus: savingStatus
         }
     },
     methods: {
         saveLocation: function(){
             this.loading = true
             var formValues = new FormData()
-            formValues.append('id',this.actividad.id)
-            formValues.append('longitud', this.actividad.longitud)
-            formValues.append('latitud', this.actividad.latitud)
+            formValues.append('id',this.accion.id)
+            formValues.append('longitud', this.accion.longitud)
+            formValues.append('latitud', this.accion.latitud)
             axios.post(URL_API + 'acciones/save/', formValues)
             .then(response => {
                 if ( response.data.saved_id > 0 ) {
                     toastr['success']('Geolocalización guardada')
                     this.withLocation = true
                     marker.remove()
-                    savedMarker.setLngLat([this.actividad.longitud,this.actividad.latitud])
+                    savedMarker.setLngLat([this.accion.longitud,this.accion.latitud])
                     savedMarker.addTo(map)
                     this.places = []
+                    this.savingStatus = 1
                 }
                 this.loading = false
             })
@@ -87,13 +94,19 @@ var localizacionApp = createApp({
             map.setCenter(point)
             this.zoom = 15
             this.setZoom()
-            this.actividad.longitud = point[0]
-            this.actividad.latitud = point[1]
+            this.accion.longitud = Pcrn.round(point[0],5)
+            this.accion.latitud = Pcrn.round(point[1],5)
+            this.savingStatus = 3
+            toastr['warning']('No olvides guardar la localización seleccionada')
         },
         addMarker: function(){
             if ( this.withLocation == false ) {
                 marker.addTo(map)
             }
+        },
+        setSearch: function(qValue){
+            this.filters.q = qValue
+            this.searchLocation()
         },
     },
     mounted(){
@@ -113,15 +126,15 @@ var map = new maplibregl.Map({
 
 var marker = new maplibregl.Marker({
         draggable: true,
-        color: '#5e4296',
+        color: '#c53c99',
     })
     .setLngLat(startPoint);
 
 var savedMarker = new maplibregl.Marker({
         draggable: true,
-        color: '#5e4296',
+        color: '#c53c99',
     })
-    .setLngLat([actividad.longitud,actividad.latitud]);
+    .setLngLat([accion.longitud,accion.latitud]);
 
 if ( withLocation == true ) {
     savedMarker.addTo(map)
@@ -129,14 +142,16 @@ if ( withLocation == true ) {
 
 function onDragEndMarker() {
     var lngLat = marker.getLngLat();
-    localizacionApp.actividad.longitud = lngLat.lng
-    localizacionApp.actividad.latitud = lngLat.lat
+    localizacionApp.accion.longitud = Pcrn.round(lngLat.lng,5)
+    localizacionApp.accion.latitud = Pcrn.round(lngLat.lat,5)
+    localizacionApp.savingStatus = 3
 }
 
 function onDragEndSavedMarker() {
     var lngLat = savedMarker.getLngLat();
-    localizacionApp.actividad.longitud = lngLat.lng
-    localizacionApp.actividad.latitud = lngLat.lat
+    localizacionApp.accion.longitud = Pcrn.round(lngLat.lng,5)
+    localizacionApp.accion.latitud = Pcrn.round(lngLat.lat,5)
+    localizacionApp.savingStatus = 3
 }
 
 marker.on('dragend', onDragEndMarker);

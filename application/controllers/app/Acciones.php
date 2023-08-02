@@ -154,6 +154,7 @@ class Acciones extends CI_Controller {
     {
         $data['arrPrograma'] = $this->Item_model->arr_options('category_id = 221');
         $data['arrEstrategia'] = $this->Item_model->arr_options('category_id = 222');
+        $data['arrTipoAccion'] = $this->Item_model->arr_options('category_id = 224');
         $data['arrDependencia'] = $this->Item_model->arr_options('category_id = 215');
         $data['arrEquipoTrabajo'] = $this->Item_model->arr_options('category_id = 216');
         $data['arrLocalidad'] = $this->Item_model->arr_options('category_id = 121');
@@ -192,6 +193,7 @@ class Acciones extends CI_Controller {
         $data['page_title'] = "Acción {$accion_id}) {$data['row']->nombre_accion}";
         $data['arrPrograma'] = $this->Item_model->arr_options('category_id = 221');
         $data['arrEstrategia'] = $this->Item_model->arr_options('category_id = 222');
+        $data['arrTipoAccion'] = $this->Item_model->arr_options('category_id = 224');
         $data['arrDependencia'] = $this->Item_model->arr_options('category_id = 215');
         $data['arrEquipoTrabajo'] = $this->Item_model->arr_options('category_id = 216');
         $data['arrLocalidad'] = $this->Item_model->arr_options('category_id = 121');
@@ -339,6 +341,23 @@ function mapa()
         $this->App_model->view(TPL_FRONT . '_fluid', $data);
     }
 
+    /**
+     * HTML VIEW
+     * Listado de asistentes itinerantes registrados en las acciones
+     * 2023-07-31
+     */
+    function acciones_asistentes_itinerantes()
+    {
+        $data['arrGrupoPoblacion'] = $this->Item_model->arr_options('category_id = 251 AND cod IN (1005,1520,1550,1560)');
+        $data['arrIdentidadGenero'] = $this->Item_model->arr_options('category_id = 111');
+        $data['arrTipoDocumento'] = $this->Item_model->arr_options('category_id = 53');
+
+        $data['head_title'] = 'Acciónes y asistentes';
+        $data['view_a'] = $this->views_folder . 'acciones_asistentes_itinerantes_v';
+        $data['nav_2'] = $this->views_folder . 'explorar/menu_v';
+        $this->App_model->view(TPL_FRONT . '_fluid', $data);
+    }
+
 // POBLACIÓN BENEFICIARIA DE LAS ACCIONES
 //-----------------------------------------------------------------------------
 
@@ -407,5 +426,12 @@ function mapa()
             $data['view_a'] = $this->views_folder . "diccionario_v";
             $this->App_model->view(TPL_FRONT, $data);
         }
+    }
+
+    function ayuda()
+    {
+        $data['head_title'] = 'Ayuda MECC';
+        $data['view_a'] = 'app/acciones/ayuda_v';
+        $this->App_model->view(TPL_FRONT, $data);
     }
 }

@@ -17,8 +17,8 @@ var nav_1_elements = [
                 text: 'Explorar',
                 active: false,
                 icon: '',
-                cf: 'repositorio/explorar',
-                sections: ['mediciones/explorar', 'mediciones/detalles', 'mediciones/edit'],
+                cf: 'repositorio/explorar/1/',
+                sections: ['repositorio/explorar', 'repositorio/detalles', 'repositorio/edit', 'repositorio/crear'],
                 anchor: true
             },
             {
@@ -27,6 +27,14 @@ var nav_1_elements = [
                 icon: '',
                 cf: 'repositorio/especificaciones',
                 sections: ['repositorio/especificaciones'],
+                anchor: true
+            },
+            {
+                text: 'Diccionario de datos',
+                active: false,
+                icon: '',
+                cf: 'repositorio/diccionario_de_datos',
+                sections: ['repositorio/diccionario_de_datos'],
                 anchor: true
             },
         ],
@@ -40,6 +48,16 @@ var nav_1_elements = [
         cf: '',
         subelements: [
             {
+                text: 'Mediciones',
+                active: false,
+                icon: '',
+                cf: 'mediciones/explorar',
+                sections: ['mediciones/explorar', 'mediciones/detalles', 'mediciones/edit', 'mediciones/powerbi',
+                    'mediciones/formulario'
+                ],
+                anchor: true
+            },
+            {
                 text: 'Diccionarios',
                 active: false,
                 icon: '',
@@ -48,7 +66,7 @@ var nav_1_elements = [
                 anchor: true
             },
         ],
-        sections: [],
+        sections: ['mediciones/explorar', 'mediciones/diccionario_de_datos', 'mediciones/detalles'],
         anchor: true
     },
     {
@@ -61,7 +79,7 @@ var nav_1_elements = [
                 text: 'Acciones CC',
                 active: false,
                 icon: '',
-                cf: 'acciones/explorar',
+                cf: 'acciones/explorar/1/?m=202307&',
                 sections: ['acciones/explorar', 'acciones/info', 'acciones/edit', 'acciones/add', 'acciones/usuarios', 'acciones/asistentes_itinerantes'],
                 anchor: true
             },
@@ -71,6 +89,14 @@ var nav_1_elements = [
                 icon: '',
                 cf: 'acciones/diccionario_de_datos',
                 sections: ['acciones/diccionario_de_datos'],
+                anchor: true
+            },
+            {
+                text: 'Ayuda',
+                active: false,
+                icon: '',
+                cf: 'acciones/ayuda',
+                sections: ['acciones/ayuda'],
                 anchor: true
             },
             {
@@ -86,29 +112,35 @@ var nav_1_elements = [
         anchor: true
     },
     {
-        text: 'Configuración',
+        text: 'Otros',
         active: false,
         icon: '',
         cf: '',
         subelements: [
             {
-                text: 'Variables',
+                text: 'Variables y opciones',
                 active: false,
                 icon: '',
                 cf: 'parametros/valores',
                 sections: ['parametros/valores'],
                 anchor: true
             },
-        ],
-        sections: ['parametros/valores'],
-        anchor: true
-    },
-    {
-        text: 'Prototipos',
-        active: false,
-        icon: '',
-        cf: '',
-        subelements: [
+            {
+                text: 'Tableros Power Bi',
+                active: false,
+                icon: '',
+                cf: 'info/visualizaciones_datos',
+                sections: ['info/visualizaciones_datos'],
+                anchor: true
+            },
+            {
+                text: 'Asistentes LEO Filbo 2023',
+                active: false,
+                icon: '',
+                cf: 'data_science/filbo2023',
+                sections: ['data_science/filbo2023'],
+                anchor: true
+            },
             {
                 text: 'Noticias',
                 active: false,
@@ -117,8 +149,16 @@ var nav_1_elements = [
                 sections: ['noticias/explorar', 'noticias/revisar'],
                 anchor: true
             },
+            {
+                text: 'Home CultuRed_Bogotá',
+                active: false,
+                icon: '',
+                cf: 'app/cultured_bogota',
+                sections: ['app/cultured_bogota'],
+                anchor: true
+            }
         ],
         sections: [],
         anchor: true
-    },
+    }
 ];

@@ -12,6 +12,28 @@
 <div id="localizacionApp">
     <div class="row">
         <div class="col-md-3">
+            <div class="py-1 d-flex justify-content-between">
+                <div>
+                    <span class="text-muted">Dirección: </span>
+                    <span>
+                        {{ accion.direccion }}
+                    </span>
+                </div>
+                <button class="btn btn-sm btn-light ms-1" v-on:click="setSearch(accion.direccion)">
+                    Buscar
+                </button>
+            </div>
+            <div class="py-1 d-flex justify-content-between">
+                <div>
+                    <span class="text-muted">Lugar: </span>
+                    <span>
+                        {{ accion.nombre_lugar }}
+                    </span>
+                </div>
+                <button class="btn btn-sm btn-light ms-1" v-on:click="setSearch(accion.nombre_lugar)">
+                    Buscar
+                </button>
+            </div>
             <form accept-charset="utf-8" method="POST" id="locationForm" @submit.prevent="searchLocation">
                 <fieldset v-bind:disabled="loading">
                     <div class="mb-3">
@@ -29,6 +51,7 @@
                     </div>
                 <fieldset>
             </form>
+            
             <div class="text-center" v-show="loading">
                 <div class="spinner-border text-primary" role="status">
                     <span class="sr-only">Loading...</span>
@@ -51,25 +74,31 @@
         <div class="col-md-9">
             <div class="d-flex justify-content-between mb-2">
                 <div>
-                    <button class="btn btn-success w120p" v-on:click="saveLocation">
+                    <button class="btn btn-primary w120p" v-on:click="saveLocation">
                         Guardar
                     </button>
                 </div>
                 <div>
-                    <span v-show="!withLocation">
+                    <span v-show="savingStatus == 0">
                         <i class="far fa-circle text-danger"></i>
                         Sin geolocalización
                     </span>
-                    <span v-show="withLocation">
+                    <span v-show="savingStatus == 1">
                         <i class="fa fa-circle-check text-success"></i>
-                        Con geolocalización
+                        Geolocalización guardada
+                    </span>
+                    <span v-show="savingStatus == 3">
+                        <i class="fa fa-circle-info text-warning"></i>
+                        Sin guardar
                     </span>
                 </div>
                 <div>
-                    <small>
-                        Lat: {{ actividad.latitud }} &middot;
-                        Long: {{ actividad.longitud }}
-                    </small>
+                    <span>
+                        
+                        Lat: <strong class="text-primary">{{ accion.latitud }}</strong>
+                        &middot;
+                        Long: <strong class="text-primary">{{ accion.longitud }}</strong> 
+                    </span>
                 </div>
                 <div style="width:300px;">
                     <input type="range" class="w100pc" min="10" max="17" v-on:change="setZoom" v-model="zoom" step="0.1">

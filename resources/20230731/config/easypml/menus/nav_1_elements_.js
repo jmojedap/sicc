@@ -29,6 +29,14 @@ var nav_1_elements = [
                 sections: ['repositorio/especificaciones'],
                 anchor: true
             },
+            {
+                text: 'Diccionario de datos',
+                active: false,
+                icon: '',
+                cf: 'repositorio/diccionario_de_datos',
+                sections: ['repositorio/diccionario_de_datos'],
+                anchor: true
+            },
         ],
         sections: [],
         anchor: true
@@ -81,6 +89,14 @@ var nav_1_elements = [
                 icon: '',
                 cf: 'acciones/diccionario_de_datos',
                 sections: ['acciones/diccionario_de_datos'],
+                anchor: true
+            },
+            {
+                text: 'Ayuda',
+                active: false,
+                icon: '',
+                cf: 'acciones/ayuda',
+                sections: ['acciones/ayuda'],
                 anchor: true
             },
             {

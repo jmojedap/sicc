@@ -16,10 +16,11 @@ var fields = {
     cantidad_sexo_nd: 0,
     programa: '',
     estrategia: '',
-    dependencia: '',
+    tipo_accion: '',
+    dependencia: 'Transformaciones culturales',
     equipo_trabajo: '',
     proyecto: '',
-    cod_localidad: '10',
+    cod_localidad: '',
     nombre_lugar:'',
     direccion: '',
     observaciones: '',
@@ -41,8 +42,9 @@ if ( test == '1' ) {
         cantidad_sexo_nd: 3,
         programa: '',
         estrategia: '',
-        dependencia: 'Observatorio',
-        equipo_trabajo: 'Sistema de Información y Narrativas',
+        tipo_accion: '',
+        dependencia: 'Transformaciones culturales',
+        equipo_trabajo: '',
         proyecto: 'FilBo 2023',
         cod_localidad: '10',
         nombre_lugar:'Institución Educativa Utopia',
@@ -61,6 +63,7 @@ var addAccionApp = createApp({
             accionId: 0,
             arrPrograma: <?= json_encode($arrPrograma) ?>,
             arrEstrategia: <?= json_encode($arrEstrategia) ?>,
+            arrTipoAccion: <?= json_encode($arrTipoAccion) ?>,
             arrDependencia: <?= json_encode($arrDependencia) ?>,
             arrEquipoTrabajo: <?= json_encode($arrEquipoTrabajo) ?>,
             arrLocalidad: <?= json_encode($arrLocalidad) ?>,
@@ -68,7 +71,8 @@ var addAccionApp = createApp({
             validationStatus: 0,
             validation: {
                 hora_fin_posterior: -1
-            }
+            },
+            section: 'selectors',
         }
     },
     methods: {
@@ -124,6 +128,15 @@ var addAccionApp = createApp({
                 }
             })
         },
+        setEstrategia: function(estrategia){
+            this.fields.estrategia = estrategia.cod
+            this.fields.tipo_accion = ''
+        },
+        setTipoAccion: function(tipoAccion){
+            this.fields.tipo_accion = tipoAccion.cod
+            this.section = 'form'
+            if ( this.fields.nombre_accion.length == 0 ) this.fields.nombre_accion = tipoAccion.name
+        },
     },
     computed: {
         arrEstrategiaFiltered(){
@@ -134,6 +147,17 @@ var addAccionApp = createApp({
             } else {
                 return this.arrEstrategia.filter(item =>
                     item.parent_id == parseInt(programaValue)
+                )
+            }
+        },
+        arrTipoAccionFiltered(){
+            estrategiaValue = this.fields.estrategia || ''
+            console.log(estrategiaValue)
+            if ( estrategiaValue.length == 0 ) {
+                return this.arrTipoAccion
+            } else {
+                return this.arrTipoAccion.filter(item =>
+                    item.parent_id == parseInt(estrategiaValue)
                 )
             }
         },

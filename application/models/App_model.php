@@ -291,7 +291,7 @@ class App_model extends CI_Model{
      */
     function posts_special_types()
     {
-        $special_types = [6,7,12,18,20,22,110,130,311,312];
+        $special_types = [6,7,12,18,22,110,130,311,312];
         return $special_types;
     }
 

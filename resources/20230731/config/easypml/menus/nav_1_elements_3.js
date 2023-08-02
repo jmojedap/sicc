@@ -29,6 +29,14 @@ var nav_1_elements = [
                 sections: ['repositorio/especificaciones'],
                 anchor: true
             },
+            {
+                text: 'Diccionario de datos',
+                active: false,
+                icon: '',
+                cf: 'repositorio/diccionario_de_datos',
+                sections: ['repositorio/diccionario_de_datos'],
+                anchor: true
+            },
         ],
         sections: [],
         anchor: true
@@ -61,7 +69,7 @@ var nav_1_elements = [
                 text: 'Acciones CC',
                 active: false,
                 icon: '',
-                cf: 'acciones/explorar/1/?m=202307&',
+                cf: 'acciones/explorar',
                 sections: ['acciones/explorar', 'acciones/info', 'acciones/edit', 'acciones/add', 'acciones/usuarios', 'acciones/asistentes_itinerantes'],
                 anchor: true
             },
@@ -86,35 +94,29 @@ var nav_1_elements = [
         anchor: true
     },
     {
-        text: 'Otros',
+        text: 'Configuración',
         active: false,
         icon: '',
         cf: '',
         subelements: [
             {
-                text: 'Variables y opciones',
+                text: 'Variables',
                 active: false,
                 icon: '',
                 cf: 'parametros/valores',
                 sections: ['parametros/valores'],
                 anchor: true
             },
-            {
-                text: 'Tableros Power Bi',
-                active: false,
-                icon: '',
-                cf: 'info/visualizaciones_datos',
-                sections: ['info/visualizaciones_datos'],
-                anchor: true
-            },
-            {
-                text: 'Asistentes LEO Filbo 2023',
-                active: false,
-                icon: '',
-                cf: 'data_science/filbo2023',
-                sections: ['data_science/filbo2023'],
-                anchor: true
-            },
+        ],
+        sections: ['parametros/valores'],
+        anchor: true
+    },
+    {
+        text: 'Prototipos',
+        active: false,
+        icon: '',
+        cf: '',
+        subelements: [
             {
                 text: 'Noticias',
                 active: false,
@@ -123,16 +125,8 @@ var nav_1_elements = [
                 sections: ['noticias/explorar', 'noticias/revisar'],
                 anchor: true
             },
-            {
-                text: 'Home CultuRed_Bogotá',
-                active: false,
-                icon: '',
-                cf: 'app/cultured_bogota',
-                sections: ['app/cultured_bogota'],
-                anchor: true
-            }
         ],
         sections: [],
         anchor: true
-    }
+    },
 ];

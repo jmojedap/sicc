@@ -345,6 +345,10 @@ class Acciones extends CI_Controller {
                 foreach ($arrAcciones as $key => $accion) {
                     $aRow = $accion;
                     unset($aRow['id']);
+                    
+                    //Convertirl el separador de decimales de coma (G-Drive) a punto MySQL
+                    $aRow['latitud'] = str_replace(',','.',$aRow['latitud']);
+                    $aRow['longitud'] = str_replace(',','.',$aRow['longitud']);
 
                     $this->db->where('id', $accion['id']);
                     $this->db->update('mecc_acciones', $aRow);
