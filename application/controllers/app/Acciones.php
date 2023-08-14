@@ -129,6 +129,20 @@ class Acciones extends CI_Controller {
         $this->App_model->view(TPL_FRONT . '_fluid', $data);
     }
 
+    /**
+     * Procesos sobre acciones de la aplicación
+     * 2022-08-19
+     */
+    function processes()
+    {
+        $data['processes'] = file_get_contents(PATH_RESOURCES . "config/process_ehc.json");
+    
+        $data['head_title'] = 'Procesos del sistema';
+        $data['view_a'] = $this->views_folder .  'processes_v';
+        $data['nav_2'] = $this->views_folder .  'explorar/menu_v';        
+        $this->App_model->view(TPL_FRONT . '_fluid', $data);
+    }
+
 // INFORMACIÓN
 //-----------------------------------------------------------------------------
 

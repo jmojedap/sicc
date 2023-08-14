@@ -370,5 +370,20 @@ class Acciones extends CI_Controller {
         $this->output->set_content_type('application/json')->set_output(json_encode($data));
     }
 
+    /**
+     * Actualiza los datos en la tabla mecc_acciones_detalles registrando los usuarios
+     * participantes en una acción tomando los valores del campo mecc_acciones.participantes_equipo
+     * 2023-08-12
+     */
+    function update_acciones_staff()
+    {
+        $this->load->model('Cuidado_model');
+        $data = $this->Cuidado_model->update_acciones_staff();
+
+        //Salida JSON
+        $this->output->set_content_type('application/json')->set_output(json_encode($data));
+
+    }
+
 
 }

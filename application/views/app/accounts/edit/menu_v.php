@@ -5,7 +5,7 @@ var sections = [
         id: 'basic',
         text: 'General',
         cf: 'accounts/edit/basic',
-        roles: [1,2,4,8,21,31],
+        roles: [1,2,3,6,8,21,31],
     },
     {
         id: 'image',
@@ -17,7 +17,7 @@ var sections = [
         id: 'password',
         text: 'Contraseña',
         cf: 'accounts/edit/password',
-        roles: [1,2,8],
+        roles: [1,2,3,6,8],
     }
 ];
 

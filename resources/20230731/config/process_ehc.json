@@ -1,0 +1,12 @@
+[
+    {
+        "process_name":"Actualizar Acciones Escuela de cuidado",
+        "process_link":"acciones/update_rows_ehc/1",
+        "description":"Lee datos en archivo de Google Drive, y actualiza datos type 102 en la tabla mecc_acciones"
+    },
+    {
+        "process_name":"Actualizar detalles de facilitadores",
+        "process_link":"acciones/update_acciones_staff/1",
+        "description":"Actualiza los datos en la tabla mecc_acciones_detalles registrando los usuarios participantes en una acción tomando los valores del campo mecc_acciones.participantes_equipo"
+    }
+]

@@ -1,11 +1,44 @@
 var nav_1_elements = [
     {
-        text: 'Contenidos',
+        text: 'Repositorio',
         active: false,
-        icon: 'fa fa-user',
-        cf: 'contenidos/explorar',
-        subelements: [],
-        sections: ['contenidos/explorar', 'contenidos/leer'],
+        icon: '',
+        cf: '',
+        subelements: [
+            {
+                text: 'Inicio',
+                active: false,
+                icon: '',
+                cf: 'repositorio/inicio/',
+                sections: ['repositorio/inicio'],
+                anchor: true
+            },
+            {
+                text: 'Explorar',
+                active: false,
+                icon: '',
+                cf: 'repositorio/explorar',
+                sections: ['mediciones/explorar', 'mediciones/detalles', 'mediciones/edit'],
+                anchor: true
+            },
+            {
+                text: 'Documentación',
+                active: false,
+                icon: '',
+                cf: 'repositorio/especificaciones',
+                sections: ['repositorio/especificaciones'],
+                anchor: true
+            },
+            {
+                text: 'Diccionario de datos',
+                active: false,
+                icon: '',
+                cf: 'repositorio/diccionario_de_datos',
+                sections: ['repositorio/diccionario_de_datos'],
+                anchor: true
+            },
+        ],
+        sections: [],
         anchor: true
     },
     {
@@ -15,14 +48,6 @@ var nav_1_elements = [
         cf: '',
         subelements: [
             {
-                text: 'Mediciones',
-                active: false,
-                icon: '',
-                cf: 'mediciones/explorar',
-                sections: ['mediciones/explorar', 'mediciones/detalles', 'mediciones/edit', 'mediciones/powerbi'],
-                anchor: true
-            },
-            {
                 text: 'Diccionarios',
                 active: false,
                 icon: '',
@@ -31,11 +56,11 @@ var nav_1_elements = [
                 anchor: true
             },
         ],
-        sections: ['mediciones/explorar', 'mediciones/diccionario_de_datos'],
+        sections: [],
         anchor: true
     },
     {
-        text: 'Monitoreo',
+        text: 'Monitoreo ECC',
         active: false,
         icon: '',
         cf: '',
@@ -44,8 +69,8 @@ var nav_1_elements = [
                 text: 'Acciones CC',
                 active: false,
                 icon: '',
-                cf: 'acciones/explorar',
-                sections: ['acciones/explorar', 'acciones/info', 'acciones/edit', 'acciones/add'],
+                cf: 'acciones/explorar/1/?m=202307&',
+                sections: ['acciones/explorar', 'acciones/info', 'acciones/edit', 'acciones/add', 'acciones/usuarios', 'acciones/asistentes_itinerantes'],
                 anchor: true
             },
             {
@@ -56,68 +81,56 @@ var nav_1_elements = [
                 sections: ['acciones/diccionario_de_datos'],
                 anchor: true
             },
+            {
+                text: 'Ayuda',
+                active: false,
+                icon: '',
+                cf: 'acciones/ayuda',
+                sections: ['acciones/ayuda'],
+                anchor: true
+            },
+            {
+                text: 'Registrar participante',
+                active: false,
+                icon: '',
+                cf: 'acciones/registro_usuario',
+                sections: ['acciones/registro_usuario'],
+                anchor: true
+            },
         ],
         sections:[],
         anchor: true
     },
     {
-        text: 'Configuración',
+        text: 'Otros',
         active: false,
         icon: '',
         cf: '',
         subelements: [
             {
-                text: 'Variables',
+                text: 'Variables y opciones',
                 active: false,
                 icon: '',
                 cf: 'parametros/valores',
                 sections: ['parametros/valores'],
                 anchor: true
             },
-        ],
-        sections: ['parametros/valores'],
-        anchor: true
-    },
-    {
-        text: 'Ejecución',
-        active: false,
-        icon: '',
-        cf: '',
-        subelements: [
             {
-                text: 'Obligaciones',
+                text: 'Tableros Power Bi',
                 active: false,
                 icon: '',
-                cf: 'ejecucion/obligaciones',
-                sections: ['ejecucion/obligaciones'],
+                cf: 'info/visualizaciones_datos',
+                sections: ['info/visualizaciones_datos'],
                 anchor: true
             },
             {
-                text: 'Plan de acción',
+                text: 'Asistentes LEO Filbo 2023',
                 active: false,
                 icon: '',
-                cf: 'ejecucion/plan_accion',
-                sections: ['ejecucion/plan_accion'],
+                cf: 'data_science/filbo2023',
+                sections: ['data_science/filbo2023'],
                 anchor: true
             },
-            {
-                text: 'Bitácora',
-                active: false,
-                icon: '',
-                cf: 'ejecucion/bitacora',
-                sections: ['ejecucion/bitacora'],
-                anchor: true
-            },
-        ],
-        sections: [],
-        anchor: true
-    },
-    {
-        text: 'Prototipos',
-        active: false,
-        icon: '',
-        cf: '',
-        subelements: [
             {
                 text: 'Noticias',
                 active: false,
@@ -126,8 +139,16 @@ var nav_1_elements = [
                 sections: ['noticias/explorar', 'noticias/revisar'],
                 anchor: true
             },
+            {
+                text: 'Home CultuRed_Bogotá',
+                active: false,
+                icon: '',
+                cf: 'app/cultured_bogota',
+                sections: ['app/cultured_bogota'],
+                anchor: true
+            }
         ],
         sections: [],
         anchor: true
-    },
+    }
 ];
