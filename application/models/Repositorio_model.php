@@ -77,7 +77,7 @@ class Repositorio_model extends CI_Model{
     
     /**
      * Query con resultados de posts filtrados, por página y offset
-     * 2020-07-15
+     * 2023-10-10
      */
     function search($filters, $per_page = NULL, $offset = NULL)
     {
@@ -92,6 +92,7 @@ class Repositorio_model extends CI_Model{
                 $order_type = $this->pml->if_strlen($filters['ot'], 'ASC');
                 $this->db->order_by($filters['o'], $order_type);
             } else {
+                $this->db->order_by('anio_publicacion', 'DESC');
                 $this->db->order_by('estado_publicacion', 'ASC');
             }
             
@@ -233,11 +234,12 @@ class Repositorio_model extends CI_Model{
     }
 
     /**
-     * Guardar un registro en la tabla posts
+     * Guardar un registro en la tabla repo_contenidos
      * 2022-07-27
      */
     function save($arr_row = null)
     {
+        $contenido_id = 0;
         //Verificar si hay array con registro
         if ( is_null($arr_row) ) $arr_row = $this->Db_model->arr_row();
 
@@ -248,16 +250,147 @@ class Repositorio_model extends CI_Model{
             $arr_row['slug'] = $this->Db_model->unique_slug($arr_row['titulo'],'repo_contenidos');
             $this->db->insert('repo_contenidos', $arr_row);
             $contenido_id = $this->db->insert_id();
+            $this->update_dependents($contenido_id);
         } else {
             //Ya existe, editar
             $contenido_id = $arr_row['id'];
             unset($arr_row['id']);
 
             $this->db->where('id', $contenido_id)->update('repo_contenidos', $arr_row);
-        }
+        }        
 
         $data['saved_id'] = $contenido_id;
         return $data;
+    }
+
+    /**
+     * Actualizar campos dependientes de la tabla repo_contenidos
+     * valores por defecto
+     * 2023-10-16
+     */
+    function update_dependents($contenido_id)
+    {
+        $contenido = $this->Db_model->row_id('repo_contenidos', $contenido_id);
+
+        $aRow['url_contenido'] = URL_REPO_STORAGE . 'contenidos/' . $contenido->anio_publicacion . '/' . $contenido->id . '-' . $contenido->slug . '.pdf';
+        $aRow['url_image'] = URL_REPO_STORAGE . 'portadas/' . $contenido->anio_publicacion . '/' . $contenido->id . '.jpg';
+        $aRow['url_thumbnail'] = URL_REPO_STORAGE . 'miniaturas/' . $contenido->anio_publicacion . '/' . $contenido->id . '.jpg';
+
+        $save_id = $this->Db_model->save('repo_contenidos', "id = {$contenido_id}", $aRow);
+
+        return $save_id;
+        
+    }
+
+// GESTIÓN DEL ARCHIVO
+//-----------------------------------------------------------------------------
+
+    /**
+     * Realiza el upload de un file al servidor, asocia el archivo cargado en
+     * repo_contenidos.url_contenido
+     * 2023-10-16
+     */
+    function upload_file($contenido_id)
+    {
+        $contenido = $this->Db_model->row_id('repo_contenidos', $contenido_id);
+        $config_upload = $this->config_upload($contenido);
+        $this->load->library('upload', $config_upload);
+        
+
+        if ( $this->upload->do_upload('file_field') )  //Campo "file_field" del formulario
+        {
+            
+            $upload_data = $this->upload->data();
+            $aRow['extension_archivo'] = str_replace(".", "", strtolower($upload_data['file_ext']));
+            $aRow['url_contenido'] = $this->contenido_path($contenido, 'url_folder') . $this->contenido_path($contenido, 'raw_name') . $upload_data['file_ext'];
+            $aRow['contenido_disponible'] = 1;
+            
+            $data['saved_id'] = $this->Db_model->save('repo_contenidos', "id = {$contenido->id}", $aRow);
+            
+            //Array resultado
+                $data = ['status' => 1,
+                    'upload_data' => $upload_data,
+                    'contenido' => $aRow
+                ];
+        } else {
+            //No se cargó
+            $data = ['status' => 0];
+            $data['html'] = $this->upload->display_errors('<div role="alert" class="alert alert-danger"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><i class="fa fa-warning"></i> ', '</div>');
+            $data['config_upload'] = $config_upload;
+        }
+        
+        return $data;
+    }
+    
+    /**
+     * Configuración para cargue de files, algunas propiedades solo se aplican
+     * para files de imagen.
+     * 2023-10-16
+     */
+    function config_upload($contenido)
+    {
+        $config['upload_path'] = $this->contenido_path($contenido,'folder');    //Carpeta año y mes
+        $config['allowed_types'] = 'pdf|doc|docx|csv|xls|xlsx';
+        $config['max_size']	= '50000';       //Tamaño máximo en Kilobytes
+        $config['max_width']  = '10000';     //Ancho máxima en pixeles
+        $config['max_height']  = '10000';    //Altura máxima en pixeles
+        $config['file_name']  = $this->contenido_path($contenido, 'raw_name');
+        
+        return $config;
+    }
+
+    /**
+     * Eliminar archivo de un contenido
+     * 2023-10-16
+     */
+    function delete_file($contenido_id, $slug)
+    {
+        $condition = "id = {$contenido_id} AND slug = '{$slug}'";
+        $contenido = $this->Db_model->row('repo_contenidos', $condition);
+
+        $contenidoPath = $this->contenido_path($contenido, 'full');
+        $qtyUnlinked = 0;
+        if ( ! is_null($contenido) ) {
+            if ( file_exists($contenidoPath) ) 
+            {
+                unlink($contenidoPath);
+                $qtyUnlinked = 1;
+            }
+        }
+
+        //Actualizar registro
+        $aRow['contenido_disponible'] = 0;
+        $aRow['url_contenido'] = '';
+        $aRow['extension_archivo'] = '';
+        $data['saved_id'] = $this->Db_model->save('repo_contenidos', "id = {$contenido_id}", $aRow);
+
+        $data['qty_unlinked'] = $qtyUnlinked;
+
+        return $data;
+    }
+
+    /**
+     * Ruta del archivo del contenido en diferenes posibles formatos
+     * 2023-10-16
+     */
+    function contenido_path($contenido, $format = 'full')
+    {
+        $fileName = $contenido->id . '-' . $contenido->slug . '.' . $contenido->extension_archivo;
+        $folderPath = PATH_CONTENT . 'repositorio/contenidos/' . $contenido->anio_publicacion . '/';
+        $contenidoPath = $folderPath . $fileName;   //Full path
+        if ( $format == 'file_name' ) {
+            $contenidoPath = $fileName;
+        } else if ( $format == 'folder' ) {
+            $contenidoPath = $folderPath;
+        } else if ( $format == 'url' ) {
+            $contenidoPath = URL_REPO_STORAGE . 'contenidos/' . $contenido->anio_publicacion . '/' . $fileName;
+        } else if ( $format == 'url_folder' ) {
+            $contenidoPath = URL_REPO_STORAGE . 'contenidos/' . $contenido->anio_publicacion . '/';
+        } else if ( $format == 'raw_name' ) {
+            $contenidoPath = $contenido->id . '-' . $contenido->slug;
+        }
+
+        return $contenidoPath;
     }
 
 // ELIMINACIÓN DE UN CONTENIDO

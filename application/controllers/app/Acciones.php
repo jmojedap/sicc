@@ -277,7 +277,7 @@ function mapa()
         $filters = $this->Search_model->filters();
         $filters['role'] = 22;
         $filters['sf'] = 'cuidado_estudiantes';
-        $data['users'] = $this->User_model->get($filters, 1, 1000);
+        $data['users'] = $this->User_model->get($filters, 1, 2000);
 
         $this->App_model->view('templates/easypml/main_fluid', $data);
     }
@@ -432,6 +432,32 @@ function mapa()
         $data['table'] = $table;
         $data['head_title'] = 'Diccionario de datos';
         $data['file_id'] = '1-MKsqbEVi9EH8v0ZVOUmZ4V0EQN1EDFGrKguoDIfH4I';
+
+        if ( $format == 'print' ) {
+            $data['view_a'] = $this->views_folder . "diccionario_print_v";
+            $this->App_model->view('templates/print/main', $data);
+        } else {
+            $data['view_a'] = $this->views_folder . "diccionario_v";
+            $this->App_model->view(TPL_FRONT, $data);
+        }
+    }
+
+    /**
+     * Diccionario de datos del sistema de información de agendes de la 
+     * red agentes de cultura ciudadana
+     * detalle datos de campos de tabla
+     * 2023-04-09
+     */
+    function diccionario_de_datos_drac($table = 'contactos', $format = '')
+    {
+        $this->load->library('google_sheets');
+        $data['tables'] = $this->google_sheets->sheetToArray('12BNyPM73sw9qxELAiKPxofGDWgwXHT7gxdmN2Q-Snxw', 0);
+
+        //$data['diccionario'] = file_get_contents(PATH_CONTENT . "json/diccionarios/{$table}.json");
+
+        $data['table'] = $table;
+        $data['head_title'] = 'Diccionario de datos';
+        $data['file_id'] = '12BNyPM73sw9qxELAiKPxofGDWgwXHT7gxdmN2Q-Snxw';
 
         if ( $format == 'print' ) {
             $data['view_a'] = $this->views_folder . "diccionario_print_v";

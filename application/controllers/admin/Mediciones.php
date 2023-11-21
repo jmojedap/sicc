@@ -272,4 +272,101 @@ class Mediciones extends CI_Controller{
         
         $this->App_model->view(TPL_ADMIN, $data);
     }
+    
+// PROCESOS
+//-----------------------------------------------------------------------------
+
+    /**
+     * Eliminar los datos de una medición en una tabla determinada
+     * 2023-11-14
+     */
+    function clean_medicion($table, $medicion_id)
+    {
+        $data = $this->Medicion_model->clean_medicion($table, $medicion_id);
+
+        //Salida JSON
+        $this->output->set_content_type('application/json')->set_output(json_encode($data));
+    }
+
+    /**
+     * Genera los datos de la tabla opciones a partir de los datos disponibles
+     * en med_variable.opciones_json
+     * 2023-11-14
+     */
+    function generar_opciones($medicion_id)
+    {
+        $this->Medicion_model->clean_medicion('med_opcion', $medicion_id);
+
+        $variables = $this->Medicion_model->variables($medicion_id);
+
+        $rows = [];
+        foreach ($variables->result() as $variable) {
+            //Es de selección multiple
+            if ( strlen($variable->opciones_json) > 0 ) {
+                $opciones = json_decode($variable->opciones_json,true);
+                if ( ! is_null($opciones) ) {
+                    foreach ($opciones as $codigo_opcion => $texto_opcion) {
+                        $aRow['id'] = $variable->id * 1000 + intval($codigo_opcion);
+                        $aRow['medicion_id'] = $medicion_id;
+                        $aRow['pregunta_id'] = $variable->pregunta_id;
+                        $aRow['variable_id'] = $variable->id;
+                        $aRow['codigo_opcion'] = $codigo_opcion;
+                        $aRow['num_nombre'] = substr('000' . $codigo_opcion,-2) . ') ' . $texto_opcion;
+                        $aRow['texto_opcion'] = $texto_opcion;
+
+                        $this->db->insert('med_opcion', $aRow);
+                        
+                        $aRow['saved_id'] = $this->db->insert_id();
+
+                        $rows[] = $aRow;
+                        unset($aRow['saved_id']);
+                    }
+                    
+                    
+                    
+                }
+            }
+        }
+
+        $data['rows'] = $rows;
+
+        //Salida JSON
+        $this->output->set_content_type('application/json')->set_output(json_encode($data));
+    }
+
+// RESULTADOS
+//-----------------------------------------------------------------------------
+
+    /**
+     * AJAX JSON
+     * Contenido de una medición, detalle del formulario
+     * 2023-11-21
+     */
+    function get_contenido($medicion_id)
+    {
+        $data['secciones'] = $this->Medicion_model->secciones($medicion_id)->result();
+        $data['preguntas'] = $this->Medicion_model->preguntas($medicion_id)->result();
+        //$data['variables'] = $this->Medicion_model->variables("medicion_id = {$medicion_id}")->result();
+        //$data['opciones'] = $this->Medicion_model->opciones("medicion_id = {$medicion_id}")->result();
+
+        //Salida JSON
+        $this->output->set_content_type('application/json')->set_output(json_encode($data));
+    }
+
+    /**
+     * Frecuencias de respuesta
+     */
+    function frecuencias($medicion_id, $pregunta_id)
+    {
+        $sumatoria_encuestados = $this->Medicion_model->sumatoria_encuestados($medicion_id);
+        $frecuencias = $this->Medicion_model->frecuencias($medicion_id, $pregunta_id);
+        $frecuencias_array = $this->Medicion_model->frecuencias_array($frecuencias, $sumatoria_encuestados);
+
+        $data['sumatoria_encuestados'] = $sumatoria_encuestados;
+        $data['frecuencias'] = $frecuencias->result();
+        $data['frecuencias_array'] = $frecuencias_array;
+
+        //Salida JSON
+        $this->output->set_content_type('application/json')->set_output(json_encode($data));
+    }
 }

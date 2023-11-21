@@ -29,6 +29,7 @@ class Google_sheets {
         // Cerrar el archivo
         fclose($file);
 
+        //return $headers;
         return $data;
     }
 }

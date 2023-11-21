@@ -23,11 +23,34 @@
                     </div>
 
                     <div class="mb-3 row">
+                        <label for="palabras_clave" class="col-md-4 col-form-label text-end text-right">Palabras clave</label>
+                        <div class="col-md-8">
+                            <textarea
+                                name="palabras_clave" rows="2" class="form-control"
+                                required
+                                title="Palabras clave" placeholder="Palabras clave"
+                                v-model="fields.palabras_clave"
+                            ></textarea>
+                        </div>
+                    </div>
+
+                    <div class="mb-3 row">
                         <label for="entidad_sigla" class="col-md-4 col-form-label text-end">Entidad</label>
                         <div class="col-md-8">
                             <select name="entidad_sigla" v-model="fields.entidad_sigla" class="form-select form-control" required v-on:change="setEntidad">
                                 <option v-for="optionEntidad in arrEntidad" v-bind:value="optionEntidad.abbreviation">{{ optionEntidad.name }}</option>
                             </select>
+                        </div>
+                    </div>
+
+                    <div class="mb-3 row">
+                        <label for="dependencia" class="col-md-4 col-form-label text-end text-right">Dependencia/Área</label>
+                        <div class="col-md-8">
+                            <input
+                                name="dependencia" type="text" class="form-control"
+                                title="Dependencia/Área" placeholder="Dependencia/Área"
+                                v-model="fields.dependencia"
+                            >
                         </div>
                     </div>
 
@@ -41,21 +64,33 @@
                     </div>
 
                     <div class="mb-3 row">
-                        <label for="url_contenido" class="col-md-4 col-form-label text-end">URL archivo contenido</label>
+                        <label for="url_contenido_externo" class="col-md-4 col-form-label text-end">URL contenido externo</label>
                         <div class="col-md-8">
                             <input
-                                name="url_contenido" type="url" class="form-control"
-                                required
+                                name="url_contenido_externo" type="url" class="form-control"
                                 title="URL Archivo / Contenido" placeholder="URL Archivo / Contenido"
-                                v-model="fields.url_contenido"
+                                v-model="fields.url_contenido_externo"
                             >
                         </div>
                     </div>
 
                     <div class="mb-3 row">
+                        <label for="url_carpeta_anexos" class="col-md-4 col-form-label text-end text-right">URL carpeta anexos</label>
+                        <div class="col-md-8">
+                            <input
+                                name="url_carpeta_anexos" type="url" class="form-control"
+                                title="URL carpeta anexos" placeholder="URL carpeta anexos"
+                                v-model="fields.url_carpeta_anexos"
+                            >
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    <div class="mb-3 row">
                         <label for="tema_cod" class="col-md-4 col-form-label text-end">Tema</label>
                         <div class="col-md-8">
-                            <select name="tema_cod" v-model="fields.tema_cod" class="form-control">
+                            <select name="tema_cod" v-model="fields.tema_cod" class="form-control form-select">
                                 <option v-for="optionTema in arrTema" v-bind:value="optionTema.str_cod">
                                     {{ optionTema.name }}</option>
                             </select>

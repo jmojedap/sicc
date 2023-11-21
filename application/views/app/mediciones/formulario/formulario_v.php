@@ -49,7 +49,7 @@
                                 <tbody>
                                     <tr v-for="variable in variablesPregunta(pregunta.id)">
                                         <td width="20px"><span class="text-primary">{{ variable.etiqueta_orden }}</span></td>
-                                        <td>{{ variable.nombre }}</td>
+                                        <td>{{ variable.enunciado_2 }}</td>
                                         <td>
                                             <span v-if="variable.tipo >= 50" class="opcion-respuesta" v-for="opcion in opcionesVariable(variable.id)">{{ opcion.texto_opcion }}</span>
                                             <input v-if="variable.tipo < 50" disabled class="form-control" v-bind:placeholder="variable.enunciado_2">

@@ -7,6 +7,7 @@ class Repositorio extends CI_Controller{
 //-----------------------------------------------------------------------------
     public $views_folder = 'admin/repositorio/';
     public $url_controller = URL_ADMIN . 'repositorio/';
+    public $url_repo_storage = 'https://dev-repositorio-contenidos-cultured.scrd.gov.co/storage/';
 
 // Constructor
 //-----------------------------------------------------------------------------
@@ -232,6 +233,9 @@ class Repositorio extends CI_Controller{
     function save()
     {
         $data = $this->Repositorio_model->save();
+
+        
+
         $this->output->set_content_type('application/json')->set_output(json_encode($data));
     }
     
@@ -289,6 +293,28 @@ class Repositorio extends CI_Controller{
         
         $this->App_model->view(TPL_ADMIN, $data);
     }
+
+// GESTIÓN DEL ARCHIVO
+//-----------------------------------------------------------------------------
+
+    /**
+     * Cargar el archivo del contenido en la carpeta correspondiente
+     * 2023-10-16
+     */
+    function upload_file($contenido_id)
+    {
+        $data = $this->Repositorio_model->upload_file($contenido_id);
+        $this->output->set_content_type('application/json')->set_output(json_encode($data));
+    }
+
+    function delete_file($contenido_id, $slug)
+    {
+        $data = $this->Repositorio_model->delete_file($contenido_id, $slug);
+
+        //Salida JSON
+        $this->output->set_content_type('application/json')->set_output(json_encode($data));
+    }
+
 
 // CONTENIDO IMAGES
 //-----------------------------------------------------------------------------
@@ -452,5 +478,73 @@ class Repositorio extends CI_Controller{
 
         //Salida JSON
         $this->output->set_content_type('application/json')->set_output(json_encode($data));
+    }
+
+    /**
+     * Crea los archivos de imagenes de portada de los contenidos en las carpetas
+     * covers y thumbnails
+     * 2023-10-03
+     */
+    function create_covers()
+    {
+        $this->db->select('repo_contenidos.slug, repo_contenidos.anio_publicacion, files.ext, files.related_1,
+            files.folder, files.file_name');
+        $this->db->where('table_id', 141);
+        $this->db->where('is_image', 1);
+        $this->db->join('repo_contenidos', 'files.related_1 = repo_contenidos.id');
+
+        $images = $this->db->get('files');
+
+        $createdCovers = [];
+        foreach ($images->result() as $image) {
+            $cover['original_path'] = PATH_UPLOADS . $image->folder . $image->file_name;
+            $cover['original_path_thumbnail'] = PATH_UPLOADS . $image->folder . 'sm_' .  $image->file_name;
+            $cover['file_name'] = $image->related_1 . $image->ext;
+            $cover['new_path'] = PATH_CONTENT . 'repositorio/portadas/' . $image->anio_publicacion . '/'. $image->related_1 . $image->ext;
+            $cover['new_path_thumbnail'] = PATH_CONTENT . 'repositorio/miniaturas/' . $image->anio_publicacion . '/'. $image->related_1 . $image->ext;
+            $cover['copied'] = 0;
+            
+            //Crear copia de archivo
+            if (copy($cover['original_path'], $cover['new_path'])) {
+                copy($cover['original_path_thumbnail'], $cover['new_path_thumbnail']);
+                $cover['copied'] = 1;
+            }
+
+            $createdCovers[] = $cover;
+
+            //Actualizar repo_contenido
+            $aRow['url_image'] = $this->url_repo_storage . "portadas/{$image->anio_publicacion}/{$image->related_1}{$image->ext}";
+            $aRow['url_thumbnail'] = $this->url_repo_storage . "miniaturas/{$image->anio_publicacion}/{$image->related_1}{$image->ext}";
+            $this->Db_model->save('repo_contenidos',"id = {$image->related_1}", $aRow);
+        }
+
+        //Salida JSON
+        $this->output->set_content_type('application/json')->set_output(json_encode($createdCovers));
+    }
+
+    /**
+     * Actualiza el campo repo_contenidos.url_contenido con la url_base del la unidad storage
+     * del repositorio en CultuRed_Bogotá
+     * 2023-10-03
+     */
+    function update_url_contenido()
+    {
+        $this->db->select('*');
+        $this->db->where('contenido_disponible', 1);
+        $contenidos = $this->db->get('repo_contenidos');
+
+        $data['contenidos_actualizados'] = [];
+
+        foreach ($contenidos->result() as $contenido) {
+            if ( in_array($contenido->extension_archivo, ['csv','doc','docx','html','mp4','ods','odt','pdf','pptx','rtf','xlk','xls','zip']) ) {
+                $aRow['url_contenido'] = $this->url_repo_storage . "contenidos/{$contenido->anio_publicacion}/{$contenido->id}-{$contenido->slug}.{$contenido->extension_archivo}";
+
+                $data['contenidos_actualizados'][] = $this->Db_model->save('repo_contenidos', "id = {$contenido->id}", $aRow);
+            }
+        }
+
+        //Salida JSON
+        $this->output->set_content_type('application/json')->set_output(json_encode($data));
+
     }
 }

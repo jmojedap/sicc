@@ -1,26 +1,4 @@
-<style>
-.docs h1 {
-    color: #5e4296;
-    text-align: center;
-}
-
-.docs p{
-    text-align: justify;
-}
-
-.docs h2 {
-    color: #0256d5;
-    padding-top: 0.5em;
-    margin-bottom: 0.5em;
-    border-bottom: 1px solid #CCC;
-}
-
-.docs img{
-    width: 100%;
-    border: 1px solid #DDD;
-    border-radius: 0.2em;
-}
-</style>
+<?php $this->load->view('app/repositorio/especificaciones/style_v') ?>
 
 <div>
     <div class="row">
@@ -50,8 +28,8 @@
             </div>                  
         </div>
         <div class="col-md-9">
-            <div class="center_box_750">
-                <div class="docs" id="docs-content"></div>
+            <div class="mw750p">
+                <div class="contenido-textos" id="docs-content"></div>
             </div>
         </div>
     </div>

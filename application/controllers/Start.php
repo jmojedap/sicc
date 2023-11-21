@@ -13,6 +13,6 @@ class Start extends CI_Controller{
 
     function index()
     {
-        redirect('app/repositorio/explorar/');
+        redirect('app/observatorio/inicio/');
     }
 }

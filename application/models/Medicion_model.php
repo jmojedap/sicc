@@ -302,18 +302,17 @@ class Medicion_model extends CI_Model{
         $preguntas = $this->db->get('med_pregunta');
 
         return $preguntas;
-    
     }
 
     /**
      * Listado de variables de una medición, con información complementaria de
      * preguntas, secciones y opciones de valor.
-     * 2023-04-14
+     * 2023-11-21
      */
-    function variables($medicion_id)
+    function variables($condition = 'id = 0')
     {
         $this->db->select('*');
-        $this->db->where('medicion_id', $medicion_id);
+        $this->db->where($condition);
         $this->db->order_by('etiqueta_orden', 'ASC');
         $variables = $this->db->get('med_variable');
 
@@ -321,14 +320,24 @@ class Medicion_model extends CI_Model{
     }
     /**
      * Opciones de valor de respuesta de las variables de una medición
-     * 2023-04-14
+     * 2023-11-14
      */
-    function opciones($medicion_id)
+    function opciones($condicion = 'id = 0')
     {
         $this->db->select('*');
-        $this->db->join('med_variable', 'med_variable.id = med_opcion.variable_id');
-        $this->db->where('medicion_id', $medicion_id);
+        $this->db->where($condicion);
         $this->db->order_by('num_nombre', 'ASC');
+        $opciones = $this->db->get('med_opcion');
+
+        return $opciones;
+    }
+
+    function opciones_agrupadas($condicion = 'id = 0')
+    {
+        $this->db->select('codigo_opcion, texto_opcion');
+        $this->db->where($condicion);
+        $this->db->order_by('num_nombre', 'DESC');
+        $this->db->group_by('codigo_opcion, texto_opcion');
         $opciones = $this->db->get('med_opcion');
 
         return $opciones;
@@ -348,6 +357,86 @@ class Medicion_model extends CI_Model{
         }
 
         return $secciones;
+    }
+
+// PROCESOS
+//-----------------------------------------------------------------------------
+
+    /**
+     * Eliminar los datos de una medición en una tabla determinada
+     * 2023-11-14
+     */
+    function clean_medicion($table, $medicion_id)
+    {
+        $this->db->where('medicion_id', $medicion_id);
+        $this->db->delete($table);
+        
+        $qty_deleted = $this->db->affected_rows();
+
+        $data['qty_deleted'] = $qty_deleted;
+
+        return $data;
+    }
+
+    /**
+     * Genera los datos de la tabla opciones a partir de los datos disponibles
+     * en med_variable.opciones_json
+     * 2023-11-14
+     */
+    function variables_to_opciones($medicion_id)
+    {
+        $this->Medicion_model->clean_medicion('med_opcion', $medicion_id);
+
+        $variables = $this->variables($medicion_id);
+
+
+
+    }
+
+// CÁLCULOS DE RESULTADOS
+//-----------------------------------------------------------------------------
+
+    function sumatoria_encuestados($medicion_id)
+    {
+        $sumatoria_encuestados = 1; //Valor por defecto para evitar divisiones por cero
+        $sql = "SELECT SUM(factor_expansion) AS sumatoria_encuestados
+            FROM med_medicion_encuestado
+            WHERE medicion_id = {$medicion_id}";
+        $query = $this->db->query($sql);
+        if ( $query->num_rows() > 0 ) {
+            $sumatoria_encuestados = $query->row(0)->sumatoria_encuestados;
+        }
+
+        return $sumatoria_encuestados;
+    }
+
+    function frecuencias($medicion_id, $pregunta_id)
+    {
+
+        $sql = "SELECT o.id, o.codigo_opcion, o.texto_opcion, COUNT(r.id) AS cantidad_respuestas, SUM(me.factor_expansion) AS frecuencia_ponderada
+            FROM med_opcion AS o 
+            LEFT JOIN med_respuesta AS r ON o.id = r.opcion_id
+            LEFT JOIN med_medicion_encuestado AS me ON r.encuestado_id = me.encuestado_id
+            WHERE o.pregunta_id = {$pregunta_id}
+            GROUP BY o.id, o.codigo_opcion, o.texto_opcion
+            ORDER BY o.id ASC, o.codigo_opcion ASC, o.texto_opcion ASC";
+
+        $frecuencias = $this->db->query($sql);
+
+        return $frecuencias;
+    }
+
+    function frecuencias_array($frecuencias, $divisor = 1)
+    {
+        $frecuencias_array = [];
+        foreach( $frecuencias->result() as $row )
+        {
+            $valor = 0;
+            if ( is_null($row->frecuencia_ponderada) ) $valor = $row->frecuencia_ponderada;
+            $frecuencias_array[] = $row->frecuencia_ponderada / $divisor;
+        }
+
+        return $frecuencias_array;
     }
 
 }

@@ -250,11 +250,15 @@ class Repositorio extends CI_Controller{
         $data['arrTipo'] = $this->Item_model->arr_options('category_id = 412');
         $data['arrCategoriaContenido'] = $this->Item_model->arr_options('category_id = 413');
         $data['arrMetodologia'] = $this->Item_model->arr_options('category_id = 414');
+        $data['arrEtapa'] = $this->Item_model->arr_options('category_id = 420');
+        $data['arrPeriodicidad'] = $this->Item_model->arr_options('category_id = 422');
+        $data['arrMedioDivulgacion'] = $this->Item_model->arr_options('category_id = 418');
         $data['arrTema'] = $this->Item_model->arr_options('category_id = 415');
         $data['arrSubtema'] = $this->Item_model->arr_options('category_id = 416');
         $data['arrCampo'] = $this->Item_model->arr_options('category_id = 612');
         $data['arrSubcampo'] = $this->Item_model->arr_options('category_id = 614');
         $data['arrArea'] = $this->Item_model->arr_options('category_id = 616');
+        $data['arrEntidad'] = $this->Item_model->arr_options('category_id = 213');
         
         //Array data espefícicas
             $data['back_link'] = $this->url_controller . 'explorar/1/';
@@ -290,6 +294,22 @@ class Repositorio extends CI_Controller{
         $data['view_a'] = 'common/bs5/fast_form_v';
         $data['nav_3'] = $this->views_folder . 'menus/edit_v';
         
+        $this->App_model->view(TPL_FRONT . '_fluid', $data);
+    }
+
+// SUBIR ARCHIVO
+//-----------------------------------------------------------------------------
+
+    function archivo($contenido_id)
+    {
+        //Datos básicos
+        $data = $this->Repositorio_model->basic($contenido_id);
+
+        //Array data espefícicas
+            $data['back_link'] = $this->url_controller . 'explorar/1/';
+            $data['view_a'] = $this->views_folder . "archivo_v";
+            $data['nav_2'] = 'app/repositorio/menu_v';
+
         $this->App_model->view(TPL_FRONT . '_fluid', $data);
     }
 

@@ -108,24 +108,6 @@
                             </div>
                         </div>
 
-                        <div class="mb-3 row">
-                            <label for="cod_estrategia" class="col-md-4 col-form-label text-end">Códigos programa | Estrategia</label>
-                            <div class="col-md-4">
-                                <input
-                                    name="cod_programa" type="text" class="form-control"
-                                    title="Código programa" placeholder="Código programa"
-                                    v-model="fields.cod_programa"
-                                >
-                            </div>
-                            <div class="col-md-4">
-                                <input
-                                    name="cod_estrategia" type="text" class="form-control"
-                                    title="Código estrategia" placeholder="Código estrategia"
-                                    v-model="fields.cod_estrategia"
-                                >
-                            </div>
-                        </div>
-
                         <div class="mb-3">
                             <label for="contenido">Contenido</label>
                             <textarea
@@ -149,7 +131,7 @@ var editMedicionApp = createApp({
             options_tipo: <?= json_encode($options_tipo) ?>,
             options_unidad_observacion: <?= json_encode($options_unidad_observacion) ?>,
             options_metodologia: <?= json_encode($options_metodologia) ?>,
-            options_cod_estrategia: <?= json_encode($options_cod_estrategia) ?>,
+            options_estrategia_cod: <?= json_encode($options_estrategia_cod) ?>,
         }
     },
     methods: {

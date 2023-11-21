@@ -144,27 +144,15 @@ class Mediciones extends CI_Controller {
     {
         $data = $this->Medicion_model->basic($medicion_id);
 
-        /*$data['arrType'] = $this->Item_model->arr_options('category_id = 143');
-        $data['arrUnidadObservacion'] = $this->Item_model->arr_options('category_id = 144');
-        $data['arrTematica1'] = $this->Item_model->arr_options('category_id = 141');*/
-
         $data['secciones'] = $this->Medicion_model->secciones($medicion_id);
         $data['preguntas'] = $this->Medicion_model->preguntas($medicion_id);
-        $data['variables'] = $this->Medicion_model->variables($medicion_id);
-        $data['opciones'] = $this->Medicion_model->opciones($medicion_id);
+        $data['variables'] = $this->Medicion_model->variables("medicion_id = {$medicion_id}");
+        $data['opciones'] = $this->Medicion_model->opciones("medicion_id = {$medicion_id}");
 
         $data['back_link'] = $this->url_controller . 'explorar/';
         $data['view_a'] = $this->views_folder . 'formulario/formulario_v';
 
         $this->App_model->view(TPL_FRONT, $data);
-    }
-
-    function get_contenido($medicion_id)
-    {
-        $data['secciones'] = $this->Medicion_model->contenido($medicion_id);
-
-        //Salida JSON
-        $this->output->set_content_type('application/json')->set_output(json_encode($data));
     }
 
 // OTROS DESARROLLO Y DOCUMENTACIÓN
@@ -195,4 +183,54 @@ class Mediciones extends CI_Controller {
             $this->App_model->view(TPL_FRONT, $data);
         }
     }
+
+// RESULTADOS
+//-----------------------------------------------------------------------------
+
+    /**
+     * Vista pantalla completa de los resultados de una pregunta de una medición
+     * o encuesta
+     * 2023-11-21
+     */
+    function hc_resultados_pregunta($pregunta_id)
+    {
+        $data['pregunta'] = $this->Db_model->row_id('med_pregunta', $pregunta_id);
+        $data['medicion'] = $this->Db_model->row_id('med_medicion', $data['pregunta']->medicion_id);
+        $data['variables'] = $this->Medicion_model->variables("pregunta_id = {$pregunta_id}");
+        $data['opciones'] = $this->Medicion_model->opciones_agrupadas("pregunta_id = {$pregunta_id}");
+
+        $sumatoria_encuestados = $this->Medicion_model->sumatoria_encuestados($data['pregunta']->medicion_id);
+        $frecuencias = $this->Medicion_model->frecuencias($data['pregunta']->medicion_id, $pregunta_id);
+        $frecuencias_array = $this->Medicion_model->frecuencias_array($frecuencias, $sumatoria_encuestados);
+
+        $data['sumatoria_encuestados'] = $sumatoria_encuestados;
+        $data['frecuencias'] = $frecuencias;
+        $data['frecuencias_array'] = $frecuencias_array;
+
+        $data['head_title'] = 'Resultados pregunta ' . $pregunta_id;
+        $data['view_a'] = $this->views_folder . 'resultados/hc_resultados_pregunta/resultados_v';
+        $this->App_model->view('templates/easypml/empty', $data);
+    }
+
+    function hc_resultados_pregunta_test($medicion_id, $pregunta_id)
+    {
+        $data['head_title'] = 'Resultados pregunta';
+        $data['pregunta'] = $this->Db_model->row_id('med_pregunta', $pregunta_id);
+        $data['medicion'] = $this->Db_model->row_id('med_medicion', $data['pregunta']->medicion_id);
+        $data['variables'] = $this->Medicion_model->variables("pregunta_id = {$pregunta_id}");
+        $data['opciones'] = $this->Medicion_model->opciones_agrupadas("pregunta_id = {$pregunta_id}");
+
+        $sumatoria_encuestados = $this->Medicion_model->sumatoria_encuestados($medicion_id);
+        $frecuencias = $this->Medicion_model->frecuencias($medicion_id, $pregunta_id);
+        $frecuencias_array = $this->Medicion_model->frecuencias_array($frecuencias, $sumatoria_encuestados);
+
+        $data['sumatoria_encuestados'] = $sumatoria_encuestados;
+        $data['frecuencias'] = $frecuencias;
+        $data['frecuencias_array'] = $frecuencias_array;
+        
+        $data['head_title'] = 'Resultados pregunta' . $pregunta_id;
+        $data['view_a'] = $this->views_folder . 'resultados/hc_resultados_pregunta/test_v';
+        $this->App_model->view('templates/easypml/main', $data);
+    }
+
 }

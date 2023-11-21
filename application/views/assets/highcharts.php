@@ -7,4 +7,4 @@
 
 <!-- HighCharts Vue And Style -->
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/highcharts-vue@1.3.5/dist/highcharts-vue.min.js"></script>
-<script src="<?= URL_RESOURCES . 'js/highcharts/themes/sicc.js' ?>"></script>
+<script src="<?= URL_RESOURCES . 'js/highcharts/themes/crb.js' ?>"></script>

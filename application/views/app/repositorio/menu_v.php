@@ -21,6 +21,12 @@ var sections = [
         roles: [1,2,3,99]
     },
     {
+        id: 'repositorio_archivo',
+        text: 'Archivo',
+        cf: 'repositorio/archivo/' + nav2RowId,
+        roles: [1,2,3]
+    },
+    {
         id: 'repositorio_edit',
         text: 'Editar',
         cf: 'repositorio/edit/' + nav2RowId,
