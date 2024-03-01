@@ -3,6 +3,7 @@
     No hay resultados para la búsqueda realizada
 </div>
 
+<!-- VISTA GRID -->
 <div class="grid-columns-12rem" v-show="viewFormat == `grid`">
     <div v-for="(contenido,key) in list">
         <a v-bind:href="`<?= URL_APP ?>repositorio/informacion/` + contenido.id + `/` + contenido.slug">
@@ -13,12 +14,13 @@
     </div>
 </div>
 
+<!-- VISTA LIST -->
 <div class="pb-2 mb-3 border-bottom" v-for="(row, key) in list" v-bind:id="`row_` + row.id"
     v-show="viewFormat == `list`">
     <div class="d-flex">
         <div class="me-3">
             <a v-bind:href="`<?= URL_APP ?>repositorio/informacion/` + row.id + `/` + row.slug">
-                <img v-bind:src="row.url_thumbnail" class="rounded w150p" alt="portada contenido"
+                <img v-bind:src="row.url_thumbnail" class="rounded w150p shadow" alt="portada contenido"
                     v-bind:onerror="`this.src='<?= URL_CONTENT ?>repositorio/entidades/`+ row.entidad_sigla +`.jpg'`">
             </a>
         </div>

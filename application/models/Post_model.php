@@ -78,6 +78,7 @@ class Post_model extends CI_Model{
             integer_2 AS no_actividad, code AS numeral_informe, score_2 AS minutos_trabajo, published_at AS fecha';
         $arr_select['132_elementos_datos'] = 'id, post_name AS title, slug AS name, excerpt AS description, 
             text_1 AS sistema';
+        $arr_select['138_links'] = 'id, post_name AS nombre, excerpt AS descripcion, text_1 AS link';
 
         return $arr_select[$format];
     }

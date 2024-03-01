@@ -46,11 +46,11 @@ class Info extends CI_Controller {
         /* $this->load->library('google_sheets');
         $data['tableros'] = $this->google_sheets->sheetToArray('1K4Ly_hU0j6-bIo-SAtXHMeBiizrUEsg4w8XE8o5Lpik', 0); */
 
-        $data['head_title'] = 'Tableros Power Bi';
+        $data['head_title'] = 'Visualización de datos';
         $data['fileId'] = '1K4Ly_hU0j6-bIo-SAtXHMeBiizrUEsg4w8XE8o5Lpik';
         $data['gid'] = '0';
 
-        $data['view_a'] = $this->views_folder . "visualizaciones_datos_v";
+        $data['view_a'] = $this->views_folder . "visualizaciones_datos/visualizaciones_datos_v";
         $this->App_model->view(TPL_FRONT, $data);
     }
 
@@ -66,5 +66,8 @@ class Info extends CI_Controller {
         $this->App_model->view(TPL_FRONT . '_fluid', $data);
     }
 
-    
+    function redirigir()
+    {
+        $this->load->view('app/info/redirigir_v');
+    }
 }

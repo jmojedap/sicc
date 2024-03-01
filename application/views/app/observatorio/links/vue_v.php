@@ -29,7 +29,7 @@ var appExplore = createApp({
             element: [],
             selected: [],
             allSelected: false,
-            showFilters: false,
+            showFilters: true,
             loading: false,
             activeFilters: false,
             arrEstadoPublicacion: arrEstadoPublicacion,

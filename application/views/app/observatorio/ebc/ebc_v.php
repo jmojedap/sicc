@@ -20,7 +20,6 @@
             </ul>
 
             <div class="center_box_750" v-show="section_1 == 'informacion'">
-                
                 <p>
                     La Encuesta Bienal de Culturas - EBC, se constituye en una de las principales herramientas de
                     política

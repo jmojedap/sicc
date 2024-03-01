@@ -31,8 +31,6 @@
 
 <div class="center_box_920">
     <div class="p-1">
-
-
         <div class="d-flex">
             <div class="me-3 text-center">
                 <a href="<?= URL_APP . "repositorio/ver/{$row->id}/{$row->slug}" ?>">
@@ -56,16 +54,30 @@
                 </p>
 
                 <p><?= $row->descripcion ?></p>
+                <?php if ( strlen($row->url_contenido) == 0) : ?>
+                    <?php if ( strlen($row->url_contenido_externo) > 0 ) : ?>
+                        <a class="btn btn-light" href="<?= $row->url_contenido_externo ?>" target="_blank">
+                            <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                            Disponible externo
+                        </a>
+                    <?php endif; ?>
+                    <?php if ( strlen($row->url_carpeta_anexos) > 0 ) : ?>
+                        <a class="btn btn-light" href="<?= $row->url_carpeta_anexos ?>" target="_blank">
+                            <i class="fa-solid fa-arrow-up-right-from-square"></i> Anexos
+                        </a>
+                    <?php endif; ?>
+                    
+                <?php endif; ?>
             </div>
         </div>
 
         <hr>
         <h4>Palabras clave</h4>
-        <p>
+        <p class="">
             <?= $row->palabras_clave ?>
         </p>
 
-        <div class="d-flex">
+        <div class="d-flex justify-content-center">
             <div class="contenido-descriptor">
                 <h5>Páginas</h5>
                 <p class="contador"><?= $row->cantidad_paginas ?></p>
@@ -73,6 +85,14 @@
             <div class="contenido-descriptor">
                 <h5>Formato</h5>
                 <p><?= $this->Item_model->name(410, $row->formato_cod);  ?></p>
+            </div>
+            <div class="contenido-descriptor">
+                <h5>Categoría</h5>
+                <p><?= $this->Item_model->name(413, $row->categoria_contenido);  ?></p>
+            </div>
+            <div class="contenido-descriptor">
+                <h5>Metodología</h5>
+                <p><?= $this->Item_model->name(414, $row->metodologia_cod);  ?></p>
             </div>
         </div>
 

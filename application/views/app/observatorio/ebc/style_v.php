@@ -12,15 +12,23 @@
         text-align: center;
     }
 
+    .mini-titulo{
+        text-transform:uppercase;
+        color: #AAA;
+        font-size: 0.8em;
+        text-align: center;
+        padding-bottom: 0.5em;
+    }
+
     .logo-dogcc{
         width: 160px;
     }
 
     .modulo-titulo {
         color: #FFF;
-        font-size: 1.6em;
+        font-size: 1.4em;
         text-transform: uppercase;
-        padding: 0.5em;
+        padding: 0.4em;
         background-color: var(--color-main-app);
     }
 
@@ -30,9 +38,54 @@
     .modulo-titulo-4 { background-color: var(--color-text-4) }
     .modulo-titulo-5 { background-color: var(--color-text-5) }
 
-    .texto-subtitulo {
-        color: var(--color-text-1);
-        font-weight: bold;
+    .numero-modulo {
+        width: 40px;
+        font-size: 1.2em;
+        margin-right: 0.5em;
+        text-align: center;
+    }
+
+    .btn-modulo{
+        width: 20%;
+        text-align: center;
+        cursor: pointer;
+        border: 0px;
+        background-color: white;
+        height: 2em;
+    }
+
+    .btn-modulo.active{
+        color: white;
+    }
+
+    .btn-modulo:hover{
+        background-color: var(--color-main-app);
+        color: white;
+    }
+
+    .btn-modulo-1:hover { background-color: var(--color-text-1) }
+    .btn-modulo-2:hover { background-color: var(--color-text-2) }
+    .btn-modulo-3:hover { background-color: var(--color-text-3) }
+    .btn-modulo-4:hover { background-color: var(--color-text-4) }
+    .btn-modulo-5:hover { background-color: var(--color-text-5) }
+
+    .btn-modulo-1.active { background-color: var(--color-text-1) }
+    .btn-modulo-2.active { background-color: var(--color-text-2) }
+    .btn-modulo-3.active { background-color: var(--color-text-3) }
+    .btn-modulo-4.active { background-color: var(--color-text-4) }
+    .btn-modulo-5.active { background-color: var(--color-text-5) }
+
+    .ebc-texto {
+
+    }
+
+    .ebc-texto .titulo {
+        color: #c53c99;
+        font-size: 1.6em;
+    }
+
+    .ebc-texto .subtitulo {
+        color: #0084bf;
     }
 
     .link-modulo {

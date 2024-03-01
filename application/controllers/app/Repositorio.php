@@ -34,7 +34,7 @@ class Repositorio extends CI_Controller{
     * Exploración de contenidos
     * 2022-08-23
     * */
-    function explorar($num_page = 1, $perPage = 48)
+    function explorar($num_page = 1, $perPage = 15)
     {
         //Identificar filtros de búsqueda
             $this->load->model('Search_model');

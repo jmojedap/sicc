@@ -133,7 +133,7 @@ var nav_1_elements = [
                 anchor: true
             },
             {
-                text: 'Tableros Power Bi',
+                text: 'Tableros Visualización',
                 active: false,
                 icon: '',
                 cf: 'info/visualizaciones_datos',

@@ -162,7 +162,7 @@ class Mediciones extends CI_Controller {
      * Diccionario de datos, detalle datos de campos de tabla
      * 2023-04-09
      */
-    function diccionario_de_datos($table = 'mediciones', $format = '')
+    function diccionario_de_datos_ant($table = 'mediciones', $format = '')
     {
         $data['diccionario'] = file_get_contents(PATH_CONTENT . "json/diccionarios/{$table}.json");
 
@@ -184,6 +184,30 @@ class Mediciones extends CI_Controller {
         }
     }
 
+    /**
+     * Diccionario de datos, detalle datos de campos de tabla
+     * 2023-04-09
+     */
+    function diccionario_de_datos($table = 'mediciones', $format = '')
+    {
+        $this->load->library('google_sheets');
+        $data['tables'] = $this->google_sheets->sheetToArray('1RapjEh3V_UzBCsU5jTuFCvjVnY6T3nwTMVVrNFSoY-w', 575993992);
+
+        //$data['diccionario'] = file_get_contents(PATH_CONTENT . "json/diccionarios/{$table}.json");
+
+        $data['table'] = $table;
+        $data['head_title'] = 'Diccionario de datos';
+        $data['file_id'] = '1RapjEh3V_UzBCsU5jTuFCvjVnY6T3nwTMVVrNFSoY-w';
+
+        if ( $format == 'print' ) {
+            $data['view_a'] = $this->views_folder . "diccionario_print_v";
+            $this->App_model->view('templates/print/main', $data);
+        } else {
+            $data['view_a'] = $this->views_folder . "diccionario_v";
+            $this->App_model->view(TPL_FRONT, $data);
+        }
+    }
+
 // RESULTADOS
 //-----------------------------------------------------------------------------
 
@@ -194,34 +218,42 @@ class Mediciones extends CI_Controller {
      */
     function hc_resultados_pregunta($pregunta_id)
     {
-        $data['pregunta'] = $this->Db_model->row_id('med_pregunta', $pregunta_id);
-        $data['medicion'] = $this->Db_model->row_id('med_medicion', $data['pregunta']->medicion_id);
-        $data['variables'] = $this->Medicion_model->variables("pregunta_id = {$pregunta_id}");
-        $data['opciones'] = $this->Medicion_model->opciones_agrupadas("pregunta_id = {$pregunta_id}");
+        $pregunta = $this->Db_model->row_id('med_pregunta', $pregunta_id);
 
-        $sumatoria_encuestados = $this->Medicion_model->sumatoria_encuestados($data['pregunta']->medicion_id);
-        $frecuencias = $this->Medicion_model->frecuencias($data['pregunta']->medicion_id, $pregunta_id);
+        $data['pregunta'] = $pregunta;
+        $data['medicion'] = $this->Db_model->row_id('med_medicion', $pregunta->medicion_id);
+        $data['variables'] = $this->Medicion_model->variables("medicion_id = {$pregunta->medicion_id} AND pregunta_id = {$pregunta_id}");
+        $data['opciones'] = $this->Medicion_model->opciones_agrupadas("medicion_id = {$pregunta->medicion_id} AND pregunta_id = {$pregunta_id}");
+
+        $sumatoria_encuestados = $this->Medicion_model->sumatoria_encuestados($pregunta->medicion_id);
+        $frecuencias = $this->Medicion_model->frecuencias($pregunta->medicion_id, $pregunta_id);
         $frecuencias_array = $this->Medicion_model->frecuencias_array($frecuencias, $sumatoria_encuestados);
 
         $data['sumatoria_encuestados'] = $sumatoria_encuestados;
         $data['frecuencias'] = $frecuencias;
         $data['frecuencias_array'] = $frecuencias_array;
 
+        //Establecer vista según el tipo de pregunta
+        $view_a = $this->views_folder . 'resultados/hc_resultados_pregunta_multivar/resultados_v';
+        if ( $data['variables']->num_rows() <= 1 ) $view_a = $this->views_folder . 'resultados/hc_resultados_pregunta/resultados_v';
+
         $data['head_title'] = 'Resultados pregunta ' . $pregunta_id;
-        $data['view_a'] = $this->views_folder . 'resultados/hc_resultados_pregunta/resultados_v';
+        $data['view_a'] = $view_a;
         $this->App_model->view('templates/easypml/empty', $data);
     }
 
-    function hc_resultados_pregunta_test($medicion_id, $pregunta_id)
+    function hc_resultados_pregunta_test($pregunta_id)
     {
-        $data['head_title'] = 'Resultados pregunta';
-        $data['pregunta'] = $this->Db_model->row_id('med_pregunta', $pregunta_id);
+        $pregunta = $this->Db_model->row_id('med_pregunta', $pregunta_id);
+        $medicion_id = 
+
+        $data['pregunta'] = $pregunta;
         $data['medicion'] = $this->Db_model->row_id('med_medicion', $data['pregunta']->medicion_id);
         $data['variables'] = $this->Medicion_model->variables("pregunta_id = {$pregunta_id}");
         $data['opciones'] = $this->Medicion_model->opciones_agrupadas("pregunta_id = {$pregunta_id}");
 
-        $sumatoria_encuestados = $this->Medicion_model->sumatoria_encuestados($medicion_id);
-        $frecuencias = $this->Medicion_model->frecuencias($medicion_id, $pregunta_id);
+        $sumatoria_encuestados = $this->Medicion_model->sumatoria_encuestados($pregunta->medicion_id);
+        $frecuencias = $this->Medicion_model->frecuencias($pregunta->medicion_id, $pregunta_id);
         $frecuencias_array = $this->Medicion_model->frecuencias_array($frecuencias, $sumatoria_encuestados);
 
         $data['sumatoria_encuestados'] = $sumatoria_encuestados;
@@ -230,7 +262,9 @@ class Mediciones extends CI_Controller {
         
         $data['head_title'] = 'Resultados pregunta' . $pregunta_id;
         $data['view_a'] = $this->views_folder . 'resultados/hc_resultados_pregunta/test_v';
-        $this->App_model->view('templates/easypml/main', $data);
+
+        //Salida JSON
+        $this->output->set_content_type('application/json')->set_output(json_encode($data));
     }
 
 }

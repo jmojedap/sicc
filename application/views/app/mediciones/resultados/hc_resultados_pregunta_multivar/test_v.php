@@ -3,8 +3,6 @@
     <hr>
     {{ pregunta }}
     <hr>
-    {{ frecuencias }}
-    <hr>
     <table class="table bg-white">
         <thead>
             <th>categories</th>
@@ -31,7 +29,7 @@
     </table>
     <hr>
 
-    
+    {{ arrayValores(1) }}
 </div>
 
 <script>

@@ -44,7 +44,7 @@
                                 <input type="text" pattern="[0-9]{10,}" name="descripcion" class="form-control" required v-model="fields.descripcion" title="Solo números, sin puntos ni símbolos y al menos 10 dígitos">
                             </td>
                             <td>
-                                <input name="cantidad" type="number" class="form-control" min="18" max="100" required title="Cantidad" v-model="fields.cantidad">
+                                <input name="cantidad" type="number" class="form-control" min="8" max="100" required title="Cantidad" v-model="fields.cantidad">
                             </td>
                             <td>
                                 <button class="btn btn-primary" type="submit">

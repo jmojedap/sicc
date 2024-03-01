@@ -7,26 +7,30 @@
 <script>
 // Preparación de variables
 //-----------------------------------------------------------------------------
-const colors = {
-    base:'#0084bf',
-    si:'#00ad7c',
-};
 const pregunta = <?= json_encode($pregunta) ?>;
 const sumatoriaEncuestados = <?= $sumatoria_encuestados ?>;
 const variables = <?= json_encode($variables->result()) ?>;
 const frecuencias = <?= json_encode($frecuencias->result()) ?>;
-
 var opciones = <?= json_encode($opciones->result()) ?>;
-var categories = [];
+var categories = variables.map(variable => variable.etiqueta_enunciado);
 var series = [];
-var serie = {name:'Porcentaje', data: [], pointPadding: 0.05, color: colors.base};
 
-frecuencias.forEach(frecuencia => {
-    categories.push(frecuencia.texto_opcion)
-    serie.data.push(100 * frecuencia.frecuencia_ponderada / sumatoriaEncuestados)
+//Cargar valores
+opciones.forEach(opcion => {
+    var serie = {}
+    serie['name'] = opcion.texto_opcion
+    serie['data'] = valoresOpcion(opcion.codigo_opcion)
+    series.push(serie)
 });
 
-series.push(serie)
+// Funciones
+//-----------------------------------------------------------------------------
+function valoresOpcion(codigoOpcion)
+{
+    var frecuenciasFiltradas = frecuencias.filter(item => item.codigo_opcion == codigoOpcion)
+    var arrayValores = frecuenciasFiltradas.map(item => 100 * item.frecuencia_ponderada / sumatoriaEncuestados)
+    return arrayValores
+}
 
 // Construcción del gráfico
 //-----------------------------------------------------------------------------
@@ -55,16 +59,15 @@ Highcharts.chart({
         }
     },
     legend: {
-        enabled: false,
         reversed: true
     },
     plotOptions: {
         series: {
+            stacking: 'normal',
             dataLabels: {
                 enabled: true,
                 format: '{point.y:.0f}%'
-            },
-            groupPadding: 0.1,
+            }
         }
     },
     tooltip: {

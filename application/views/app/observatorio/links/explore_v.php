@@ -1,19 +1,6 @@
-<div id="appExplore" class="">
+<div id="appExplore">
     <div class="row">
-        <div class="col-md-4">
-            <a v-bind:href="`<?= URL_ADMIN . "{$controller}/export/?" ?>` + strFilters"
-                class="btn btn-light only-lg me-1" v-bind:title="`Exportar ` + qtyResults + ` registros encontrados a Excel`">
-                <i class="fa fa-download"></i>
-            </a>
-            <button class="btn btn-light me-1" v-bind:class="{'text-primary': viewFormat == `list` }" title="Ver como lista" v-on:click="viewFormat = `list`">
-                <i class="fa fa-solid fa-list"></i>
-            </button>
-            <button class="btn btn-light" v-bind:class="{'text-primary': viewFormat == `grid` }" title="Ver como cuadrícula" v-on:click="viewFormat = `grid`">
-                <i class="fa fa-solid fa-grip"></i>
-            </button>
-        </div>
-
-        <div class="col-md-4">
+        <div class="col-md-3">
             <div class="input-group mb-2">
                 <input
                     type="text" name="q" class="form-control" placeholder="Buscar"
@@ -27,8 +14,21 @@
                     </button>
             </div>
         </div>
+
+        <div class="col-md-6">
+            <a v-bind:href="`<?= URL_ADMIN . "{$controller}/export/?" ?>` + strFilters"
+                class="btn btn-light only-lg me-1" v-bind:title="`Exportar ` + qtyResults + ` registros encontrados a Excel`">
+                <i class="fa fa-download"></i>
+            </a>
+            <button class="btn btn-light me-1" v-bind:class="{'text-primary': viewFormat == `list` }" title="Ver como lista" v-on:click="viewFormat = `list`">
+                <i class="fa fa-solid fa-list"></i>
+            </button>
+            <button class="btn btn-light" v-bind:class="{'text-primary': viewFormat == `grid` }" title="Ver como cuadrícula" v-on:click="viewFormat = `grid`">
+                <i class="fa fa-solid fa-grip"></i>
+            </button>
+        </div>
         
-        <div class="col-md-4 mb-2">
+        <div class="col-md-3 mb-2">
             <?php $this->load->view('common/bs5/pagination_v'); ?>
         </div>
     </div>
@@ -39,9 +39,7 @@
         </div>
         <div v-bind:class="{'col-md-9': showFilters, 'col-md-12': !showFilters }">
             <div v-show="!loading" class="mt-3">
-                <div class="center_box_750">
-                    <?php $this->load->view($views_folder . 'list_v'); ?>
-                </div>
+                <?php $this->load->view($views_folder . 'list_v'); ?>
             </div>
         
             <div v-show="loading" class="text-center mb-2">
