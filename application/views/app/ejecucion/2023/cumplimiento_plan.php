@@ -1,15 +1,15 @@
 
 <div id="avancePlanApp">
-    <h2 class="text-center">Informe de avance del plan de acción</h2>
+    <h2 class="text-center">Informe Ejecutivo Final</h2>
     <p class="text-center">
-        Este documento presenta los avances de la ejecución del plan de acción orientado al cumplimiento de las obligaciones del contrato 170 de 2023.
+        Este documento presenta un balance de los logros de la ejecución del contrato 170 de 2023.
     </p>
     
     <table class="table table-condensed table-bordered">
         <tbody>
             <tr>
                 <td width="30%">Fecha</td>
-                <td>2/Ene/2024</td>
+                <td>30/Abr/2024</td>
             </tr>
             <tr>
                 <td>Entidad</td>
@@ -46,7 +46,6 @@
                 </td>
                 <td class="text-center">
                     {{ accion.avance }}
-                    
                 </td>
             </tr>
         </tbody>
@@ -67,7 +66,7 @@
         <p>
             <span class="text-muted">Radicados Orfeo Asociados: </span><strong class="">{{ accion.radicados_orfeo }}</strong>
         </p>
-        <div class="progress">
+        <div class="progress d-none">
             <div class="progress-bar" v-bind:class="classAvance(accion.avance)" role="progressbar" v-bind:style="`width: ` + accion.avance + `%;`" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">{{ accion.avance }}%</div>
         </div>
         <div class="py-2">
@@ -88,8 +87,8 @@
 var avancePlanApp = createApp({
     data(){
         return{
-            acciones: <?php echo json_encode($acciones) ?>,
-            actividades: <?php echo json_encode($actividades) ?>,            
+            acciones: <?= json_encode($acciones) ?>,
+            actividades: <?= json_encode($actividades) ?>,            
         }
     },
     methods: {

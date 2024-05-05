@@ -4,7 +4,7 @@
 <?php $this->load->view('app/observatorio/equipos/style_v') ?>
 
 <h4 class="page-title">
-    Funciones y Actividades
+    Productos y actividades a cargo del Equipo
 </h4>
 <div id="funcionesApp">
 

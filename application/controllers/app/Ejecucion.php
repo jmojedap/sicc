@@ -142,4 +142,20 @@ class Ejecucion extends CI_Controller {
         $this->load->view('templates/print/main', $data);
         //$this->load->view('templates/easypml/main', $data);
     }
+
+    function informe_final()
+    {
+        //Datos
+
+        $this->load->library('google_sheets');
+        //$data['obligaciones'] = $this->google_sheets->sheetToArray('12zTfIv_bnhRnMf8BoMhHdAT0J6mDrV6ZxxPux73cKKM', 0);
+        $data['acciones'] = $this->google_sheets->sheetToArray('12zTfIv_bnhRnMf8BoMhHdAT0J6mDrV6ZxxPux73cKKM', 2064995061);
+        $data['obligaciones'] = $this->google_sheets->sheetToArray('12zTfIv_bnhRnMf8BoMhHdAT0J6mDrV6ZxxPux73cKKM', 0);
+
+        $data['view_a'] = 'app/ejecucion/2023/informe_final';
+        $data['head_title'] = 'Informe Ejecutivo Final';
+
+        $this->load->view('templates/print/main', $data);
+        //$this->load->view('templates/easypml/main', $data);
+    }
 }
