@@ -64,7 +64,7 @@ class Acciones extends CI_Controller {
             $data['arrLocalidad'] = $this->Item_model->arr_options('category_id = 121');
             
         //Cargar vista
-            $this->App_model->view('templates/easypml/main_fluid', $data);
+            $this->App_model->view(TPL_FRONT, $data);
     }
 
     /**
@@ -126,7 +126,7 @@ class Acciones extends CI_Controller {
         $data['view_a'] = $this->views_folder . 'balance_v';
         $data['visualizacion'] = $visualizacion;
         $data['nav_2'] = $this->views_folder . 'explorar/menu_v';
-        $this->App_model->view(TPL_FRONT . '_fluid', $data);
+        $this->App_model->view(TPL_FRONT, $data);
     }
 
     /**
@@ -140,7 +140,7 @@ class Acciones extends CI_Controller {
         $data['head_title'] = 'Procesos del sistema';
         $data['view_a'] = $this->views_folder .  'processes_v';
         $data['nav_2'] = $this->views_folder .  'explorar/menu_v';        
-        $this->App_model->view(TPL_FRONT . '_fluid', $data);
+        $this->App_model->view(TPL_FRONT, $data);
     }
 
 // INFORMACIÓN
@@ -179,7 +179,7 @@ class Acciones extends CI_Controller {
             $data['nav_2'] = $this->views_folder . 'explorar/menu_v';
             $data['view_a'] = $this->views_folder . 'add/add_v';
 
-        $this->App_model->view(TPL_FRONT . '_fluid', $data);
+        $this->App_model->view(TPL_FRONT, $data);
     }
 
     /**
@@ -220,7 +220,7 @@ class Acciones extends CI_Controller {
         $data['view_a'] = $this->views_folder . "edit/{$section}_v";
         //$data['nav_3'] = $this->views_folder . 'edit/menu_v';
 
-        $this->App_model->view('templates/easypml/main_fluid', $data);
+        $this->App_model->view(TPL_FRONT, $data);
     }
 
     /**
@@ -233,7 +233,7 @@ class Acciones extends CI_Controller {
         $data['page_title'] = "Acción {$accion_id}) {$data['row']->nombre_accion}";
         $data['back_link'] = $this->url_controller . 'explorar';
         $data['view_a'] = $this->views_folder . 'localizacion/localizacion_v';        
-        $this->App_model->view('templates/easypml/main_fluid', $data);
+        $this->App_model->view(TPL_FRONT, $data);
     }
 
 // MAPA
@@ -249,7 +249,7 @@ function mapa()
     $filters = $this->Search_model->filters();
     $data['acciones'] = $this->Accion_model->get($filters,1,500);
 
-    //$this->App_model->view('templates/easypml/main_fluid', $data);
+    //$this->App_model->view(TPL_FRONT, $data);
     $this->App_model->view(TPL_ADMIN, $data);
 }
 
@@ -279,7 +279,7 @@ function mapa()
         $filters['sf'] = 'cuidado_estudiantes';
         $data['users'] = $this->User_model->get($filters, 1, 2000);
 
-        $this->App_model->view('templates/easypml/main_fluid', $data);
+        $this->App_model->view(TPL_FRONT, $data);
     }
 
 
@@ -317,7 +317,7 @@ function mapa()
         $data['view_a'] = $this->views_folder . 'asistentes_v';
         $data['nav_2'] = $this->views_folder . 'menu_v';
         $data['back_link'] = $this->url_controller . 'explorar';
-        $this->App_model->view('templates/easypml/main_fluid', $data);
+        $this->App_model->view(TPL_FRONT, $data);
     }
 
     /**
@@ -330,7 +330,7 @@ function mapa()
         $data['head_title'] = 'Acciónes y asistentes';
         $data['view_a'] = $this->views_folder . 'acciones_asistentes_v';
         $data['nav_2'] = $this->views_folder . 'explorar/menu_v';
-        $this->App_model->view(TPL_FRONT . '_fluid', $data);
+        $this->App_model->view(TPL_FRONT, $data);
     }
 
     /**
@@ -352,7 +352,7 @@ function mapa()
         $data['nav_2'] = $this->views_folder . 'menu_v';
         $data['back_link'] = $this->url_controller . 'explorar';
 
-        $this->App_model->view(TPL_FRONT . '_fluid', $data);
+        $this->App_model->view(TPL_FRONT, $data);
     }
 
     /**
@@ -369,7 +369,7 @@ function mapa()
         $data['head_title'] = 'Acciónes y asistentes';
         $data['view_a'] = $this->views_folder . 'acciones_asistentes_itinerantes_v';
         $data['nav_2'] = $this->views_folder . 'explorar/menu_v';
-        $this->App_model->view(TPL_FRONT . '_fluid', $data);
+        $this->App_model->view(TPL_FRONT, $data);
     }
 
 // POBLACIÓN BENEFICIARIA DE LAS ACCIONES
@@ -412,7 +412,7 @@ function mapa()
         $data['nav_2'] = $this->views_folder . 'menu_v';
         $data['back_link'] = $this->url_controller . 'explorar';
 
-        $this->App_model->view(TPL_FRONT . '_fluid', $data);
+        $this->App_model->view(TPL_FRONT, $data);
     }
 
 // OTROS DESARROLLO Y DOCUMENTACIÓN

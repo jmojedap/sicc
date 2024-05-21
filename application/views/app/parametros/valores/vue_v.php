@@ -59,7 +59,7 @@ var parametrosApp = createApp({
                 {id:'cuidado', name: 'Escuela de Cuidado'},
             ],
             appRid: APP_RID,
-            displayFormat: 'article',
+            displayFormat: 'table',
         }
     },
     methods: {

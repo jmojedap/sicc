@@ -29,6 +29,23 @@ class Mediciones extends CI_Controller {
         $this->inicio();
     }
 
+// Listado
+//-----------------------------------------------------------------------------
+
+    function listado()
+    {
+        $data['head_title'] = 'Mediciones y encuestas';
+        $data['page_title'] = 'Mediciones y encuestas';
+        $data['fileId'] = '1cvbEYs_7HTcgcRS5haJXF_r0H61R9TYRNRZJGuXFeGo';
+        $data['gid'] = '0';
+
+        $filePath = PATH_CONTENT . 'json/observatorio/mediciones.json';
+        $data['mediciones'] = $this->App_model->getJsonContent($filePath);
+
+        $data['view_a'] = $this->views_folder . "listado/listado_v";
+        $this->App_model->view('templates/easypml/minimal', $data);
+    }
+
 // FUNCIONES FRONT INFO
 //-----------------------------------------------------------------------------
 

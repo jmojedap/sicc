@@ -147,7 +147,7 @@ class Repositorio extends CI_Controller{
         $dataContenidos = $this->Repositorio_model->get($filters, 1, 200);
         $data = array_merge($data,$dataContenidos);
 
-        $this->App_model->view(TPL_FRONT . '_fluid', $data);
+        $this->App_model->view(TPL_FRONT, $data);
     }
 
     /**
@@ -175,7 +175,7 @@ class Repositorio extends CI_Controller{
         $data['view_a'] = 'app/repositorio/ver_v';
         $data['back_link'] = $this->url_controller . 'explorar/1/';
 
-        $this->App_model->view(TPL_FRONT . '_fluid', $data);
+        $this->App_model->view(TPL_FRONT, $data);
     }
 
     /**
@@ -189,7 +189,7 @@ class Repositorio extends CI_Controller{
         $data['view_a'] = $this->views_folder . 'info_v';
         $data['nav_2'] = 'app/repositorio/menu_v';
 
-        $this->App_model->view(TPL_FRONT . '_fluid', $data);
+        $this->App_model->view(TPL_FRONT, $data);
     }
 
     /**
@@ -204,7 +204,7 @@ class Repositorio extends CI_Controller{
         $data['view_a'] = 'common/row_details_v';
         $data['nav_2'] = 'app/repositorio/menu_v';
 
-        $this->App_model->view(TPL_FRONT . '_fluid', $data);
+        $this->App_model->view(TPL_FRONT, $data);
     }
 
 // CREACIÓN DE UN CONTENIDO
@@ -266,7 +266,7 @@ class Repositorio extends CI_Controller{
             $data['nav_2'] = 'app/repositorio/menu_v';
             $data['nav_3'] = $this->views_folder . 'menus/edit_v';
         
-        $this->App_model->view(TPL_FRONT . '_fluid', $data);
+        $this->App_model->view(TPL_FRONT, $data);
     }
 
 
@@ -294,7 +294,7 @@ class Repositorio extends CI_Controller{
         $data['view_a'] = 'common/bs5/fast_form_v';
         $data['nav_3'] = $this->views_folder . 'menus/edit_v';
         
-        $this->App_model->view(TPL_FRONT . '_fluid', $data);
+        $this->App_model->view(TPL_FRONT, $data);
     }
 
 // SUBIR ARCHIVO
@@ -310,7 +310,7 @@ class Repositorio extends CI_Controller{
             $data['view_a'] = $this->views_folder . "archivo_v";
             $data['nav_2'] = 'app/repositorio/menu_v';
 
-        $this->App_model->view(TPL_FRONT . '_fluid', $data);
+        $this->App_model->view(TPL_FRONT, $data);
     }
 
 // POST IMAGES

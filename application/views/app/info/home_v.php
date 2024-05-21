@@ -19,9 +19,7 @@
 
     <div class="card-body">
         <p class="text-center text-muted">
-            Mauricio Ojeda Pepinosa
-            <br>
-            <small>Bogotá D.C., marzo de 2023</small>
+            <small>Bogotá D.C., abril de 2024</small>
         </p>
     </div>
 

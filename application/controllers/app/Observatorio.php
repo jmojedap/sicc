@@ -42,10 +42,11 @@ class Observatorio extends CI_Controller{
 
         //Datos básicos de la exploración
             $data['head_title'] = 'Observatorio de Cultura, Recreación y Deporte';
+            $data['page_title'] = 'Observatorio de Culturas';
             $data['view_a'] = $this->views_folder . 'inicio/inicio_v';
             
         //Cargar vista
-            $this->App_model->view(TPL_FRONT, $data);
+            $this->App_model->view('templates/easypml/minimal', $data);
     }
 
     function mapas()
@@ -58,7 +59,7 @@ class Observatorio extends CI_Controller{
         $data['view_a'] = $this->views_folder . 'mapas/mapas_v';
 
         //Cargar vista
-        $this->App_model->view(TPL_FRONT . '_fluid', $data);
+        $this->App_model->view(TPL_FRONT, $data);
     }
 
     /**
@@ -71,24 +72,24 @@ class Observatorio extends CI_Controller{
         $data['view_a'] = $this->views_folder . 'pai_v';
 
         //Cargar vista
-        $this->App_model->view(TPL_FRONT . '_fluid', $data);
+        $this->App_model->view('templates/easypml/minimal', $data);
     }
 
     function ebc()
     {
         //Datos básicos de la exploración
         $data['head_title'] = 'Encuesta Bienal de Culturas';
-        $data['view_a'] = $this->views_folder . 'pai_v';
+        $data['view_a'] = $this->views_folder . 'ebc/ebc_v';
 
         //Cargar vista
-        $this->App_model->view('templates/easypml/ebc', $data);
+        $this->App_model->view('templates/easypml/minimal', $data);
     }
 
     /** 
     * Exploración de links
     * 2024-02-05
     * */
-    function links()
+    function z_links_ant()
     {
         //Identificar filtros de búsqueda
             $this->load->model('Search_model');
@@ -119,13 +120,53 @@ class Observatorio extends CI_Controller{
             $this->App_model->view(TPL_FRONT, $data);
     }
 
-    function enlaces()
+    /**
+     * Listado de investigaciones, exporación y búsqueda
+     * 2024-05-20
+     */
+    function investigaciones()
     {
-        $data['head_title'] = 'Enlaces';
+        $data['head_title'] = 'Investigaciones';
+        $data['page_title'] = 'Investigaciones';
+        $data['fileId'] = '1mTpRd2lgxaY_FJj9XDcXHfMHEOfg2c6rxmUE-zR68WA';
+        $data['gid'] = '1186279524';
+
+        $filePath = PATH_CONTENT . 'json/investigaciones/investigaciones.json';
+        $data['elementos'] = $this->App_model->getJsonContent($filePath);
+
+        $data['view_a'] = $this->views_folder . "investigaciones/investigaciones_v";
+        $this->App_model->view('templates/easypml/minimal', $data);
+    }
+
+    function links()
+    {
+        $data['head_title'] = 'Contenidos de trabajo';
+        $data['page_title'] = 'Contenidos de trabajo';
         $data['fileId'] = '1xULiZYp1bBlnPY9m5AdXefbom311MNxC0M-VQ8rNhd0';
         $data['gid'] = '0';
 
-        $data['view_a'] = $this->views_folder . "enlaces/enlaces_v";
+        $filePath = PATH_CONTENT . 'json/observatorio/links.json';
+        $data['links'] = $this->App_model->getJsonContent($filePath);
+
+        $data['view_a'] = $this->views_folder . "links/links_v";
+        $this->App_model->view('templates/easypml/minimal', $data);
+    }
+
+    /**
+     * Listado de informes de visualización de datos implementados por el
+     * Observatorio
+     * 2024-05-13
+     */
+    function visualizaciones_datos()
+    {
+        $data['head_title'] = 'Visualización de datos';
+        $data['fileId'] = '1K4Ly_hU0j6-bIo-SAtXHMeBiizrUEsg4w8XE8o5Lpik';
+        $data['gid'] = '0';
+
+        $filePath = PATH_CONTENT . 'json/observatorio/dataviz.json';
+        $data['tableros'] = $this->App_model->getJsonContent($filePath);
+
+        $data['view_a'] = $this->views_folder . "visualizaciones_datos/visualizaciones_datos_v";
         $this->App_model->view(TPL_FRONT, $data);
     }
 

@@ -10,7 +10,6 @@
     </head>
     <body>
         <?php $this->load->view('app/observatorio/ebc/ebc_v') ?>
-
         <?php $this->load->view('templates/easypml/main/script') ?>
     </body>
 </html>

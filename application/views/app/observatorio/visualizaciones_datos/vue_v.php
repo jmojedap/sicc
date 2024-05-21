@@ -1,16 +1,16 @@
+<script src="<?= URL_RESOURCES ?>js/pml_searcher.js"></script>
+
 <script>
-// VueApp
-//-----------------------------------------------------------------------------
-var linksApp = createApp({
+var visualizacionesDatosApp = createApp({
     data() {
         return {
-            links: <?= json_encode($links) ?>,
+            tableros: <?= json_encode($tableros) ?>,
             loading: false,
             fields: {},
             displayUrl: false,
             fileId: '<?= $fileId ?>',
             gid: '<?= $gid ?>',
-            q: ''
+            q:'',
         }
     },
     methods: {
@@ -20,11 +20,11 @@ var linksApp = createApp({
         },
         updateList: function(){
             this.loading = true
-            axios.get('<?= base_url() ?>api/tools/googlesheet_save_json/' + this.fileId + '/' + this.gid + '/observatorio/links')
+            axios.get('<?= base_url() ?>api/tools/googlesheet_save_json/' + this.fileId + '/' + this.gid + '/observatorio/dataviz')
             .then(response => {
                 if ( response.data.status == 1 ) {
                     toastr['success']('Datos actualizados')
-                    this.links = response.data.array
+                    this.tableros = response.data.array
                 }
                 this.loading = false
             })
@@ -35,13 +35,13 @@ var linksApp = createApp({
         },
     },
     computed: {
-        linksFiltrados: function() {
+        tablerosFiltrados: function() {
             if (this.q.length > 0) {
                 var fieldsToSearch = ['nombre','descripcion','palabras_clave']
-                return PmlSearcher.getFilteredResults(this.q, this.links, fieldsToSearch)
+                return PmlSearcher.getFilteredResults(this.q, this.tableros, fieldsToSearch)
             }
-            return this.links
-        }
-    }
-}).mount('#linksApp');
+            return this.tableros
+        },
+    },
+}).mount('#visualizacionesDatosApp')
 </script>

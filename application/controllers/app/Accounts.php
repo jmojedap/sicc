@@ -231,7 +231,7 @@ class Accounts extends CI_Controller {
         $data['nav_2'] = $this->views_folder . 'menu_v';
         $data['view_a'] = $this->views_folder . 'profile_v';
         
-        $this->App_model->view('templates/easypml/main', $data);
+        $this->App_model->view('templates/easypml/minimal', $data);
     }
 
 // ACTUALIZACIÓN DE DATOS
@@ -269,6 +269,6 @@ class Accounts extends CI_Controller {
             $data['nav_3'] = $this->views_folder . 'edit/menu_v';
             $data['view_a'] = $view_a;
         
-        $this->App_model->view('templates/easypml/main', $data);
+        $this->App_model->view('templates/easypml/minimal', $data);
     }
 }

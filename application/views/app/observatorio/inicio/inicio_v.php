@@ -8,41 +8,43 @@
 .modulos-container {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 1em;
+    gap: 0.5em;
 }
 
 /* Pantallas pequeñas */
 @media (max-width: 767px) {
-    .modulos-container { 
+    .modulos-container {
         grid-template-columns: 1fr;
     }
 }
 
 .modulo {
-    text-align: center;
-    background-color: #FFF;
-    min-height: 200px;
+    cursor: pointer;
+}
+
+.modulo-titulo{
+    color: var(--color-text-link);
+    font-size: 1.1em;
+}
+.modulo:hover {
+    border: 1px solid var(--color-secondary);
 }
 </style>
 
 <div id="inicioApp">
-    <div class="center_box_750">
+    <div class="center_box_920">
         <div class="modulos-container">
-            <div class="card" v-for="(modulo,k) in modulos" v-show="modulo.ocultar != 1">
+            <div class="card modulo" v-for="(modulo,k) in modulos" v-show="modulo.ocultar != 1" v-on:click="goToLink(modulo)">
                 <div class="card-body">
-                    <div class="text-center">
-                        <p v-bind:class="`color-text-` + (k+1)">
-                            <i class="fas fa-2x" v-bind:class="modulo.fa_icon"></i>
+                    <div class="d-flex justify-content-between">
+                        <p class="modulo-titulo">
+                            {{ modulo.titulo }}
                         </p>
-                        <a v-bind:href="`<?= URL_APP ?>` + modulo.link">
-                            <p class="lead color-text-2">
-                                {{ modulo.titulo }}
-                            </p>
-                            <p>
-                        </a>
-                        {{ modulo.descripcion }}
-                        </p>
+                        <div v-bind:class="`color-text-` + (k+1)" class="me-2">
+                            <i class="fas fs-4" v-bind:class="modulo.fa_icon"></i>
+                        </div>
                     </div>
+                    <p>{{ modulo.descripcion }}</p>
                 </div>
             </div>
         </div>
@@ -58,7 +60,9 @@ var inicioApp = createApp({
         }
     },
     methods: {
-
+        goToLink: function(modulo){
+            window.location = URL_APP + modulo.link
+        },
     },
     mounted() {
         //this.getList()
