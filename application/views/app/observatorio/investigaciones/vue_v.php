@@ -7,6 +7,7 @@ var investigacionesApp = createApp({
             nombreElemento: 'investigación',
             nombreElementos: 'investigaciones',
             elementos: <?= json_encode($elementos) ?>,
+            productos: <?= json_encode($productos) ?>,
             loading: false,
             fields: {},
             fileId: '<?= $fileId ?>',
@@ -24,7 +25,10 @@ var investigacionesApp = createApp({
             ],
             filters: {
                 status: '' 
-            }
+            },
+            section: 'lista',
+            currentElement: <?= json_encode($elementos[0]) ?>,
+            currentId: -1,
         }
     },
     methods: {
@@ -49,6 +53,19 @@ var investigacionesApp = createApp({
         },
         textToClass: function(prefix='', inputText){
             return prefix + Pcrn.textToClass(inputText)
+        },
+        setCurrent: function(investigacionId){
+            this.section = 'ficha'
+            this.currentId = investigacionId
+            this.currentElement = this.elementos.find(elemento => elemento['ID'] == investigacionId)
+        },
+        textToClass: function(text){
+            return Pcrn.textToClass(text)
+        },
+        getProductoClass: function(tipoProducto){
+            var productoClass = 'fa-solid fa-arrow-right producto-general'
+            if ( tipoProducto == 'Informe final' ) productoClass = 'fa-solid fa-file-lines producto-pdf'
+            return productoClass
         },
     },
     computed: {

@@ -133,6 +133,7 @@ class Observatorio extends CI_Controller{
 
         $filePath = PATH_CONTENT . 'json/investigaciones/investigaciones.json';
         $data['elementos'] = $this->App_model->getJsonContent($filePath);
+        $data['productos'] = $this->App_model->getJsonContent(PATH_CONTENT . 'json/investigaciones/productos.json');
 
         $data['view_a'] = $this->views_folder . "investigaciones/investigaciones_v";
         $this->App_model->view('templates/easypml/minimal', $data);
