@@ -44,6 +44,19 @@
     background-color: #e1e6ed;
 }
 
+select.search-filter {
+    background-color: #e9eef6;
+    color: #1f1f1f;
+    border: 0px;
+    height: 2em;
+    border-radius: 50px;
+    padding: 0 0.5em;
+}
+
+select.search-filter.selected{
+    background-color: #c2e7ff;
+}
+
 /* Otros */
 /*-----------------------------------------------------------------------------*/
 

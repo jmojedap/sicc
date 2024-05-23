@@ -89,7 +89,7 @@ class Observatorio extends CI_Controller{
     * Exploración de links
     * 2024-02-05
     * */
-    function links_ant()
+    function z_links_ant()
     {
         //Identificar filtros de búsqueda
             $this->load->model('Search_model');
@@ -118,6 +118,25 @@ class Observatorio extends CI_Controller{
             
         //Cargar vista
             $this->App_model->view(TPL_FRONT, $data);
+    }
+
+    /**
+     * Listado de investigaciones, exporación y búsqueda
+     * 2024-05-20
+     */
+    function investigaciones()
+    {
+        $data['head_title'] = 'Investigaciones';
+        $data['page_title'] = 'Investigaciones';
+        $data['fileId'] = '1mTpRd2lgxaY_FJj9XDcXHfMHEOfg2c6rxmUE-zR68WA';
+        $data['gid'] = '1186279524';
+
+        $filePath = PATH_CONTENT . 'json/investigaciones/investigaciones.json';
+        $data['elementos'] = $this->App_model->getJsonContent($filePath);
+        $data['productos'] = $this->App_model->getJsonContent(PATH_CONTENT . 'json/investigaciones/productos.json');
+
+        $data['view_a'] = $this->views_folder . "investigaciones/investigaciones_v";
+        $this->App_model->view('templates/easypml/minimal', $data);
     }
 
     function links()

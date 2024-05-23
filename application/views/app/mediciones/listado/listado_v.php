@@ -1,21 +1,6 @@
 <script src="<?= URL_RESOURCES ?>js/pml_searcher.js"></script>
 <link rel="stylesheet" href="<?= URL_RESOURCES ?>css/sicc/observatorio-mediciones.css">
 
-<style>
-    select.search-filter {
-        background-color: #e9eef6;
-        color: #1f1f1f;
-        border: 0px;
-        height: 2em;
-        border-radius: 50px;
-        padding: 0 0.5em;
-    }
-
-    select.search-filter.selected{
-        background-color: #c2e7ff;
-    }
-</style>
-
 <div id="medicionesApp">
     <div class="text-center" v-show="loading">
         <div class="spinner-border text-secondary" role="status">

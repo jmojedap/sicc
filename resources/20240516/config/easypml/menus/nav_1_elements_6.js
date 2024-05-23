@@ -33,8 +33,8 @@ var nav_1_elements = [
                 text: 'Investigaciones',
                 active: false,
                 icon: '',
-                cf: 'observatorio/pai/2023',
-                sections: ['observatorio/pai'],
+                cf: 'observatorio/investigaciones',
+                sections: ['observatorio/investigaciones'],
                 anchor: true
             },
             {
