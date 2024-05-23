@@ -7,10 +7,12 @@
 <html lang="es">
     <head>
         <?php $this->load->view('templates/easypml/main/head'); ?>
+        <?php $this->load->view('templates/easypml/minimal/style') ?>
         <link rel="stylesheet" href="<?= URL_RESOURCES . 'templates/easypml/start.css' ?>">
     </head>
     <body>
-        <?php $this->load->view('templates/easypml/main/navbar') ?>
+        <?php $this->load->view('templates/easypml/minimal/navbar') ?>
+        <?php $this->load->view('templates/easypml/minimal/sidebar') ?>
         <div id="start_content" class="container text-center">
             <a href="<?= URL_APP ?>"><img class="w240p mb-2" src="<?= URL_BRAND ?>logo-start.png" alt="Logo aplicación"></a>
             <div class="center_box_320">

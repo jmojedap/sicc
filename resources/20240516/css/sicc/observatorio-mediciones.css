@@ -1,0 +1,20 @@
+/**
+ARCHIVO PARA LINKS DEL OBSERVATORIO
+*/
+
+.badge-estado{
+    display: inline-block;
+    padding: .35em .65em;
+    font-size: .75em;
+    font-weight: 400;
+    line-height: 1;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: baseline;
+    border-radius: .25rem;
+}
+
+.estado-1-sin-iniciar{ background-color: #ffcfc9; color: #af1400;}
+.estado-2-sin-iniciar{ background-color: #ffcfc9; color: #af1400;}
+.estado-3-realizada{ background-color: #bfe1f6; color:#0e344d;}
+.estado--{ background-color: #ffcfc9; color: #af1400;}
