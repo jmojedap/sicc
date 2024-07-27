@@ -3,7 +3,7 @@
     <p></p>
     <p style="<?= $styles['text_center'] ?>">
         <a href="<?= URL_APP ?>accounts/login" target="_blank" title="Ir a <?= APP_NAME ?>">
-            <img src="<?= base_url() ?>resources/static/images/app/logo.png" alt="<?= APP_NAME ?>" style="width: 140px;">
+            <img src="<?= base_url() ?>resources/static/images/app/logo.png" alt="<?= APP_NAME ?>" style="width: 80px; margin-bottom: 1em;">
         </a>
         <br>
         <span><?= APP_NAME ?></span>

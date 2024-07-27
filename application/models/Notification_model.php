@@ -18,7 +18,7 @@ class Notification_model extends CI_Model{
 
     /**
      * Envía e-mail de activación o restauración de cuenta
-     * 
+     * 2024-07-27
      */
     function email_activation($user_id, $activation_type = 'activation')
     {
@@ -29,19 +29,16 @@ class Notification_model extends CI_Model{
             if ( $activation_type == 'recovery' ) {
                 $subject = APP_NAME . ' Recupera tu cuenta';
             }
-        
-        //Enviar Email
-            $this->load->library('email');
-            $config['mailtype'] = 'html';
 
-            $this->email->initialize($config);
-            $this->email->from('accounts@' . APP_DOMAIN, APP_NAME);
-            $this->email->to($user->email);
-            $this->email->bcc('jmojedap@gmail.com');
-            $this->email->message($this->activation_message($user, $activation_type));
-            $this->email->subject($subject);
-            
-            $this->email->send();   //Enviar
+        //Enviar Email
+            $this->load->library('Mail_pml');
+            $settings['to'] = $user->email;
+            $settings['bcc'] = 'jmojeda@gmail.com';
+            $settings['subject'] = $subject;
+            $settings['html_message'] = $this->activation_message($user, $activation_type);
+            $data = $this->mail_pml->send($settings);
+
+            return $data;
     }
 
     /**
@@ -67,28 +64,22 @@ class Notification_model extends CI_Model{
     /**
      * Envia un mensaje al correo electrónico del usuario con un link
      * para iniciar sesión en la aplicación
-     * 2022-08-06
+     * 2024-07-27
      */
     function send_login_link($user_id)
     {   
         //Asignar nueva user.activation_key 
             $activation_key = $this->Account_model->activation_key($user_id);
             $user = $this->Db_model->row_id('users', $user_id);
-        
+
         //Enviar Email
-            $this->load->library('email');
-            $config['mailtype'] = 'html';
+            $this->load->library('Mail_pml');
+            $settings['to'] = $user->email;
+            $settings['subject'] = 'Ingresa a ' . APP_NAME;
+            $settings['html_message'] = $this->login_link_message($user);
+            $data = $this->mail_pml->send($settings);
 
-            $this->email->initialize($config);
-            $this->email->from('accounts@' . APP_DOMAIN, APP_NAME);
-            $this->email->to($user->email);
-            $this->email->bcc('jmojedap@gmail.com');
-            $this->email->message($this->login_link_message($user));
-            $this->email->subject('Ingresa a ' . APP_NAME);
-            
-            $this->email->send();   //Enviar
-
-        return 1;
+        return $data['status'];
     }
 
     /**
@@ -96,14 +87,19 @@ class Notification_model extends CI_Model{
      * activación o restauración de su cuenta
      * 2022-08-08
      */
-    function login_link_message($user)
+    function login_link_message($user, $type = 'html')
     {
         $data['user'] = $user ;
-        $data['view_a'] = 'admin/notifications/login_link_message_v';
-
-        $data['styles'] = $this->email_styles();
         
-        $message = $this->load->view('templates/email/main', $data, TRUE);
+        if ( $type == 'html' ) {
+            $data['styles'] = $this->email_styles();
+            $data['view_a'] = 'admin/notifications/login_link_message_v';
+            $message = $this->load->view('templates/email/main', $data, TRUE);
+        } else {
+            $data['view_a'] = 'admin/notifications/login_link_message_text_v';
+            $message = $this->load->view('templates/email/text', $data, TRUE);
+        }
+        
         
         return $message;
     }

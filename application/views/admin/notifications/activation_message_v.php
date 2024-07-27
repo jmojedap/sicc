@@ -12,7 +12,7 @@
         $texts['link'] = "accounts/recover/{$user->activation_key}";
     }
 ?>
-<h3><?= $user->display_name ?></h3>
+<h3 style="<?= $styles['h3'] ?>"><?= $user->display_name ?></h3>
 <p><?= $texts['paragraph'] ?></p>
 <a style="<?= $styles['btn'] ?>" href="<?= URL_APP . $texts['link'] ?>" target="_blank">
     <?= $texts['button'] ?>

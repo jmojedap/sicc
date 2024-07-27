@@ -24,7 +24,7 @@
                                 name="q" type="text" class="form-control" v-on:change="getCategories"
                                 title="Categoría" placeholder="Filtrar..."
                                 v-model="filters.q"
-                            >    
+                            >
                         </td>
                         <td>
                             <button class="a4" type="button" v-on:click="clearFilters" v-show="filters.q.length > 0">

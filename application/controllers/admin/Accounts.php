@@ -253,7 +253,7 @@ class Accounts extends CI_Controller {
         } elseif ( $type == 'login_link' ) {
             $this->Account_model->activation_key($param_1);
             $user = $this->Db_model->row_id('users', $param_1);
-            echo $this->Notification_model->login_link_message($user, 'recovery');
+            echo $this->Notification_model->login_link_message($user, 'text');
         }
     }
 
@@ -289,30 +289,45 @@ class Accounts extends CI_Controller {
 //RECUPERACIÓN DE CUENTAS
 //---------------------------------------------------------------------------------------------------
 
+    function test_email()
+    {
+        $this->load->library('Mail_pml');
+        $settings['to'] = 'jmojedap@gmail.com';
+        $settings['subject'] = 'Test asunto';
+        $settings['html_message'] = '<p>Hola <b>Probando negrita</b></p>';
+        $data = $this->mail_pml->send($settings);
+
+        //Salida JSON
+        $this->output->set_content_type('application/json')->set_output(json_encode($data));
+    }
+
     /**
      * Recibe email por post desde app/accounts/recovery, y si encuentra 
      * usuario, envía link para establecer nueva contraseña
-     * 2022-07-29
+     * 2024-07-27
      */
     function recovery_email()
     {
-        $data = ['status' => 0, 'recaptcha_valid' => FALSE];
+        $data = ['error' => '','recaptcha_valid' => FALSE];
 
         $this->load->model('Validation_model');
         $recaptcha = $this->Validation_model->recaptcha(); //Validación Google ReCaptcha V3
 
         //Identificar usuario
-        $row = $this->Db_model->row('users', "email = '{$this->input->post('email')}'");
+        $user = $this->Db_model->row('users', "email = '{$this->input->post('email')}'");
 
-        if ( ! is_null($row) && $recaptcha == 1 ) 
+        if ( ! is_null($user) && $recaptcha == 1 ) 
         {
             //Usuario existe, se envía email para restaurar constraseña
-            $this->Account_model->activation_key($row->id);
+
+            $data['recaptcha_valid'] = TRUE;
+            $this->Account_model->activation_key($user->id);
             if ( ENV == 'production') {
                 $this->load->model('Notification_model');
-                $this->Notification_model->email_activation($row->id, 'recovery');
+                $sendingResult = $this->Notification_model->email_activation($user->id, 'recovery');
+                $data['status'] = $sendingResult['status'];
+                $data['sending'] = $sendingResult;
             }
-            $data = ['status' => 1, 'recaptcha_valid' => TRUE];
         }
 
         //Salida JSON

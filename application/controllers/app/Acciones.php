@@ -60,7 +60,7 @@ class Acciones extends CI_Controller {
         //Opciones de filtros de búsqueda
             $data['arrPrograma'] = $this->Item_model->arr_options('category_id = 221');
             $data['arrEstrategia'] = $this->Item_model->arr_options('category_id = 222');
-            $data['arrPeriodo'] = $this->App_model->arr_periods('year = 2023 AND type_id = 7');
+            $data['arrPeriodo'] = $this->App_model->arr_periods('year IN (2023,2024) AND type_id = 7');
             $data['arrLocalidad'] = $this->Item_model->arr_options('category_id = 121');
             
         //Cargar vista

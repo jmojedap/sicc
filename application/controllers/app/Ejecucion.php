@@ -111,20 +111,21 @@ class Ejecucion extends CI_Controller {
         //$this->load->view('templates/easypml/main', $data);
     }
 
+    /**
+     * Plan de acción del contrato
+     * 2024-06-17
+     */
     function plan_accion()
     {
         $this->load->library('excel');            
 
-        $arrAcciones = $this->excel->get_array(PATH_CONTENT . 'ejecucion/acciones.xlsx', 'acciones');
+        $filePath = PATH_CONTENT . 'json/ejecucion/plan_accion_306_2024.json';
+        $data['acciones'] = $this->App_model->getJsonContent($filePath);
 
-        $data['arrAcciones'] = $arrAcciones;
         $data['head_title'] = 'Plan de acción';
-        $data['view_a'] = 'app/ejecucion/2023/plan_accion';
+        $data['view_a'] = 'app/ejecucion/2024/plan_accion';
 
         $this->load->view('templates/print/main', $data);
-
-        //Salida JSON
-        //$this->output->set_content_type('application/json')->set_output(json_encode($data));
     }
 
     function avance_plan()
