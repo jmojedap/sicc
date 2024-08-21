@@ -36,8 +36,9 @@
                         </div>
                         <p style="text-align: justify;">{{ texto.parrafo }}</p>
                     </div>
-                    <img v-if="texto.imagen_drive.length > 0" v-bind:src="`https://drive.google.com/uc?id=` + texto.imagen_drive"
+                    <img v-if="texto.imagen_drive.length > 0" v-bind:src="`https://drive.usercontent.google.com/download?id=` + texto.imagen_drive + `&export=view&authuser=0`"
                         alt="Imagen sobre párrafo" class="w-100 mb-2 rounded shadow" loading="lazy">
+                        <img src="https://drive.google.com/uc?export=view&id=1LHsGVJHWkodQIt4itou9iTlkKSRNrkfX" alt="Imagen desde Google Drive" style="max-width: 100%; height: auto;">
                 </div>
             </div>
         </div>

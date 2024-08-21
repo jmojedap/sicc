@@ -43,4 +43,30 @@ class Sig extends CI_Controller{
         //Cargar vista
         $this->App_model->view('templates/easypml/empty', $data);
     }
+
+// Priorización geográfica
+//-----------------------------------------------------------------------------
+
+    /**
+     * Vista de la herramienta de priorización geográfica distrital
+     * 2024-08-17
+     */
+    function priorizacion_geografica()
+    {
+        $data['head_title'] = 'Priorización Geográfica';
+        $data['view_a'] = $this->views_folder . 'priorizacion_geografica/priorizacion_geografica_v';
+        //$data['nav_2'] = '';
+
+        $filePath = PATH_CONTENT . 'json/priorizacion_geografica/variables.json';
+        $data['variables'] = $this->App_model->getJsonContent($filePath);
+
+        $this->App_model->view('templates/easypml/minimal', $data);
+    }
+
+    function highmaps()
+    {
+        $data['head_title'] = 'High Maps Pruebas';
+        $data['view_a'] = 'app/observatorio/sig/highmaps/highmaps_v';
+        $this->App_model->view('templates/easypml/minimal', $data);
+    }
 }

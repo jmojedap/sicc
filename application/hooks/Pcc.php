@@ -23,7 +23,7 @@ class Pcc {
             } else {
                 //No tiene autorización
                 if ( $this->CI->uri->segment(1) == 'api' ) {
-                    redirect("api/app/denied/{$cf}");
+                    //redirect("api/app/denied/{$cf}");
                 } else {
                     redirect("app/app/denied/{$cf}");
                 }
