@@ -58,11 +58,13 @@
             </div>
         </div>
 
-        <div class="mt-2">
-            <button class="btn btn-light btn-sm" v-on:click="updateList" type="button" title="Actualizar listado">
-                <i class="fa-solid fa-rotate-right"></i> Actualizar listado
-            </button>
-        </div>
+        <?php if ( $this->session->userdata('role') == 1 ) : ?>
+            <div class="mt-2">
+                <button class="btn btn-light btn-sm me-1" v-on:click="updateList(tabla)" type="button" title="Actualizar" v-for="tabla in tablas">
+                    <i class="fa-solid fa-rotate-right"></i> {{ tabla.nombre }}
+                </button>
+            </div>
+        <?php endif; ?>
 
     </div>
 </div>

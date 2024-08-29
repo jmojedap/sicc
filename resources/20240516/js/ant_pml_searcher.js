@@ -1,7 +1,7 @@
 /**
  * FUNCIONES DE BÚSQUEDA Y FILTRO DE REGISTROS PARA EL USO EN EL LENGUAJE JAVASCRIPT
  * DESARROLLADAS POR Pacarina Media Lab (Pml)
- * 2024-08-24
+ * 2024-05-13
  * 
  */
 
@@ -36,10 +36,6 @@ const removeAccents = function(text) {
     });
 }
 
-/**
- * Devuelve elmentos filtrados
- * 2024-08-25
- */
 var PmlSearcher = new function()
 {
     this.getFilteredResults = function(searchedText, arrayTotal, fieldsToSearch) {
@@ -50,9 +46,7 @@ var PmlSearcher = new function()
         var filteredResults = arrayTotal.filter(function(rowElement) {
             var searchingIn = ''
             fieldsToSearch.forEach(fieldName => {
-                if (rowElement[fieldName] != null) {
-                    searchingIn += rowElement[fieldName].toLowerCase()
-                }
+                searchingIn += rowElement[fieldName].toLowerCase()
             });
             searchingIn = removeAccents(searchingIn)
             

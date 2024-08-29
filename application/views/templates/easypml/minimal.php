@@ -7,7 +7,7 @@
 <html lang="es">
     <head>
         <?php $this->load->view('templates/easypml/main/head') ?>
-        <?php $this->load->view('templates/easypml/minimal/style') ?>
+        <link type="text/css" rel="stylesheet" href="<?= URL_RESOURCES . 'templates/easypml/minimal.css' ?>">
         <?php if ( ENV == 'production' ) : ?>
             <?php $this->load->view('common/google_analytics_v.php') ?>
         <?php endif; ?>

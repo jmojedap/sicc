@@ -4,12 +4,15 @@
 var laboratoriosApp = createApp({
     data() {
         return {
+            seccion:'listado',
             laboratorios: <?= json_encode($laboratorios) ?>,
+            actividades: <?= json_encode($actividades) ?>,
             loading: false,
             fields: {},
             displayUrl: false,
             fileId: '<?= $fileId ?>',
             gid: '<?= $gid ?>',
+            tablas: <?= json_encode($tablas) ?>,
             q: ''
         }
     },
@@ -18,13 +21,16 @@ var laboratoriosApp = createApp({
             if (!date) return ''
             return moment(date, 'YYYY-MM-DD HH:mm:ss').fromNow()            
         },
-        updateList: function(){
+        setSeccion: function(nuevaSeccion){
+            this.seccion = nuevaSeccion
+        },
+        updateList: function(tabla){
             this.loading = true
-            axios.get('<?= base_url() ?>api/tools/googlesheet_save_json/' + this.fileId + '/' + this.gid + '/barrios_vivos/laboratorios')
+            axios.get('<?= base_url() ?>api/tools/googlesheet_save_json/' + this.fileId + '/' + tabla.gid + '/barrios_vivos/' + tabla.nombre)
             .then(response => {
                 if ( response.data.status == 1 ) {
-                    toastr['success']('Datos actualizados')
-                    this.laboratorios = response.data.array
+                    toastr['success']('Datos actualizados, presione F5')
+                    //this.laboratorios = response.data.array
                 }
                 this.loading = false
             })

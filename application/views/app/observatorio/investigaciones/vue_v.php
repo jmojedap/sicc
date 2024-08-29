@@ -63,9 +63,20 @@ var investigacionesApp = createApp({
             return Pcrn.textToClass(text)
         },
         getProductoClass: function(tipoProducto){
-            var productoClass = 'fa-solid fa-arrow-right producto-general'
+            var productoClass = 'fa-solid fa-file producto-general'
             if ( tipoProducto == 'Informe final' ) productoClass = 'fa-solid fa-file-lines producto-pdf'
+            if ( tipoProducto == 'Presentación' ) productoClass = 'fa-solid fa-display producto-presentacion'
+            if ( tipoProducto == 'Visualización/Infografía' ) productoClass = 'fa-solid fa-chart-simple producto-dataviz'
+            if ( tipoProducto == 'Base de datos' ) productoClass = 'fa-solid fa-table producto-db'
+            if ( tipoProducto == 'Informe cuantitativo' ) productoClass = 'fa-solid fa-file-lines producto-cuantitativo'
+            if ( tipoProducto == 'Audiovisual' ) productoClass = 'fa-solid fa-circle-play producto-audiovisual'
             return productoClass
+        },
+        displayProducto: function(producto){
+            var displayProducto = true
+            if ( producto['ID Investigación'] != this.currentElement['ID']) { displayProducto = false }
+            if ( producto['Incluir en ficha'] != 'Sí') { displayProducto = false }
+            return displayProducto
         },
     },
     computed: {

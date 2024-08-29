@@ -10,7 +10,7 @@
         </div>
     </div>
 
-    <div class="center_box_750" v-show="!loading">
+    <div class="center_box_920" v-show="!loading">
         <div class="search-container">
             <input class="search-input mb-2" type="text" v-model="q" v-bind:placeholder="`Buscar ` + nombreElemento"
                 autofocus>
@@ -40,16 +40,6 @@
                 </button>
             </div>
             <div class="ficha mb-2 shadow">
-                <div class="ficha-header d-flex justify-content-between">
-                    <div class="p-2" style="border-left: 3em solid rgb(255, 184, 12); margin-left: 3em;">
-                        <img class="logo-orfeo" src="<?= URL_IMG ?>observatorio/investigaciones/orfeo.png"
-                            alt="Logo Orfeo"><strong>Orfeo</strong><br><span
-                            title="Expediente documental en Orfeo">{{ currentElement['EXPEDIENTE'] }}</span>
-                    </div>
-                    <div class="p-2 only-lg"><img class="logo-dogcc"
-                            src="<?= URL_IMG ?>observatorio/investigaciones/logo-dogcc-yellow.png" alt="Logo Observatorio de Cultura">
-                    </div>
-                </div>
                 <div class="ficha-body">
                     <div class="row">
                         <div class="col-md-6">
@@ -59,28 +49,31 @@
                             </p>
                         </div>
                         <div class="col-md-6">
-                            <table>
-                                <tbody>
-                                    <tr v-for="producto in productos" class="producto"
-                                        v-show="producto['ID Investigación'] == currentElement['ID']">
-                                        <td width="65px" class="text-center">
-                                            <a v-bind:href="producto['Link para ficha']" target="_blank">
-                                                <div class="icon-container">
-                                                    <span>
-                                                        <i v-bind:class="getProductoClass(producto['Tipo producto'])"></i>
-                                                    </span>
-                                                </div>
-                                            </a>
-                                        </td>
-                                        <td>
-                                            <a v-bind:href="producto['Link para ficha']" target="_blank">
-                                                {{ producto['Título'] }}
-                                            </a>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                            <div v-for="producto in productos" class="producto" v-show="displayProducto(producto)">
+                                <a class="d-flex" v-bind:href="producto['Link para ficha']" target="_blank">
+                                    <div width="65px" class="text-center me-3">
+                                        <div class="icon-container">
+                                            <span>
+                                                <i v-bind:class="getProductoClass(producto['Tipo producto'])"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        {{ producto['Título'] }}
+                                    </div>
+                                </a>
+                            </div>
                         </div>
+                    </div>
+                </div>
+                <div class="ficha-footer d-flex justify-content-between">
+                    <div class="p-2" style="">
+                        <img class="logo-orfeo me-1" src="<?= URL_IMG ?>observatorio/investigaciones/orfeo.png" alt="Logo Orfeo">
+                        <strong>Orfeo: </strong>
+                        <span title="Expediente documental en Orfeo">{{ currentElement['EXPEDIENTE'] }}</span>
+                    </div>
+                    <div class="p-2 only-lg"><img class="logo-dogcc"
+                            src="<?= URL_IMG ?>observatorio/investigaciones/logo-dogcc-yellow.png" alt="Logo Observatorio de Cultura">
                     </div>
                 </div>
             </div>
