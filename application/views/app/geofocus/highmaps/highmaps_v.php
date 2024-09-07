@@ -10,7 +10,7 @@
 <?php $this->load->view('app/observatorio/sig/highmaps/style_v') ?>
 
 <script>
-    // Declara la variable en el ámbito global (o al menos, en un ámbito que lo haga accesible para Vue)
+    // Declara la variable en el ámbito global, accesible para VueApp
     let mapChartBogota;
     let localidades;
 

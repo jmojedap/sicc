@@ -5,14 +5,20 @@ var laboratoriosApp = createApp({
     data() {
         return {
             seccion:'listado',
+            currentSubseccion:'actividades',
             laboratorios: <?= json_encode($laboratorios) ?>,
             actividades: <?= json_encode($actividades) ?>,
             loading: false,
             fields: {},
+            currentLaboratorio: {},
             displayUrl: false,
             fileId: '<?= $fileId ?>',
             gid: '<?= $gid ?>',
             tablas: <?= json_encode($tablas) ?>,
+            subsecciones: [
+                {name:'info', title:'Info'},
+                {name:'actividades', title:'Actividades'},
+            ],
             q: ''
         }
     },
@@ -20,6 +26,10 @@ var laboratoriosApp = createApp({
         ago: function(date){
             if (!date) return ''
             return moment(date, 'YYYY-MM-DD HH:mm:ss').fromNow()            
+        },
+        dateFormat: function(date, format='D MMM YYYY'){
+            if (!date) return ''
+            return moment(date).format(format)
         },
         setSeccion: function(nuevaSeccion){
             this.seccion = nuevaSeccion
@@ -39,6 +49,17 @@ var laboratoriosApp = createApp({
         clearSearch: function(){
             this.q = ''
         },
+        setCurrent: function(laboratorio, nuevaSubseccion = 'info'){
+            this.seccion = 'detalles'
+            this.currentSubseccion = nuevaSubseccion
+            this.currentLaboratorio = laboratorio;
+        },
+        showActividad: function(actividad){
+            var showActividad = false
+            if ( actividad.sesion.length > 0  ) showActividad = true
+            if ( actividad.laboratorio_id != this.currentLaboratorio.id ) return false
+            return showActividad
+        },
     },
     computed: {
         laboratoriosFiltrados: function() {
@@ -51,6 +72,9 @@ var laboratoriosApp = createApp({
             }
             return listaFiltrada
         }
+    },
+    mounted(){
+        this.setCurrent(this.laboratorios[5], 'actividades')
     }
 }).mount('#laboratoriosApp');
 </script>
