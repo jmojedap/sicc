@@ -64,8 +64,18 @@ class Observatorio extends CI_Controller{
     function pai($year = 2023)
     {
         //Datos básicos de la exploración
-        $data['head_title'] = 'Mapas para la Investigación';
+        $data['head_title'] = 'Plan Anual de Investigaciones ' . $year;
+        
         $data['view_a'] = $this->views_folder . 'pai_v';
+        if ( $year == 2024 ) {
+            $data['fileId'] = '1vdCB9ZOyay0eHCqSxNVKcylW4FHU0jeHyAL0kuM2OB0';
+            $data['tablas'] = [
+                ['nombre' => 'investigaciones', 'gid' => '1209666804'],
+            ];
+            $basePath = PATH_CONTENT . 'json/pai_2024/';
+            $data['investigaciones'] = $this->App_model->getJsonContent($basePath . 'investigaciones.json');
+            $data['view_a'] = $this->views_folder . 'pai_2024/pai_2024_v';
+        }
 
         //Cargar vista
         $this->App_model->view('templates/easypml/minimal', $data);
