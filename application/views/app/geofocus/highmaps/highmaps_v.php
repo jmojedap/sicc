@@ -7,7 +7,7 @@
 <script src="https://code.highcharts.com/maps/modules/offline-exporting.js"></script>
 <script src="https://code.highcharts.com/maps/modules/accessibility.js"></script>
 
-<?php $this->load->view('app/observatorio/sig/highmaps/style_v') ?>
+<?php $this->load->view('app/geofocus/highmaps/style_v') ?>
 
 <script>
     // Declara la variable en el ámbito global, accesible para VueApp
@@ -60,7 +60,7 @@
             },
 
             series: [
-                /*{
+                {
                     type: 'tiledwebmap',
                     name: 'Basemap Tiles',
                     provider: {
@@ -68,7 +68,7 @@
                         theme: 'WorldGrayCanvas',
                     },
                     showInLegend: false
-                },*/
+                },
                 {
                     name: 'Localidades',
                     data: localidades,

@@ -3,34 +3,40 @@ var parametrizacionApp = createApp({
     data(){
         return{
             loading: false,
-            parametrizacion:{ id:1 },
+            priorizacion:{
+                id: 1,
+                slug: 'priorizacion-pruebas',
+                nombre: 'Priorización Pruebas',
+                descripcion: 'Priorización Pruebas'
+            },
             display: {
                 descripcion: false
             },
             currentVariable: {},
             variables: <?= json_encode($variables) ?>,
+            territorios: [],
         }
     },
     methods: {
-        handleSubmitAnt: function(){
-            this.loading = true
-            var formValues = new FormData(document.getElementById('parametrizacionForm'))
-            axios.post(URL_API + 'geofocus/calcular_priorizacion/' + this.parametrizacion.id, formValues)
-            .then(response => {
-                
-                this.loading = false
-            })
-            .catch( function(error) {console.log(error)} )
+        validateSubmit: function(){
+            if ( this.validateForm() ) {
+                this.submitForm()
+            } else {
+                toastr['warning']('No se pudo proocesar la petición')
+            }
         },
-        handleSubmit: function(){
+        submitForm: function(){
             this.loading = true
-            axios.post(URL_API + 'geofocus/calcular_priorizacion/' + this.parametrizacion.id, this.variables, {
-                headers: {
-                    'Content-Type': 'application/json'
-                }
+            var payload = {
+                'priorizacion': this.priorizacion,
+                'variables': this.variablesActivas
+            }
+            axios.post(URL_API + 'geofocus/calcular_priorizacion/', payload, {
+                headers: { 'Content-Type': 'application/json'}
             })
             .then(response => {
                 this.loading = false
+                this.territorios = response.data.territorios
             })
             .catch( function(error) {console.log(error)} )
         },
@@ -42,9 +48,17 @@ var parametrizacionApp = createApp({
                 variable.active = false;
             });
         },
+        validateForm: function(){
+            if ( this.variablesActivas.length == 0 ) return false
+            return true
+        },
+    },
+    computed: {
+        variablesActivas: function(){
+            return this.variables.filter(variable => variable.active == true)
+        },
     },
     mounted(){
-        //this.getList()
         this.startVariables()
     }
 }).mount('#parametrizacionApp')

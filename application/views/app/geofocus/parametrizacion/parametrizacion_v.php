@@ -1,14 +1,76 @@
+<style>
+/* HTML: <div class="loader"></div> */
+.loader {
+  width: 65px;
+  aspect-ratio: 1;
+  position: relative;
+}
+.loader:before,
+.loader:after {
+  content: "";
+  position: absolute;
+  border-radius: 50px;
+  box-shadow: 0 0 0 3px inset #fcdea0;
+  animation: l4 2.5s infinite;
+}
+.loader:after {
+  animation-delay: -1.25s;
+}
+@keyframes l4 {
+  0% {
+    inset: 0 35px 35px 0;
+  }
+  12.5% {
+    inset: 0 35px 0 0;
+  }
+  25% {
+    inset: 35px 35px 0 0;
+  }
+  37.5% {
+    inset: 35px 0 0 0;
+  }
+  50% {
+    inset: 35px 0 0 35px;
+  }
+  62.5% {
+    inset: 0 0 0 35px;
+  }
+  75% {
+    inset: 0 0 35px 35px;
+  }
+  87.5% {
+    inset: 0 0 35px 0;
+  }
+  100% {
+    inset: 0 35px 35px 0;
+  }
+}
+</style>
+
 <div id="parametrizacionApp">
     <div class="center_box_920">
         <div class="mb-2 d-flex justify-content-between">
             <div class="me-1">
                 <input type="checkbox" v-model="display.descripcion"> Descripción
             </div>
-            <button class="btn btn-light btn-lg" v-on:click="handleSubmit">
+            <button class="btn btn-light btn-lg" v-on:click="validateSubmit">
                 Calcular
             </button>
         </div>
-        <form accept-charset="utf-8" method="POST" id="parametrizacionForm" @submit.prevent="handleSubmit">
+
+        <div class="py-2">
+            Variables seleccionadas:
+            <span class="text-primary">
+                {{ variablesActivas.length }}
+            </span>
+        </div>
+
+        <div class="my-3 d-flex justify-content-center">
+            <div class="loader" v-show="loading"></div>
+        </div>
+
+
+        <form accept-charset="utf-8" method="POST" id="parametrizacionForm" @submit.prevent="validateSubmit">
             <fieldset v-bind:disabled="loading">
                 <table class="table bg-white table-sm">
                     <thead>
@@ -19,7 +81,7 @@
                         <th width="10px"></th>
                     </thead>
                     <tbody>
-                        <tr v-for="(variable, key) in variables" v-show="variable.estado == 'Disponible'">
+                        <tr v-for="(variable, key) in variables" v-show="variable.estado == 'Cargada'">
                             <td>
                                 <input type="checkbox" name="" id="" v-model="variable.active">
                             </td>
@@ -35,7 +97,7 @@
                                 </p>
                             </td>
                             <td>
-                                <div class="puntaje-slider" v-if="variable.estado == 'Disponible'">
+                                <div class="puntaje-slider" v-if="variable.estado == 'Cargada'">
                                     <input type="range" min="0" max="100" v-model="variable.puntaje"
                                         class="slider w-100" v-bind:name="variable.key">
                                 </div>
@@ -44,7 +106,8 @@
                                 {{ variable.puntaje }}
                             </td>
                             <td>
-                                <button class="a4" data-bs-toggle="modal" data-bs-target="#detallesModal" v-on:click="setCurrent(variable)">
+                                <button class="a4" data-bs-toggle="modal" data-bs-target="#detallesModal"
+                                    v-on:click="setCurrent(variable)">
                                     <i class="fas fa-file-alt"></i>
                                 </button>
                             </td>
@@ -115,6 +178,24 @@
             </div>
         </div>
     </div>
+
+    <div class="center_box_750">
+        <table class="table bg-white">
+            <thead>
+                <th>Orden</th>
+                <th>Barrio</th>
+                <th>Índice calculado</th>
+            </thead>
+            <tbody>
+                <tr v-for="(territorio, key) in territorios">
+                    <td>{{ territorio.orden }}</td>
+                    <td>{{ territorio.nombre }}</td>
+                    <td>{{ territorio.valor }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
 </div>
 
 <?php $this->load->view('app/geofocus/parametrizacion/vue_v') ?>

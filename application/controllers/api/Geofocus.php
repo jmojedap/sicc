@@ -29,30 +29,19 @@ class Geofocus extends CI_Controller{
 // Ejecución de cálculos
 //-----------------------------------------------------------------------------
 
-    function calcular_priorizacion($priorizacionId)
+    function calcular_priorizacion()
     {
-        //$data = $this->input->post();
-        //$data = $this->Geofocus_model->calcularPriorizacion($priorizacionId);
         // Obtener el contenido JSON enviado por POST
         $jsonData = file_get_contents("php://input");
-        $data = json_decode($jsonData, true);
+        $settings = json_decode($jsonData, true);
 
         // Verificar si la decodificación fue exitosa
         if (json_last_error() === JSON_ERROR_NONE) {
             // Proceso para organizar los datos
-            //$resultado = $this->organizar_datos($data);
-            //$resultado = $this->organizar_datos($data);
-
-            // Responder con el resultado organizado
-            $this->output
-                ->set_content_type('application/json')
-                ->set_output(json_encode([
-                    'status' => 'success',
-                    'data' => $data
-                ]));
+            $data = $this->Geofocus_model->calcularPriorizacion($settings);
         } else {
             $data = [
-                'status' => 'success',
+                'status' => 'error',
                 'message' => 'Datos JSON inválidos'
             ];
         }
