@@ -1,51 +1,4 @@
-<style>
-/* HTML: <div class="loader"></div> */
-.loader {
-  width: 65px;
-  aspect-ratio: 1;
-  position: relative;
-}
-.loader:before,
-.loader:after {
-  content: "";
-  position: absolute;
-  border-radius: 50px;
-  box-shadow: 0 0 0 3px inset #fcdea0;
-  animation: l4 2.5s infinite;
-}
-.loader:after {
-  animation-delay: -1.25s;
-}
-@keyframes l4 {
-  0% {
-    inset: 0 35px 35px 0;
-  }
-  12.5% {
-    inset: 0 35px 0 0;
-  }
-  25% {
-    inset: 35px 35px 0 0;
-  }
-  37.5% {
-    inset: 35px 0 0 0;
-  }
-  50% {
-    inset: 35px 0 0 35px;
-  }
-  62.5% {
-    inset: 0 0 0 35px;
-  }
-  75% {
-    inset: 0 0 35px 35px;
-  }
-  87.5% {
-    inset: 0 0 35px 0;
-  }
-  100% {
-    inset: 0 35px 35px 0;
-  }
-}
-</style>
+<?php $this->load->view('app/geofocus/parametrizacion/style_v') ?>
 
 <div id="parametrizacionApp">
     <div class="center_box_920">
@@ -86,7 +39,9 @@
                                 <input type="checkbox" name="" id="" v-model="variable.active">
                             </td>
                             <td>
-                                {{ variable.nombre }}
+                                <span class="pointer">
+                                    {{ variable.nombre }}
+                                </span>
                                 <p v-show="display.descripcion">
                                     <small class="text-muted">{{ variable.tema }}</small>
                                     &middot;
@@ -98,7 +53,7 @@
                             </td>
                             <td>
                                 <div class="puntaje-slider" v-if="variable.estado == 'Cargada'">
-                                    <input type="range" min="0" max="100" v-model="variable.puntaje"
+                                    <input class="range" type="range" min="0" max="100" v-model="variable.puntaje"
                                         class="slider w-100" v-bind:name="variable.key">
                                 </div>
                             </td>
@@ -106,7 +61,7 @@
                                 {{ variable.puntaje }}
                             </td>
                             <td>
-                                <button class="a4" data-bs-toggle="modal" data-bs-target="#detallesModal"
+                                <button class="a4" data-bs-toggle="modal" data-bs-target="#detallesModal" type="button"
                                     v-on:click="setCurrent(variable)">
                                     <i class="fas fa-file-alt"></i>
                                 </button>
