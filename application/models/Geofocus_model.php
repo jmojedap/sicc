@@ -1,6 +1,9 @@
 <?php
 class Geofocus_model extends CI_Model{
 
+    /**
+     * Datos básicos de una priorización
+     */
     function basic($priorizacionId)
     {
         $row = $this->Db_model->row_id('priorizaciones', $priorizacionId);
@@ -24,13 +27,14 @@ class Geofocus_model extends CI_Model{
     {
         $variables = $settings['variables'];
 
-        $params['puntajes'] = $this->getArrayPuntajes($variables);
-        $params['sum_puntajes'] = array_sum($params['puntajes']);
+        $params['puntajes'] = $this->getArrayPuntajes($variables);  //Simplificar variable_id => puntaje
+        $params['tipos_priorizacion'] = array_column($variables, 'tipo_priorizacion', 'id');    //Directa o inversa
+        $params['sum_puntajes'] = array_sum($params['puntajes']);   //Para hacer división final
         $params['condition'] = $this->getVariablesCondition($variables);
 
-        //Identificar terrotorios para procesar
+        //Identificar territorios para procesar
         $this->db->select('id, poligono_id, nombre');
-        $this->db->where('key_capa', 'barrios_planeacion_2023');
+        $this->db->where('key_capa', 'barrios_planeacion_2023'); //PENDIENTE AJUSTE
         $territorios = $this->db->get('gf_territorios');
 
         $arrTerritorios = [];
@@ -65,8 +69,9 @@ class Geofocus_model extends CI_Model{
      * Para un territorio específico calcula el valor de combinación
      * de los valores de las variables ponderadas (puntajes)
      * 2024-09-14
-     * @param object $rowTerritorio :: fila del territorio de se va a procesar
+     * @param object $rowTerritorio :: fila del territorio que se va a procesar
      * @param array $variables :: listado de variables
+     * @return float $valorCalculado :: Valor calculado tras combiación de valores, pesos y tipos
      */
     function calcularValorPonderado($rowTerritorio, $params)
     {
@@ -75,10 +80,12 @@ class Geofocus_model extends CI_Model{
         $valores = $this->db->get('gf_territorios_valor');
 
         $puntajes = $params['puntajes'];
+        $tiposPriorizacion = $params['tipos_priorizacion'];
 
         $valorCalculado = 0;
         foreach ($valores->result() as $rowValor) {
-            $valorCalculado += $rowValor->valor_normalizado * $puntajes[$rowValor->variable_id];
+            $valorCalculado += $rowValor->valor_normalizado * $puntajes[$rowValor->variable_id]
+                * $tiposPriorizacion[$rowValor->variable_id];
         }
 
         if ( $params['sum_puntajes'] != 0) {
@@ -89,16 +96,15 @@ class Geofocus_model extends CI_Model{
     }
 
     /**
-     * Array con los puntajes seleccionados para cada variable
+     * Array con los puntajes seleccionados para ponderar cada variable
+     * con llave variable_id y valor puntaje
+     * @param array $variables :: array completo de una variable
+     * @return array $puntajes :: array simplificado solo id => puntaje
      * 2024-09-14
      */
     function getArrayPuntajes($variables)
     {
-        $puntajes = [];
-        foreach ($variables as $item) {
-            $puntajes[$item['id']] = $item['puntaje'];
-        }
-
+        $puntajes = array_column($variables, 'puntaje', 'id');
         return $puntajes;
     }
 
@@ -110,7 +116,10 @@ class Geofocus_model extends CI_Model{
         return $condition;
     }
 
-
+    /**
+     * Array base del registro para la tabla gf_territorios_valor
+     * 2024-10-15
+     */
     function getRowBaseTerritoriosValor($priorizacion)
     {
         $aRow['variable_id'] = 0;
@@ -165,5 +174,51 @@ class Geofocus_model extends CI_Model{
         $territorios = $this->db->get('gf_territorios_valor');
 
         return $territorios;
+    }
+
+    /**
+     * Actualizar el valor de la gf_territorios_valor.valor_normalizado
+     * En una escala estandarizada mediante el método Z-score
+     * 2024-10-12
+     */
+    function normalizarVariable($variableId)
+    {
+        //Valor por defecto
+        $data = ['status' => 0, 'message' => 'No se ejecutó la normalización'];
+
+        //Seleccionar valores
+        $this->db->where('variable_id', $variableId);
+        $valores = $this->db->get('gf_territorios_valor');
+
+        //Estadísticos de la variable
+        $valorSummary = $this->pml->field_summary($valores, 'valor');
+
+        //Array inicial vacío para calcular
+        $valoresCalculados = [];
+        
+        if ( $valorSummary['std_dev'] > 0 )
+        {
+            //Recorrer valores y calcular valores estándar
+            foreach ($valores->result() as $rowValor) {
+                $aRow['id'] = $rowValor->id;
+                //Estandarización Z-Score
+                $aRow['valor_normalizado'] = ($rowValor->valor - $valorSummary['avg']) / $valorSummary['std_dev'];
+                $valoresCalculados[] =$aRow;
+            }
+    
+            // Actualización batch
+            $this->db->update_batch('gf_territorios_valor', $valoresCalculados, 'id');
+
+            //Preparación de respuesta
+            $data = [
+                'status' => 1,
+                'message' => 'Variable normalizada',
+                'valorSummary' => $valorSummary,
+                'affectedRows' => $this->db->affected_rows(),
+                'valoresCalculados' => $valoresCalculados
+            ];
+        }
+    
+        return $data;
     }
 }

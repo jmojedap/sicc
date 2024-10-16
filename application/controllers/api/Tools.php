@@ -93,7 +93,7 @@ class Tools extends CI_Controller{
      * @param string $table :: nombre de la tabla en la que se insertarán los registros
      * @return array $data :: Respuesta JSON del resultado
      */
-    function import_csv($folder, $fileName = 'file', $table = 'gf_territorios')
+    function import_csv($folder, $fileName = 'file', $table = 'gf_territorios_valor')
     {
         $array = $this->pml->csv_json(base_url("content/datos/{$folder}/{$fileName}.csv"));
         $this->db->insert_batch($table, $array);

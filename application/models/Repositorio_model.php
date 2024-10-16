@@ -136,7 +136,7 @@ class Repositorio_model extends CI_Model{
         }
         if ( $filters['repo_area'] != '' ) { $condition .= "sector_area = {$filters['repo_area']} AND "; }
         if ( $filters['fe1'] != '' ) { $condition .= "entidad_sigla = '{$filters['fe1']}' AND "; }
-        $condition .= "dependencia LIKE '%observatorio%' AND "; //SOLO LO DEL OBSERVATORIO 2024-02-06
+        //$condition .= "dependencia LIKE '%observatorio%' AND "; //SOLO LO DEL OBSERVATORIO 2024-02-06
 
         if ( $filters['u'] != '' ) { $condition .= "creator_id = {$filters['u']} AND "; }
         if ( $filters['condition'] != '' ) { $condition .= "{$filters['condition']} AND "; }

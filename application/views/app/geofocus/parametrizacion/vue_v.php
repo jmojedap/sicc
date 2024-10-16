@@ -2,6 +2,7 @@
 var parametrizacionApp = createApp({
     data(){
         return{
+            section: 'variables',
             loading: false,
             priorizacion:{
                 id: 1,
@@ -14,6 +15,7 @@ var parametrizacionApp = createApp({
             },
             currentVariable: {},
             variables: <?= json_encode($variables) ?>,
+            allSelected: false,
             territorios: [],
         }
     },
@@ -22,7 +24,7 @@ var parametrizacionApp = createApp({
             if ( this.validateForm() ) {
                 this.submitForm()
             } else {
-                toastr['warning']('No se pudo proocesar la petición')
+                toastr['warning']('No se pudo procesar la petición')
             }
         },
         submitForm: function(){
@@ -37,6 +39,7 @@ var parametrizacionApp = createApp({
             .then(response => {
                 this.loading = false
                 this.territorios = response.data.territorios
+                this.section = 'territorios'
             })
             .catch( function(error) {console.log(error)} )
         },
@@ -46,11 +49,34 @@ var parametrizacionApp = createApp({
         startVariables: function(){
             this.variables.forEach(variable => {
                 variable.active = false;
+                variable.tipo_priorizacion = 1;
             });
         },
         validateForm: function(){
             if ( this.variablesActivas.length == 0 ) return false
             return true
+        },
+        toggleSelectAll: function(){
+            this.variables.forEach(variable => {
+                variable.active = this.allSelected;
+            });
+        },
+        toggleActivateVariable: function(index){
+            this.variables[index].active = !this.variables[index].active
+        },
+        setTipoPriorizacion: function(index, newValue){
+            console.log(newValue)
+            this.variables[index].tipo_priorizacion = newValue
+        },
+        normalizarVariable: function(variable){
+            axios.get(URL_API + 'geofocus/normalizar_variable/' + variable.id)
+            .then(response => {
+                console.log(response.data)
+            })
+            .catch(function(error) { console.log(error) })
+        },
+        setSection: function(newSection){
+            this.section = newSection
         },
     },
     computed: {

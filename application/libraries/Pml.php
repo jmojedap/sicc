@@ -90,26 +90,51 @@ class Pml {
     }
 
     /**
-     * Array con suma, promedio, max y min de una variable numérica de un query
-     * 2021-02-04
+     * Array con suma, promedio, max, min, count y desviación estándar de 
+     * una variable numérica de un query
+     * 2024-10-05 IA
      */
     function field_summary($query, $field)
     {
         //Valores iniciales
-        $summary = array('sum' => 0,'avg' => 0,'min' => 0,'max' => 0,'count' => 0);
-        if ( $query->num_rows() > 0 ) { $summary['min'] = $query->row(0)->$field; }
+        $summary = ['sum' => 0,'avg' => 0,'min' => 0,'max' => 0,'count' => 0,'std_dev' => 0 // Desviación estándar
+        ];
 
-        //Recorrer query
-        foreach ($query->result() as $row)
-        {
-            $summary['sum'] += $row->$field;
-            if ( $row->$field > $summary['max'] ) $summary['max'] = $row->$field * 1;
-            if ( $row->$field < $summary['min'] ) $summary['min'] = $row->$field * 1;
-            if ( ! is_null($row->$field) ) $summary['count'] += 1;
+        // Si hay resultados, inicializar el mínimo
+        if ($query->num_rows() > 0) { 
+            $summary['min'] = $query->row(0)->$field; 
         }
 
-        //Calculando promedio
-        if ( $summary['count'] > 0 ) $summary['avg'] = $summary['sum'] / $summary['count'];
+        // Segunda pasada para calcular la varianza
+        $values = [];
+
+        // Recorrer query para obtener suma, min, max, count y almacenar valores
+        foreach ($query->result() as $row) {
+            $value = $row->$field;
+
+            $summary['sum'] += $value;
+
+            if ($value > $summary['max']) { $summary['max'] = $value; }
+            if ($value < $summary['min']) { $summary['min'] = $value; }
+            if (!is_null($value)) { $summary['count'] += 1; }
+
+            // Guardar los valores para cálculo de desviación estándar
+            $values[] = $value;
+        }
+
+        // Calculando promedio
+        if ($summary['count'] > 0) { $summary['avg'] = $summary['sum'] / $summary['count']; }
+
+        // Calcular la varianza (sumatoria de las diferencias cuadradas con la media)
+        if ($summary['count'] > 1) {
+            $variance_sum = 0;
+            foreach ($values as $value) {
+                $variance_sum += pow(($value - $summary['avg']), 2);
+            }
+
+            // Dividir entre el número de elementos y calcular la desviación estándar
+            $summary['std_dev'] = sqrt($variance_sum / $summary['count']);
+        }
 
         return $summary;
     }

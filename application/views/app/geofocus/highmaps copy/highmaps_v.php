@@ -12,19 +12,19 @@
 <script>
     // Declara la variable en el ámbito global, accesible para VueApp
     let mapChartBogota;
-    let barrios;
+    let localidades;
 
     (async () => {
         const mapData = await fetch(
-            '<?= URL_CONTENT ?>maps/barrios_bogota.json'
+            '<?= URL_CONTENT ?>maps/localidades_bogota_urbano.json'
         ).then(response => response.json());
-        barrios = Highcharts.geojson(mapData, 'map');
+        localidades = Highcharts.geojson(mapData, 'map');
 
         // Initialize the chart
         mapChartBogota = Highcharts.mapChart('container', {
 
             title: {
-                text: 'Barrios de Bogotá',
+                text: 'Localidades de Bogotá',
                 align: 'left'
             },
 
@@ -60,7 +60,7 @@
             },
 
             series: [
-                /*{
+                {
                     type: 'tiledwebmap',
                     name: 'Basemap Tiles',
                     provider: {
@@ -68,10 +68,10 @@
                         theme: 'WorldGrayCanvas',
                     },
                     showInLegend: false
-                },*/
+                },
                 {
-                    name: 'Barrios',
-                    data: barrios,
+                    name: 'Localidades',
+                    data: localidades,
                     borderColor: '#FFF',
                     nullColor: 'rgba(200, 200, 200, 0.3)',
                     showInLegend: true,
@@ -80,13 +80,12 @@
                         .get(),
                     states: {
                         hover: {
-                            color: '#C53C99',
-                            borderColor: '#FFF',
+                            color: '#C53C99'
                         }
                     },
                     dataLabels: {
-                        enabled: false,
-                        format: '{point.properties.BARRIO}',
+                        enabled: true,
+                        format: '{point.properties.NOMBRE}',
                         style: {
                             width: '80px', // force line-wrap
                             textTransform: 'uppercase',
@@ -96,8 +95,20 @@
                         }
                     },
                     tooltip: {
-                        pointFormat: '{point.properties.BARRIO}'
+                        pointFormat: '{point.properties.NOMBRE}'
                     }
+                },
+                {
+                    // Specify cities using lat/lon
+                    type: 'mappoint',
+                    name: 'Barrios',
+                    dataLabels: {
+                        format: '{point.id}'
+                    },
+                    // Use id instead of name to allow for referencing points later
+                    // using
+                    // chart.get
+                    data: []
                 }
             ]
         });
@@ -112,7 +123,7 @@
     </div>
     <div id="container"></div>
     <div>
-        {{ barrios.length }}
+        {{ puntos }}
     </div>
 </div>
 
@@ -126,15 +137,14 @@ var highMapsApp = createApp({
                 { id: 'Centro', lat: 4.5, lon: -74.1 },
                 { id: 'La playa', lat: 4.5, lon: -74.2 }
             ],
-            barrios: [],
+            localidades: [],
         }
     },
     methods: {
         setPuntos: function(){
-            /*console.log(this.puntos)
+            console.log(this.puntos)
             mapChartBogota.series[1].update({data: this.puntos})
-            console.log(barrios)*/
-            console.log('Cantidad barrios: ', barrios.length)
+            console.log(localidades)
         },
     },
     mounted(){

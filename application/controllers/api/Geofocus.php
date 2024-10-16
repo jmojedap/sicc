@@ -50,4 +50,17 @@ class Geofocus extends CI_Controller{
         $this->output->set_content_type('application/json')->set_output(json_encode($data));
     }
 
+    /**
+     * Actualizar el valor de la gf_territorios_valor.valor_normalizado
+     * En una escala estandarizada mediante el método Z-score
+     * 2024-10-12
+     */
+    function normalizar_variable($variableId)
+    {
+        $data = $this->Geofocus_model->normalizarVariable($variableId);
+
+        //Salida JSON
+        $this->output->set_content_type('application/json')->set_output(json_encode($data));
+    }
+
 }

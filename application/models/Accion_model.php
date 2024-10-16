@@ -474,7 +474,7 @@ class Accion_model extends CI_Model{
 
         $this->db->select('*');
         $this->db->where($condition);
-        $this->db->limit(5000);
+        $this->db->limit(10000);
         $details = $this->db->get('mecc_acciones_detalle');
     
         return $details;
