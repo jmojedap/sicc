@@ -43,6 +43,9 @@ class Geofocus extends CI_Controller{
         $filePath = PATH_CONTENT . 'json/geofocus/variables.json';
         $data['variables'] = $this->App_model->getJsonContent($filePath);
 
+        
+        $data['localidades'] = $this->App_model->getJsonContent(PATH_CONTENT . 'json/sig/localidades.json');
+
         $this->App_model->view('templates/easypml/minimal', $data);
     }
 

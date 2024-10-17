@@ -1,5 +1,11 @@
 <style>
-    .table
+    .selector-tipo{
+        font-size: 1.2em;
+    }
+
+    .text-off{
+        color: #ADB3B8;
+    }
 
     .range {
         width: 100%;

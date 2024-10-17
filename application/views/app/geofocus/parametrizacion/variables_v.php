@@ -31,7 +31,7 @@
                     <th>Variable</th>
                     <th>Tema</th>
                     <th width="200px"></th>
-                    <th width="10px">Tipo</th>
+                    <th width="70px">Tipo</th>
                     <th width="10px">Puntaje</th>
                     <th width="10px"></th>
                     <th width="10px">
@@ -43,18 +43,10 @@
                         <td v-bind:class="{'table-info': variable.active }">
                             <input type="checkbox" v-model="variable.active">
                         </td>
-                        <td v-bind:class="{'table-info': variable.active }">
-                            <span class="pointer" v-on:click="toggleActivateVariable(key)">
+                        <td v-bind:class="{'table-info': variable.active }" class="pointer" v-on:click="toggleActivateVariable(key)">
+                            <span>
                                 {{ variable.nombre }}
                             </span>
-                            <p v-show="display.descripcion">
-                                <small class="text-muted">{{ variable.tema }}</small>
-                                &middot;
-                                <small class="text-muted">{{ variable.entidad }}</small>
-                            </p>
-                            <p v-show="display.descripcion">
-                                {{ variable.descripcion }}
-                            </p>
                         </td>
                         <td>
                             {{ variable.tema }}
@@ -66,13 +58,13 @@
                             </div>
                         </td>
                         <td class="text-center">
-                            <span v-show="variable.active">
-                                <i class="fas fa-arrow-circle-up text-info pointer" v-show="variable.tipo_priorizacion == 1"
-                                    v-on:click="setTipoPriorizacion(key, -1)" 
-                                    title="Priorización directa, valores más altos"></i>
-                                <i class="fas fa-arrow-circle-down text-warning pointer" v-show="variable.tipo_priorizacion == -1"
+                            <span v-show="variable.active" class="selector-tipo">
+                                <i class="fas fa-arrow-circle-up pointer me-1" v-bind:class="{'text-info': variable.tipo_priorizacion == 1, 'text-off': variable.tipo_priorizacion == -1 }"
                                     v-on:click="setTipoPriorizacion(key, 1)" 
-                                    title="Priorización inversa, valores más bajos"></i>
+                                    title="Directa, priorizar territorios con valores más altos"></i>
+                                <i class="fas fa-arrow-circle-down pointer" v-bind:class="{'text-warning': variable.tipo_priorizacion == -1, 'text-off': variable.tipo_priorizacion == 1 }"
+                                    v-on:click="setTipoPriorizacion(key, -1)" 
+                                    title="Inversa, priorizar territorios con valores más bajos"></i>
                             </span>
                         </td>
                         <td class="text-center">

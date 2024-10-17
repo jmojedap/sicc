@@ -17,6 +17,7 @@ var parametrizacionApp = createApp({
             variables: <?= json_encode($variables) ?>,
             allSelected: false,
             territorios: [],
+            localidades: <?= json_encode($localidades) ?>,
         }
     },
     methods: {
@@ -77,6 +78,12 @@ var parametrizacionApp = createApp({
         },
         setSection: function(newSection){
             this.section = newSection
+        },
+        localidadValor: function(codLocalidad = '', field = 'nombre'){
+            var localidadValor = '-'
+            var localidad = this.localidades.find(row => row.cod_localidad == codLocalidad)
+            if ( localidad != undefined ) localidadValor = localidad[field]
+            return localidadValor
         },
     },
     computed: {
