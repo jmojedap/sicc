@@ -17,6 +17,50 @@ class Geofocus_model extends CI_Model{
         return $data;
     }
 
+// CRUD PRIORIZACIONES
+//-----------------------------------------------------------------------------
+
+    /**
+     * Devolver listado de priorizaciones en la base de datos
+     * 2024-10-17
+     */
+    function get_priorizaciones()
+    {
+        $this->db->limit(150);
+        $priorizaciones = $this->db->get('gf_priorizaciones');
+        return $priorizaciones;
+    }
+
+    /**
+     * Guardar un registro en la tabla gf_priorizaciones
+     * 2024-10-17
+     */
+    function save_priorizacion($arr_row = null)
+    {
+        //Verificar si hay array con registro
+        if ( is_null($arr_row) ) $arr_row = $this->Db_model->arr_row();
+
+        //Verificar si tiene id definido, insertar o actualizar
+        if ( ! isset($arr_row['id']) ) 
+        {
+            //No existe, insertar
+            $this->db->insert('gf_priorizaciones', $arr_row);
+            $priorizacionId = $this->db->insert_id();
+        } else {
+            //Ya existe, editar
+            $priorizacionId = $arr_row['id'];
+            unset($arr_row['id']);
+
+            $this->db->where('id', $priorizacionId)->update('gf_priorizaciones', $arr_row);
+        }
+
+        $data['saved_id'] = $priorizacionId;
+        return $data;
+    }
+
+// CÁLCULOS DE PRIORIZACION
+//-----------------------------------------------------------------------------
+
     /**
      * Calcular la priorización
      * @param array $settings :: Variables de configuración de la solicitud de cálculo

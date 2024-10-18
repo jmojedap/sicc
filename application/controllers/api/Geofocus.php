@@ -26,6 +26,33 @@ class Geofocus extends CI_Controller{
         }
     }
 
+// CRUD Priorizaciones
+//-----------------------------------------------------------------------------
+
+    /**
+     * Listado de priorizaciones
+     * 2024-10-17
+     */
+    function get_priorizaciones()
+    {
+        $priorizaciones = $this->Geofocus->get();
+        $data['list'] = $priorizaciones->result();
+        //Salida JSON
+        $this->output->set_content_type('application/json')->set_output(json_encode($data));
+    }
+
+    /**
+     * AJAX JSON
+     * Crear o actualizar el registro de una priorización
+     * 2024-10-17
+     */
+    function save_priorizacion()
+    {
+        $data = $this->Geofocus_model->save_priorizacion();
+        $this->output->set_content_type('application/json')->set_output(json_encode($data));
+    }
+
+
 // Ejecución de cálculos
 //-----------------------------------------------------------------------------
 

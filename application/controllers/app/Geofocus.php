@@ -26,6 +26,20 @@ class Geofocus extends CI_Controller{
             redirect("app/geofocus/priorizaciones/{$priorizacion_id}");
         }
     }
+
+// CRUD Priorizaciones
+//-----------------------------------------------------------------------------
+
+    function priorizaciones()
+    {
+        $data['elementos'] = $this->Geofocus_model->get_priorizaciones();
+
+        $data['head_title'] = 'Priorizaciones';
+        $data['view_a'] = $this->views_folder . 'priorizaciones/priorizaciones_v';
+        //$data['nav_2'] = '';
+
+        $this->App_model->view('templates/easypml/minimal', $data);
+    }
     
 
 // Priorización geográfica
