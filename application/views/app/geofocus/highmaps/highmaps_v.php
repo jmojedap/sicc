@@ -16,12 +16,20 @@
 
     (async () => {
         const mapData = await fetch(
-            '<?= URL_CONTENT ?>maps/barrios_bogota.json'
+            '<?= URL_CONTENT ?>maps/barrios_bogota_geofocus_urbano.json'
         ).then(response => response.json());
         barrios = Highcharts.geojson(mapData, 'map');
 
+        const territoriosData = await fetch(
+            'http://localhost/sicc/api/geofocus/get_variable_valores/priorizacion_id/1'
+        ).then(response => response.json());
+
         // Initialize the chart
         mapChartBogota = Highcharts.mapChart('container', {
+            chart: {
+                map: mapData,
+                height: '80%'
+            },
 
             title: {
                 text: 'Barrios de Bogotá',
@@ -42,6 +50,17 @@
 
             mapNavigation: {
                 enabled: true
+            },
+
+            colorAxis: {
+                min: -1,
+                max: 4,
+                tickInterval: 1,
+                /*stops: [[0, '#F1EEF6'], [0.65, '#900037'], [1, '#500007']],*/
+                stops: [[0, '#F1EEF6'], [0.65, '#AA0066']],
+                labels: {
+                    format: '{value}'
+                }
             },
 
             /*tooltip: {
@@ -70,6 +89,29 @@
                     showInLegend: false
                 },*/
                 {
+                    data: territoriosData,
+                    joinBy: ['ID_BARRIO', 'code'],
+                    name: 'Puntaje',
+                    tooltip: {
+                        valueSuffix: ''
+                    },
+                    borderWidth: 0.5,
+                    shadow: false,
+                    accessibility: {
+                        enabled: false
+                    }
+                },
+                {
+                    type: 'mapline',
+                    name: 'Barrios',
+                    color: 'white',
+                    shadow: false,
+                    borderWidth: 5,
+                    accessibility: {
+                        enabled: false
+                    }
+                }
+                /*{
                     name: 'Barrios',
                     data: barrios,
                     borderColor: '#FFF',
@@ -98,7 +140,7 @@
                     tooltip: {
                         pointFormat: '{point.properties.BARRIO}'
                     }
-                }
+                }*/
             ]
         });
     })();

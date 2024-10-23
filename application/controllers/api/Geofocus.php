@@ -90,4 +90,18 @@ class Geofocus extends CI_Controller{
         $this->output->set_content_type('application/json')->set_output(json_encode($data));
     }
 
+    function get_variable_valores($field = 'priorizacion_id', $fieldValue = 1)
+    {
+        $this->db->select('gf_territorios.poligono_id AS code, gf_territorios.nombre AS name, gf_territorios_valor.valor AS value');
+        $this->db->join('gf_territorios', 'gf_territorios.poligono_id = gf_territorios_valor.poligono_id', 'left');
+        $this->db->where($field, $fieldValue);
+        $this->db->order_by('gf_territorios_valor.valor', 'DESC');
+        $this->db->limit(500);
+        $valores = $this->db->get('gf_territorios_valor');
+
+        $data = $valores->result();
+        //Salida JSON
+        $this->output->set_content_type('application/json')->set_output(json_encode($data));
+    }
+
 }
