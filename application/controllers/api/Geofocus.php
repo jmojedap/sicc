@@ -99,7 +99,7 @@ class Geofocus extends CI_Controller{
         $this->db->limit(500);
         $valores = $this->db->get('gf_territorios_valor');
 
-        $data = $valores->result();
+        $data['valores'] = $valores->result();
         //Salida JSON
         $this->output->set_content_type('application/json')->set_output(json_encode($data));
     }

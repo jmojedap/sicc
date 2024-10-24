@@ -1,9 +1,5 @@
-<script src="https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.10.0/proj4.js"
-    integrity="sha512-e3rsOu6v8lmVnZylXpOq3DO/UxrCgoEMqosQxGygrgHlves9HTwQzVQ/dLO+nwSbOSAecjRD7Y/c4onmiBVo6w=="
-    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script src="https://code.highcharts.com/maps/highmaps.js"></script>
 <script src="https://code.highcharts.com/maps/modules/exporting.js"></script>
-<script src="https://code.highcharts.com/maps/modules/tiledwebmap.js"></script>
 <script src="https://code.highcharts.com/maps/modules/offline-exporting.js"></script>
 <script src="https://code.highcharts.com/maps/modules/accessibility.js"></script>
 
@@ -13,24 +9,28 @@
     // Declara la variable en el ámbito global, accesible para VueApp
     let mapChartBogota;
     let barrios;
+    const URL_CONTENT = '<?= URL_CONTENT ?>';
 
+    // Preparación del mapa
+    //-----------------------------------------------------------------------------
     (async () => {
-        const mapData = await fetch(
-            '<?= URL_CONTENT ?>maps/barrios_bogota_geofocus_urbano.json'
-        ).then(response => response.json());
+        const mapData = await fetch(URL_CONTENT + 'maps/barrios_bogota_geofocus_urbano.json')
+        .then(response => response.json());
         barrios = Highcharts.geojson(mapData, 'map');
 
-        const territoriosData = await fetch(
+        let territoriosData = await fetch(
             'http://localhost/sicc/api/geofocus/get_variable_valores/priorizacion_id/1'
-        ).then(response => response.json());
+        )
+        .then(response => response.json())
+        .then(data => data.valores);
 
         // Initialize the chart
         mapChartBogota = Highcharts.mapChart('container', {
             chart: {
                 map: mapData,
-                height: '80%'
+                height: '80%',
+                backgroundColor: '#FCFCFC'  // Cambiar el color de fondo
             },
-
             title: {
                 text: 'Barrios de Bogotá',
                 align: 'left'
@@ -53,8 +53,8 @@
             },
 
             colorAxis: {
-                min: -1,
-                max: 4,
+                min: 0,
+                max: 9,
                 tickInterval: 1,
                 /*stops: [[0, '#F1EEF6'], [0.65, '#900037'], [1, '#500007']],*/
                 stops: [[0, '#F1EEF6'], [0.65, '#AA0066']],
@@ -62,11 +62,6 @@
                     format: '{value}'
                 }
             },
-
-            /*tooltip: {
-                // Cambiamos el formato para que muestre el nombre del polígono
-                pointFormat: '{point.properties.NOMBRE}'
-            },*/
 
             plotOptions: {
                 series: {
@@ -79,15 +74,6 @@
             },
 
             series: [
-                /*{
-                    type: 'tiledwebmap',
-                    name: 'Basemap Tiles',
-                    provider: {
-                        type: 'Esri',
-                        theme: 'WorldGrayCanvas',
-                    },
-                    showInLegend: false
-                },*/
                 {
                     data: territoriosData,
                     joinBy: ['ID_BARRIO', 'code'],
@@ -111,36 +97,6 @@
                         enabled: false
                     }
                 }
-                /*{
-                    name: 'Barrios',
-                    data: barrios,
-                    borderColor: '#FFF',
-                    nullColor: 'rgba(200, 200, 200, 0.3)',
-                    showInLegend: true,
-                    color: Highcharts.color("#D9D2E9")
-                        .setOpacity(0.75)
-                        .get(),
-                    states: {
-                        hover: {
-                            color: '#C53C99',
-                            borderColor: '#FFF',
-                        }
-                    },
-                    dataLabels: {
-                        enabled: false,
-                        format: '{point.properties.BARRIO}',
-                        style: {
-                            width: '80px', // force line-wrap
-                            textTransform: 'uppercase',
-                            fontWeight: 'normal',
-                            textOutline: 'none',
-                            color: '#888'
-                        }
-                    },
-                    tooltip: {
-                        pointFormat: '{point.properties.BARRIO}'
-                    }
-                }*/
             ]
         });
     })();
@@ -148,14 +104,11 @@
 
 <div id="highMapsApp">
     <div class="d-flex">
-        <button class="btn btn-light" v-on:click="setPuntos" id="get-points">
+        <button class="btn btn-light" v-on:click="updateCapa" id="get-points">
             Actualizar
         </button>
     </div>
     <div id="container"></div>
-    <div>
-        {{ barrios.length }}
-    </div>
 </div>
 
 <script>
@@ -173,10 +126,24 @@ var highMapsApp = createApp({
     },
     methods: {
         setPuntos: function(){
-            /*console.log(this.puntos)
+            console.log(this.puntos)
             mapChartBogota.series[1].update({data: this.puntos})
-            console.log(barrios)*/
-            console.log('Cantidad barrios: ', barrios.length)
+            //console.log(barrios)
+            //console.log('Cantidad barrios: ', barrios.length)
+        },
+        updateCapa: function(){
+            axios.get(URL_API + 'geofocus/get_variable_valores/variable_id/24')
+            .then(response => {
+                mapChartBogota.series[0].update({data: response.data['valores']})
+                // Actualizar el valor 'max' de colorAxis
+                mapChartBogota.colorAxis[0].update({
+                    max: 100000000,
+                    tickInterval: 10000000,
+                });
+                
+                console.log(mapChartBogota.colorAxis[0].max);
+            })
+            .catch(function(error) { console.log(error) })
         },
     },
     mounted(){
