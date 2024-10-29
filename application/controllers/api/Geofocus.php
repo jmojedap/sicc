@@ -35,7 +35,7 @@ class Geofocus extends CI_Controller{
      */
     function get_priorizaciones()
     {
-        $priorizaciones = $this->Geofocus->get();
+        $priorizaciones = $this->Geofocus_model->get_priorizaciones();
         $data['list'] = $priorizaciones->result();
         //Salida JSON
         $this->output->set_content_type('application/json')->set_output(json_encode($data));
@@ -49,6 +49,26 @@ class Geofocus extends CI_Controller{
     function save_priorizacion()
     {
         $data = $this->Geofocus_model->save_priorizacion();
+        $this->output->set_content_type('application/json')->set_output(json_encode($data));
+    }
+
+    /**
+     * AJAX
+     * Eliminar un registro, devuelve la cantidad de registros eliminados
+     * 2024-10-28
+     */
+    function delete_priorizacion($priorizacionId, $creatorId)
+    {
+        $condition = "id = {$priorizacionId} AND creator_id = {$creatorId}";
+        
+        $this->db->where($condition);
+        $rows = $this->db->get('gf_priorizaciones');
+        $data['qty_deleted'] = 0;
+
+        foreach ($rows->result() as $row) {
+            $data['qty_deleted'] += $this->Geofocus_model->delete($row->id);
+        }
+        
         $this->output->set_content_type('application/json')->set_output(json_encode($data));
     }
 
@@ -66,6 +86,11 @@ class Geofocus extends CI_Controller{
         if (json_last_error() === JSON_ERROR_NONE) {
             // Proceso para organizar los datos
             $data = $this->Geofocus_model->calcularPriorizacion($settings);
+
+            // Preparar los datos para insertar en la base de datos
+            $aRow['configuracion'] = json_encode($settings['variables']); // Guardar el JSON original
+            $aRow['id'] = $settings['priorizacion']['id'];
+            $daa['saved_id'] = $this->Geofocus_model->save_priorizacion($aRow);
         } else {
             $data = [
                 'status' => 'error',

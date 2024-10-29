@@ -4,6 +4,7 @@
 <?php $this->load->view('app/geofocus/priorizaciones/style_v') ?>
 
 <div id="priorizacionesApp">
+    
     <div class="text-center" v-show="loading">
         <div class="spinner-border text-secondary" role="status">
             <span class="visually-hidden">Loading...</span>
@@ -19,9 +20,15 @@
             </button>
         </div>
 
+        <button class="btn btn-lg btn-light w150p" v-on:click="clearForm()">
+            <i class="fas fa-plus"></i>
+            Nueva
+        </button>
+        
         <p class="text-center"><strong class="color-text-1">
-                {{ elementosFiltrados.length }}</strong> resultados
+            {{ elementosFiltrados.length }}</strong> resultados
         </p>
+
 
         <!-- LISTA DE PRIORIZACIONES -->
         <div v-show="section == 'lista'">
@@ -29,7 +36,7 @@
                 <div class="col-md-1">
                     <span class="badge bg-primary">{{ elemento['id'] }}</span>
                 </div>
-                <div class="col-md-10">
+                <div class="col-md-9">
                     <h5 class="card-title text-main">
                         <a v-bind:href="`<?= URL_APP ?>geofocus/parametrizacion/` + elemento['id']"
                             v-bind:title="`[` + elemento['id'] + `] ` + elemento['nombre']">
@@ -37,17 +44,23 @@
                         </a>
                     </h5>
                     {{ elemento['descripcion'] }}
-                    
+                    <br>
+                    <span class="text-muted">Creada por: </span>
+                    <span class="text-primary">{{ elemento.creator_username }}</span>
                 </div>
-                <div class="col-md-1 text-end">
-                    <button class="a4" v-on:click="goToEditForm(elemento['id'])">
+                <div class="col-md-2 text-end">
+                    <button class="a4 me-1" v-on:click="goToEditForm(elemento['id'])">
                         <i class="fas fa-pencil-alt"></i>
+                    </button>
+                    <button class="a4" v-on:click="setCurrent(elemento['id'])" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                        <i class="fas fa-trash"></i>
                     </button>
                 </div>
             </div>
         </div>
 
         <?php $this->load->view('app/geofocus/priorizaciones/form_v') ?>
+        <?php $this->load->view('common/bs5/modal_single_delete_v') ?>
 
     </div>
 </div>

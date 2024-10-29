@@ -21,7 +21,7 @@ class Geofocus extends CI_Controller{
     function index($priorizacion_id = NULL)
     {
         if ( is_null($priorizacion_id) ) {
-            redirect("app/geofocus/inicio/");
+            redirect("app/geofocus/priorizaciones/");
         } else {
             redirect("app/geofocus/priorizaciones/{$priorizacion_id}");
         }

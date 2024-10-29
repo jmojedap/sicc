@@ -26,14 +26,18 @@ class Geofocus_model extends CI_Model{
      */
     function get_priorizaciones()
     {
+        $this->db->select('gf_priorizaciones.*, users.username AS creator_username');
         $this->db->limit(150);
+        $this->db->order_by('updated_at', 'DESC');
+        $this->db->join('users', 'gf_priorizaciones.creator_id = users.id', 'left');
+        
         $priorizaciones = $this->db->get('gf_priorizaciones');
         return $priorizaciones;
     }
 
     /**
      * Guardar un registro en la tabla gf_priorizaciones
-     * 2024-10-17
+     * 2024-10-28
      */
     function save_priorizacion($arr_row = null)
     {
@@ -41,7 +45,7 @@ class Geofocus_model extends CI_Model{
         if ( is_null($arr_row) ) $arr_row = $this->Db_model->arr_row();
 
         //Verificar si tiene id definido, insertar o actualizar
-        if ( ! isset($arr_row['id']) ) 
+        if ( ! isset($arr_row['id']) || $arr_row['id'] == 0 ) 
         {
             //No existe, insertar
             $this->db->insert('gf_priorizaciones', $arr_row);
@@ -56,6 +60,57 @@ class Geofocus_model extends CI_Model{
 
         $data['saved_id'] = $priorizacionId;
         return $data;
+    }
+
+// ELIMINAR PRIORIZACIÓN
+//-----------------------------------------------------------------------------
+    
+    /**
+     * Verifica si el usuario en sesión tiene permiso para eliminar un registro
+     * tabla gf_priorización
+     * 2024-10-28
+     */
+    function deleteable($priorizacionId)
+    {
+        $row = $this->Db_model->row_id('gf_priorizaciones', $priorizacionId);
+
+        $deleteable = 0;    //Valor por defecto
+
+        //Es Administrador
+        if ( in_array($this->session->userdata('role'), [1,2,3]) ) {
+            $deleteable = 1;
+        }
+
+        //Es el creador
+        if ( $row->creator_id = $this->session->userdata('user_id') ) {
+            $deleteable = 1;
+        }
+
+        return $deleteable;
+    }
+
+    /**
+     * Eliminar un post de la base de datos, se eliminan registros de tablas
+     * relacionadas
+     * 2022-08-20
+     */
+    function delete($priorizacionId)
+    {
+        $qty_deleted = 0;
+
+        if ( $this->deleteable($priorizacionId) ) 
+        {
+            //Tablas relacionadas
+                $this->db->where('priorizacion_id', $priorizacionId)->delete('gf_territorios_valor');
+                //$this->db->where('priorizacionId', $priorizacionId)->delete('post_meta');
+            
+            //Tabla principal
+                $this->db->where('id', $priorizacionId)->delete('gf_priorizaciones');
+
+            $qty_deleted = $this->db->affected_rows();  //De la última consulta, tabla principal
+        }
+
+        return $qty_deleted;
     }
 
 // CÁLCULOS DE PRIORIZACION

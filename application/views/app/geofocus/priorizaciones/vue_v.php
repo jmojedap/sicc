@@ -1,5 +1,8 @@
 <script>
 const elementos = <?= json_encode($elementos->result()) ?>;
+const newElement = {
+    id:0, nombre: '', descripcion:''
+}
 
 // VueApp
 //-----------------------------------------------------------------------------
@@ -51,6 +54,7 @@ var priorizacionesApp = createApp({
                     toastr['success']('Guardado')
                 }
                 this.loading = false
+                this.getList()
             })
             .catch( function(error) {console.log(error)} )
         },
@@ -58,6 +62,29 @@ var priorizacionesApp = createApp({
             console.log(priorizacionId)
             this.setCurrent(priorizacionId)
             this.section = 'form'
+        },
+        clearForm: function(){
+            this.currentElement = newElement
+            this.setSection('form')
+        },
+        deleteElement: function(){
+            axios.get(URL_API + 'geofocus/delete_priorizacion/' + this.currentElement['id'] + '/' + this.currentElement['creator_id'])
+            .then(response => {
+                if ( response.data.qty_deleted > 0 ) {
+                    toastr['info']('Priorización eliminada')
+                    this.getList()
+                }
+            })
+            .catch(function(error) { console.log(error) })
+        },
+        getList: function(){
+            this.loading = true
+            axios.get(URL_API + 'geofocus/get_priorizaciones/')
+            .then(response => {
+                this.elementos = response.data.list
+                this.loading = false
+            })
+            .catch(function(error) { console.log(error) })
         },
     },
     computed: {
