@@ -28,9 +28,14 @@
                             <td>{{ currentVariable.entidad }}</td>
                         </tr>
                         <tr>
+                            <td class="td-title">Unidad de medida</td>
+                            <td>{{ currentVariable.unidad_medida }}</td>
+                        </tr>
+                        
+                        <tr>
                             <td class="td-title">Min</td>
                             <td>
-                                {{ currentVariable.min }}
+                                {{ currentVariable.minimo }}
                             </td>
                         </tr>
                         <tr>
@@ -48,7 +53,7 @@
                         <tr>
                             <td class="td-title">Máx</td>
                             <td>
-                                {{ currentVariable.max }}
+                                {{ currentVariable.maximo }}
                             </td>
                         </tr>
                         <tr>
@@ -56,8 +61,8 @@
                             <td>{{ currentVariable.datos_origen }}</td>
                         </tr>
                         <tr>
-                            <td class="td-title">key</td>
-                            <td>{{ currentVariable.key }}</td>
+                            <td class="td-title">clave</td>
+                            <td>{{ currentVariable.clave }}</td>
                         </tr>
                     </table>
                 </div>

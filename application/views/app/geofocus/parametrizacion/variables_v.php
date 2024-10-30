@@ -1,19 +1,16 @@
 <div v-show="section == 'variables'">
     <div class="mb-2 d-flex justify-content-between">
-        <div class="me-1">
-            <input type="checkbox" v-model="display.descripcion"> Descripción
+        <div class="py-2">
+            Variables seleccionadas:
+            <span class="text-primary">
+                {{ variablesActivas.length }}
+            </span>
         </div>
         <button class="btn btn-warning btn-lg" v-on:click="validateSubmit">
             Calcular
         </button>
     </div>
 
-    <div class="py-2">
-        Variables seleccionadas:
-        <span class="text-primary">
-            {{ variablesActivas.length }}
-        </span>
-    </div>
 
     <form accept-charset="utf-8" method="POST" id="parametrizacionForm" @submit.prevent="validateSubmit">
         <fieldset v-bind:disabled="loading">

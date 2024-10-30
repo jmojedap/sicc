@@ -49,15 +49,13 @@ class Geofocus extends CI_Controller{
      * Vista de la herramienta de priorización geográfica distrital
      * 2024-08-17
      */
-    function parametrizacion()
+    function parametrizacion($priorizacionId)
     {
-        $data['head_title'] = 'Parametrización Geofocus';
+        $data = $this->Geofocus_model->basic($priorizacionId);
         $data['view_a'] = $this->views_folder . 'parametrizacion/parametrizacion_v';
 
         $filePath = PATH_CONTENT . 'json/geofocus/variables.json';
         $data['variables'] = $this->App_model->getJsonContent($filePath);
-
-        
         $data['localidades'] = $this->App_model->getJsonContent(PATH_CONTENT . 'json/sig/localidades.json');
 
         $this->App_model->view('templates/easypml/minimal', $data);

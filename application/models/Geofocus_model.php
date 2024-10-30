@@ -6,13 +6,13 @@ class Geofocus_model extends CI_Model{
      */
     function basic($priorizacionId)
     {
-        $row = $this->Db_model->row_id('priorizaciones', $priorizacionId);
+        $row = $this->Db_model->row_id('gf_priorizaciones', $priorizacionId);
 
         $data['row'] = $row;
-        $data['type_folder'] = $this->type_folder($row->type_id);
-        $data['head_title'] = $data['row']->post_name;
-        $data['view_a'] = $this->views_folder . 'post_v';
-        $data['nav_2'] = $data['type_folder'] . 'menu_v';
+        //$data['type_folder'] = $this->type_folder($row->type_id);
+        $data['head_title'] = $data['row']->nombre;
+        $data['view_a'] = $this->views_folder . 'priorizacion_v';
+        //$data['nav_2'] = $data['type_folder'] . 'menu_v';
 
         return $data;
     }
@@ -169,7 +169,7 @@ class Geofocus_model extends CI_Model{
      * de los valores de las variables ponderadas (puntajes)
      * 2024-09-14
      * @param object $rowTerritorio :: fila del territorio que se va a procesar
-     * @param array $variables :: listado de variables
+     * @param array $params :: listado de parámetros y variables de cálculo
      * @return float $valorCalculado :: Valor calculado tras combiación de valores, pesos y tipos
      */
     function calcularValorPonderado($rowTerritorio, $params)
@@ -222,7 +222,7 @@ class Geofocus_model extends CI_Model{
     function getRowBaseTerritoriosValor($priorizacion)
     {
         $aRow['variable_id'] = 0;
-        $aRow['variable_key'] = $priorizacion['slug'];
+        $aRow['variable_key'] = $priorizacion['clave'];
         $aRow['priorizacion_id'] = $priorizacion['id'];
 
         return $aRow;
@@ -276,7 +276,7 @@ class Geofocus_model extends CI_Model{
     }
 
     /**
-     * Actualizar el valor de la gf_territorios_valor.valor_normalizado
+     * Actualizar el valor del campo gf_territorios_valor.valor_normalizado
      * En una escala estandarizada mediante el método Z-score
      * 2024-10-12
      */

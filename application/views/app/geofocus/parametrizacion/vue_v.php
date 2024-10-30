@@ -1,18 +1,23 @@
+<?php
+    $variablesParametrizadas = '[]';
+    if ( strlen($row->configuracion) > 0 ) {
+        $variablesParametrizadas = $row->configuracion;
+    }
+?>
+
 <script>
+// VueApp
+//-----------------------------------------------------------------------------
 var parametrizacionApp = createApp({
     data(){
         return{
             section: 'variables',
             loading: false,
-            priorizacion:{
-                id: 1,
-                slug: 'priorizacion-pruebas',
-                nombre: 'Priorización Pruebas',
-                descripcion: 'Priorización Pruebas'
-            },
+            priorizacion: <?= json_encode($row) ?>,
             display: {
                 descripcion: false
             },
+            variablesParametrizadas: <?= $variablesParametrizadas ?>,
             currentVariable: {},
             variables: <?= json_encode($variables) ?>,
             allSelected: false,
@@ -49,8 +54,18 @@ var parametrizacionApp = createApp({
         },
         startVariables: function(){
             this.variables.forEach(variable => {
+                //Valores por defecto
                 variable.active = false;
                 variable.tipo_priorizacion = 1;
+
+                //Buscar variable por clave en configuración guardada (variableParametrizda)
+                //Si la encuentra asignarle los valores de configuración guardados.
+                variableConfig = this.variablesParametrizadas.find(variableParametrizada => variableParametrizada['clave'] == variable['clave'])
+                if ( variableConfig != undefined ) {
+                    variable.puntaje = variableConfig.puntaje
+                    variable.active = variableConfig.active
+                    variable.tipo_priorizacion = variableConfig.tipo_priorizacion
+                }
             });
         },
         validateForm: function(){
