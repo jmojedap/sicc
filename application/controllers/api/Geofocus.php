@@ -76,6 +76,10 @@ class Geofocus extends CI_Controller{
 // Ejecución de cálculos
 //-----------------------------------------------------------------------------
 
+    /**
+     * Calcular la priorización
+     * 2024-09-14
+     */
     function calcular_priorizacion()
     {
         // Obtener el contenido JSON enviado por POST
@@ -109,7 +113,7 @@ class Geofocus extends CI_Controller{
      */
     function normalizar_variable($variableId)
     {
-        $data = $this->Geofocus_model->normalizarVariable($variableId);
+        $data = $this->Geofocus_model->normalizarValores('variable_id', $variableId);
 
         //Salida JSON
         $this->output->set_content_type('application/json')->set_output(json_encode($data));
@@ -125,6 +129,7 @@ class Geofocus extends CI_Controller{
         $valores = $this->db->get('gf_territorios_valor');
 
         $data['valores'] = $valores->result();
+        $data['summary'] = $this->pml->field_summary($valores, 'value');
         //Salida JSON
         $this->output->set_content_type('application/json')->set_output(json_encode($data));
     }

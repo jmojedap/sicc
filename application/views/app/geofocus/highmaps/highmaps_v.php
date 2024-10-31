@@ -19,13 +19,13 @@
         barrios = Highcharts.geojson(mapData, 'map');
 
         let territoriosData = await fetch(
-            'http://localhost/sicc/api/geofocus/get_variable_valores/priorizacion_id/1'
+            URL_API + 'geofocus/get_variable_valores/priorizacion_id/1'
         )
         .then(response => response.json())
         .then(data => data.valores);
 
         // Initialize the chart
-        mapChartBogota = Highcharts.mapChart('container', {
+        mapChartBogota = Highcharts.mapChart('map-container', {
             chart: {
                 map: mapData,
                 height: '80%',
@@ -55,7 +55,7 @@
             colorAxis: {
                 min: 0,
                 max: 9,
-                tickInterval: 1,
+                tickInterval: 0.5,
                 /*stops: [[0, '#F1EEF6'], [0.65, '#900037'], [1, '#500007']],*/
                 stops: [[0, '#F1EEF6'], [0.65, '#AA0066']],
                 labels: {
@@ -103,18 +103,39 @@
 </script>
 
 <div id="highMapsApp">
-    <div class="d-flex">
-        <button class="btn btn-light" v-on:click="updateCapa" id="get-points">
-            Actualizar
-        </button>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-6">
+                <table class="table bg-white table-sm table-striped">
+                    <thead>
+                        <th>Variable</th>
+                        <th width="10px"></th>
+                    </thead>
+                    <tbody>
+                        <tr v-for="(variable, key) in variables" v-show="variable.estado == 'Cargada'">
+                            <td>{{ variable.nombre }}</td>
+                            <td>
+                                <button class="a4" v-on:click="actualizarCapa(variable.id)">
+                                    <i class="fas fa-arrow-right"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-md-6">
+                <div id="map-container"></div>
+            </div>
+        </div>
     </div>
-    <div id="container"></div>
 </div>
 
 <script>
 var highMapsApp = createApp({
     data(){
         return{
+            variableId: 28,
+            variables: <?= json_encode($variables) ?>,
             loading: false,
             fields: {},
             puntos: [
@@ -131,17 +152,20 @@ var highMapsApp = createApp({
             //console.log(barrios)
             //console.log('Cantidad barrios: ', barrios.length)
         },
-        updateCapa: function(){
-            axios.get(URL_API + 'geofocus/get_variable_valores/variable_id/24')
+        actualizarCapa: function(newVariableId){
+            this.variableId = newVariableId
+            axios.get(URL_API + 'geofocus/get_variable_valores/variable_id/' + this.variableId)
             .then(response => {
+                console.log(typeof(response.data.summary['min']))
                 mapChartBogota.series[0].update({data: response.data['valores']})
                 // Actualizar el valor 'max' de colorAxis
                 mapChartBogota.colorAxis[0].update({
-                    max: 100000000,
-                    tickInterval: 10000000,
+                    min: parseFloat(response.data['summary']['min']),
+                    max: parseFloat(response.data['summary']['max']),
+                    tickInterval: (parseFloat(response.data['summary']['max']) - parseFloat(response.data['summary']['min']))/5,
                 });
                 
-                console.log(mapChartBogota.colorAxis[0].max);
+                console.log(mapChartBogota.colorAxis[0].min);
             })
             .catch(function(error) { console.log(error) })
         },

@@ -63,6 +63,9 @@ class Geofocus extends CI_Controller{
 
     function highmaps()
     {
+        $filePath = PATH_CONTENT . 'json/geofocus/variables.json';
+        $data['variables'] = $this->App_model->getJsonContent($filePath);
+        
         $data['head_title'] = 'High Maps Pruebas';
         $data['view_a'] = $this->views_folder . 'highmaps/highmaps_v';
         $this->App_model->view('templates/easypml/minimal', $data);

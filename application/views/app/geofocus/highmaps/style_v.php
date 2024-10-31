@@ -1,6 +1,6 @@
 <style>
-    #container {
-        height: 720px;
+    #map-container {
+        height: calc(100vh - 100px);
         min-width: 310px;
         max-width: 920px;
         margin: 0 auto;

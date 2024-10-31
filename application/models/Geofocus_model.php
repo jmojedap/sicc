@@ -126,7 +126,7 @@ class Geofocus_model extends CI_Model{
     {
         $variables = $settings['variables'];
 
-        $params['puntajes'] = $this->getArrayPuntajes($variables);  //Simplificar variable_id => puntaje
+        $params['puntajes'] = array_column($variables, 'puntaje', 'id');
         $params['tipos_priorizacion'] = array_column($variables, 'tipo_priorizacion', 'id');    //Directa o inversa
         $params['sum_puntajes'] = array_sum($params['puntajes']);   //Para hacer división final
         $params['condition'] = $this->getVariablesCondition($variables);
@@ -152,6 +152,8 @@ class Geofocus_model extends CI_Model{
 
             $arrTerritorios[] = $rowTerritorio;
         }
+
+        $this->normalizarValores('priorizacion_id', $settings['priorizacion']['id']);
 
         //Resumen para dar respuesta
         $data['cantidad_ordenados'] = $this->actualizarOrden('priorizacion_id', $aRow['priorizacion_id']);
@@ -195,18 +197,11 @@ class Geofocus_model extends CI_Model{
     }
 
     /**
-     * Array con los puntajes seleccionados para ponderar cada variable
-     * con llave variable_id y valor puntaje
-     * @param array $variables :: array completo de una variable
-     * @return array $puntajes :: array simplificado solo id => puntaje
-     * 2024-09-14
+     * Devuelve condición SQL para filtrar las variables que se selecionarios para
+     * la priorización
+     * @param array $variables :: Variables y sus valores seleccionados
+     * @return string $condition :: Condición WHERE SQL
      */
-    function getArrayPuntajes($variables)
-    {
-        $puntajes = array_column($variables, 'puntaje', 'id');
-        return $puntajes;
-    }
-
     function getVariablesCondition($variables)
     {
         $ids = array_column($variables, 'id');
@@ -280,7 +275,69 @@ class Geofocus_model extends CI_Model{
      * En una escala estandarizada mediante el método Z-score
      * 2024-10-12
      */
-    function normalizarVariable($variableId)
+    function normalizarValores($field, $fieldValue = 0)
+    {
+        //Valor por defecto
+        $data = ['status' => 0, 'message' => 'No se ejecutó la normalización'];
+
+        //Seleccionar valores
+        $this->db->where($field, $fieldValue);
+        $valores = $this->db->get('gf_territorios_valor');
+
+        //Estadísticos de la variable
+        $valorSummary = $this->pml->field_summary($valores, 'valor');
+
+        //Array inicial vacío para calcular
+        $valoresCalculados = [];
+        
+        if ( $valorSummary['std_dev'] > 0 )
+        {
+            //Recorrer valores y calcular valores estándar
+            foreach ($valores->result() as $rowValor) {
+                $aRow['id'] = $rowValor->id;
+                //Estandarización Z-Score
+                $aRow['valor_normalizado'] = ($rowValor->valor - $valorSummary['avg']) / $valorSummary['std_dev'];
+                $valoresCalculados[] =$aRow;
+            }
+    
+            // Actualización batch
+            $this->db->update_batch('gf_territorios_valor', $valoresCalculados, 'id');
+
+            //Preparación de respuesta
+            $data = [
+                'status' => 1,
+                'message' => 'Valores normalizados',
+                'valorSummary' => $valorSummary,
+                'affectedRows' => $this->db->affected_rows(),
+                'valoresCalculados' => $valoresCalculados
+            ];
+        }
+    
+        return $data;
+    }
+
+// DEPRECATED
+//-----------------------------------------------------------------------------
+
+    /**
+     * Array con los puntajes seleccionados para ponderar cada variable
+     * con llave variable_id y valor puntaje
+     * @param array $variables :: array completo de una variable
+     * @return array $puntajes :: array simplificado solo id => puntaje
+     * 2024-09-14
+     */
+    function z_getArrayPuntajes($variables)
+    {
+        $puntajes = array_column($variables, 'puntaje', 'id');
+        return $puntajes;
+    }
+
+    /**
+     * Actualizar el valor del campo gf_territorios_valor.valor_normalizado
+     * En una escala estandarizada mediante el método Z-score
+     * 2024-10-12
+     */
+    function z_normalizarVariable($variableId)
     {
         //Valor por defecto
         $data = ['status' => 0, 'message' => 'No se ejecutó la normalización'];
