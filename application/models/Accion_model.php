@@ -111,7 +111,7 @@ class Accion_model extends CI_Model{
         $condition .= $this->role_filter() . ' AND ';
 
         //q words condition
-        $arrWords = ['nombre_accion', 'descripcion', 'nombre_lugar', 'dependencia',
+        $arrWords = ['id', 'nombre_accion', 'descripcion', 'nombre_lugar', 'dependencia',
             'equipo_trabajo', 'radicado_orfeo', 'observaciones', 'participantes_equipo'];
         $words_condition = $this->Search_model->words_condition($filters['q'], $arrWords);
         if ( $words_condition )

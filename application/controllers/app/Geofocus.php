@@ -61,13 +61,18 @@ class Geofocus extends CI_Controller{
         $this->App_model->view('templates/easypml/minimal', $data);
     }
 
-    function highmaps()
+    /**
+     * Mapas
+     * 2024-11-09
+     */
+    function mapas($variableId = 28)
     {
         $filePath = PATH_CONTENT . 'json/geofocus/variables.json';
         $data['variables'] = $this->App_model->getJsonContent($filePath);
+        $data['variableId'] = $variableId;
         
-        $data['head_title'] = 'High Maps Pruebas';
-        $data['view_a'] = $this->views_folder . 'highmaps/highmaps_v';
+        $data['head_title'] = 'Geofocus Mapas';
+        $data['view_a'] = $this->views_folder . 'mapas/mapas_v';
         $this->App_model->view('templates/easypml/minimal', $data);
     }
 }

@@ -23,6 +23,7 @@ var parametrizacionApp = createApp({
             allSelected: false,
             territorios: [],
             localidades: <?= json_encode($localidades) ?>,
+            userRole: 7,
         }
     },
     methods: {
@@ -99,6 +100,40 @@ var parametrizacionApp = createApp({
             var localidad = this.localidades.find(row => row.cod_localidad == codLocalidad)
             if ( localidad != undefined ) localidadValor = localidad[field]
             return localidadValor
+        },
+        variableClass: function(variable){
+            if ( variable.active == true ) {
+                if ( variable.tipo_priorizacion == 1 ) return 'table-info'
+                if ( variable.tipo_priorizacion == -1 ) return 'table-warning'
+            }
+            return ''
+        },
+        textToClass: function(text, prefix = null){
+            if ( prefix == null) {
+                return Pcrn.textToClass(text)
+            }
+            return prefix + '-' + Pcrn.textToClass(text)
+        },
+        // Mapas
+        //-----------------------------------------------------------------------------
+        actualizarCapa: function(variable){
+            this.currentVariable = variable
+            this.section = 'mapa'
+            var variableId = this.currentVariable.id
+            axios.get(URL_API + 'geofocus/get_variable_valores/variable_id/' + this.currentVariable.id)
+            .then(response => {
+                console.log(typeof(response.data.summary['min']))
+                mapChartBogota.series[0].update({data: response.data['valores']})
+                // Actualizar el valor 'max' de colorAxis
+                mapChartBogota.colorAxis[0].update({
+                    min: parseFloat(response.data['summary']['min']),
+                    max: parseFloat(response.data['summary']['max']),
+                    tickInterval: (parseFloat(response.data['summary']['max']) - parseFloat(response.data['summary']['min']))/5,
+                });
+                
+                console.log(mapChartBogota.colorAxis[0].min);
+            })
+            .catch(function(error) { console.log(error) })
         },
     },
     computed: {

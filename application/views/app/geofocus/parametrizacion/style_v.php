@@ -50,4 +50,39 @@
         60%,100%{background-position: 0 50%, 0 100%,50% 100%,100% 100%,100% 50%,100% 0,50% 0,0 0,  50% 50% }
         }
 
+/* Temas */
+/*-----------------------------------------------------------------------------*/
+    .tema {
+        display: inline-block;
+        font-size: 0.9em;
+        background-color: #FAFAFA;
+        padding: 0.1em 0.5em;
+        border-radius: 10px;
+    }
+
+    .tema-cultura-ciudadana { background-color: #FFE2A6;}
+    .tema-cultura { background-color: #D9D2E9;}
+    .tema-vivienda { background-color: #BBFFF4;}
+    .tema-uso-del-suelo { background-color: #FFD7AE;}
+    .tema-movilidad { background-color: #DAE283;}
+    .tema-seguridad { background-color: #F4A8C5;}
+
+/* Mapas */
+/*-----------------------------------------------------------------------------*/
+
+    #map-container {
+        height: calc(100vh - 100px);
+        min-width: 310px;
+        max-width: 920px;
+        margin: 0 auto;
+        /*transform: rotate(-90deg); /* Rotar 90 grados */
+        /*transform-origin: center; /* Rotar alrededor del centro */
+    }
+
+    .hidden-map {
+        height: 10px;         /* Establece la altura en 10px */
+        overflow: hidden;     /* Oculta el contenido que se desborda */
+        opacity: 0;           /* Hace que el div sea completamente transparente */
+        pointer-events: none; /* Opcional: evita la interacción con el div */
+    }
 </style>

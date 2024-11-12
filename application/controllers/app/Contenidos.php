@@ -92,5 +92,25 @@ class Contenidos extends CI_Controller {
         $this->load->view(TPL_FRONT, $data);
     }
 
+    function obtener_googlesheet()
+    {
+        $data['head_title'] = 'Inicio';
+        $data['view_a'] = $this->views_folder . 'obtener_googlesheet_v';
+
+        $this->load->view(TPL_FRONT, $data);
+    }
+
+    function combinar_json()
+    {
+        $data['head_title'] = 'Combinar JSON';
+        $data['page_title'] = 'Combinar JSON';
+
+        $filePath = PATH_CONTENT . 'json/barrios_vivos/preguntas.json';
+        $data['elementos'] = $this->App_model->getJsonContent($filePath);
+
+        $data['view_a'] = $this->views_folder . "combinar_json/combinar_json_v";
+        $this->App_model->view('templates/easypml/minimal', $data);
+    }
+
     
 }

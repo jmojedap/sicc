@@ -38,4 +38,11 @@ class Experimentos extends CI_Controller {
         $data['view_a'] = 'app/experimentos/somos_asociacion/somos_asociacion_v';
         $this->App_model->view('templates/easypml/empty', $data);
     }
+
+    function puntos()
+    {
+        $data['head_title'] = 'Puntos';
+        $data['view_a'] = 'app/experimentos/puntos/puntos_v';
+        $this->App_model->view('templates/easypml/empty', $data);
+    }
 }

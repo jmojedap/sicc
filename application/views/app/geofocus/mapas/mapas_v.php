@@ -3,12 +3,13 @@
 <script src="https://code.highcharts.com/maps/modules/offline-exporting.js"></script>
 <script src="https://code.highcharts.com/maps/modules/accessibility.js"></script>
 
-<?php $this->load->view('app/geofocus/highmaps/style_v') ?>
+<?php $this->load->view('app/geofocus/mapas/style_v') ?>
 
 <script>
     // Declara la variable en el ámbito global, accesible para VueApp
     let mapChartBogota;
     let barrios;
+    let variableId = <?= $variableId ?>;
     const URL_CONTENT = '<?= URL_CONTENT ?>';
 
     // Preparación del mapa
@@ -87,22 +88,12 @@
                         enabled: false
                     }
                 },
-                {
-                    type: 'mapline',
-                    name: 'Barrios',
-                    color: 'white',
-                    shadow: false,
-                    borderWidth: 5,
-                    accessibility: {
-                        enabled: false
-                    }
-                }
             ]
         });
     })();
 </script>
 
-<div id="highMapsApp">
+<div id="geofocusMapasApp">
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-6">
@@ -112,7 +103,9 @@
                         <th width="10px"></th>
                     </thead>
                     <tbody>
-                        <tr v-for="(variable, key) in variables" v-show="variable.estado == 'Cargada'">
+                        <tr v-for="(variable, key) in variables" v-show="variable.estado == 'Cargada'"
+                            v-bind:class="{'table-info': variable.id == variableId }"
+                        >
                             <td>{{ variable.nombre }}</td>
                             <td>
                                 <button class="a4" v-on:click="actualizarCapa(variable.id)">
@@ -131,26 +124,18 @@
 </div>
 
 <script>
-var highMapsApp = createApp({
+var geofocusMapasApp = createApp({
     data(){
         return{
-            variableId: 28,
+            variableId: variableId,
             variables: <?= json_encode($variables) ?>,
             loading: false,
-            fields: {},
-            puntos: [
-                { id: 'Centro', lat: 4.5, lon: -74.1 },
-                { id: 'La playa', lat: 4.5, lon: -74.2 }
-            ],
-            barrios: [],
         }
     },
     methods: {
         setPuntos: function(){
             console.log(this.puntos)
             mapChartBogota.series[1].update({data: this.puntos})
-            //console.log(barrios)
-            //console.log('Cantidad barrios: ', barrios.length)
         },
         actualizarCapa: function(newVariableId){
             this.variableId = newVariableId
@@ -171,7 +156,7 @@ var highMapsApp = createApp({
         },
     },
     mounted(){
-        //this.getList()
+        this.actualizarCapa()
     }
-}).mount('#highMapsApp')
+}).mount('#geofocusMapasApp')
 </script>

@@ -125,7 +125,7 @@ class Geofocus extends CI_Controller{
         $this->db->join('gf_territorios', 'gf_territorios.poligono_id = gf_territorios_valor.poligono_id', 'left');
         $this->db->where($field, $fieldValue);
         $this->db->order_by('gf_territorios_valor.valor', 'DESC');
-        $this->db->limit(500);
+        $this->db->limit(1200);
         $valores = $this->db->get('gf_territorios_valor');
 
         $data['valores'] = $valores->result();

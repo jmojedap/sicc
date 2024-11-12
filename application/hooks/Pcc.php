@@ -23,7 +23,7 @@ class Pcc {
             } else {
                 //No tiene autorización
                 if ( $this->CI->uri->segment(1) == 'api' ) {
-                    //redirect("api/app/denied/{$cf}");
+                    redirect("app/app/denied/{$cf}");
                 } else {
                     redirect("app/app/denied/{$cf}");
                 }
@@ -33,7 +33,7 @@ class Pcc {
     /**
      * Control de acceso de usuarios basado en el archivo config/acl.php
      * CF > Ruta Controller/Function
-     * 2021-10-16
+     * 2024-11-09
      */
     function allow_cf($cf)
     {
@@ -69,6 +69,9 @@ class Pcc {
             $allow_cf = FALSE;
             //Está en las funciones públicas
             if ( in_array($cf, $acl['api_public_functions']) ) $allow_cf = TRUE;
+
+            //Es administrador, todos los permisos
+            if ( in_array($role, array(1,2)) ) $allow_cf = TRUE;
 
             //Autorizado por userkey
             $user_request = $this->user_request();
