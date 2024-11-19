@@ -94,7 +94,7 @@ class Geofocus extends CI_Controller{
             // Preparar los datos para insertar en la base de datos
             $aRow['configuracion'] = json_encode($settings['variables']); // Guardar el JSON original
             $aRow['id'] = $settings['priorizacion']['id'];
-            $daa['saved_id'] = $this->Geofocus_model->save_priorizacion($aRow);
+            $data['saved_id'] = $this->Geofocus_model->save_priorizacion($aRow);
         } else {
             $data = [
                 'status' => 'error',

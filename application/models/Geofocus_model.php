@@ -17,6 +17,22 @@ class Geofocus_model extends CI_Model{
         return $data;
     }
 
+// EXPLORE FUNCTIONS
+//-----------------------------------------------------------------------------
+
+    /**
+     * Segmento Select SQL, con diferentes formatos, consulta de tablas
+     * 2024-11-24
+     */
+    function select($format = 'general')
+    {
+        $arr_select['export_territorios_valor'] = 'orden, gf_territorios.poligono_id, gf_territorios.nombre,
+            tipo_territorio, descripcion, localidad, cod_localidad, upz,
+            variable_key AS clave_priorizacion, valor_normalizado AS puntaje_calculado, ';
+
+        return $arr_select[$format];
+    }
+
 // CRUD PRIORIZACIONES
 //-----------------------------------------------------------------------------
 
@@ -256,7 +272,7 @@ class Geofocus_model extends CI_Model{
         return $this->db->affected_rows();
     }
 
-    function getPriorizacion($priorizacionId)
+    function getPriorizacion($priorizacionId, $limit = 15)
     {
         $this->db->select('gf_territorios.*, 
             gf_territorios_valor.variable_id, variable_key, priorizacion_id, valor, valor_normalizado, orden');
@@ -264,7 +280,7 @@ class Geofocus_model extends CI_Model{
         $this->db->join('gf_territorios', 'gf_territorios.poligono_id = gf_territorios_valor.poligono_id', 'left');
         $this->db->order_by('orden', 'ASC');
         $this->db->order_by('valor', 'DESC');
-        $this->db->limit(10);
+        $this->db->limit($limit);
         $territorios = $this->db->get('gf_territorios_valor');
 
         return $territorios;
@@ -314,6 +330,26 @@ class Geofocus_model extends CI_Model{
         }
     
         return $data;
+    }
+
+// EXPORT
+//-----------------------------------------------------------------------------
+
+    /**
+     * Query para exportar
+     * 2024-11-18
+     */
+    function query_export_territorios_valor($condition)
+    {
+        //Select
+        $select = $this->select('export_territorios_valor');
+        $this->db->select($select);
+        $this->db->where($condition);
+        $this->db->join('gf_territorios', 'gf_territorios.poligono_id = gf_territorios_valor.poligono_id', 'left');
+        $this->db->order_by('orden', 'ASC');
+        $query = $this->db->get('gf_territorios_valor', 10000);  //Hasta 10.000 registros
+
+        return $query;
     }
 
 // DEPRECATED

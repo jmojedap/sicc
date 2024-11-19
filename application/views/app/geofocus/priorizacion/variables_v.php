@@ -14,7 +14,7 @@
     </div>
 
 
-    <form accept-charset="utf-8" method="POST" id="parametrizacionForm" @submit.prevent="validateSubmit">
+    <form accept-charset="utf-8" method="POST" id="priorizacionForm" @submit.prevent="validateSubmit">
         <fieldset v-bind:disabled="loading">
 
             <div class="d-flex justify-content-center mb-2">

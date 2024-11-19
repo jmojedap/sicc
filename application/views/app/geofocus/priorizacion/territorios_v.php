@@ -17,4 +17,7 @@
                 </tr>
             </tbody>
         </table>
+        <a class="btn btn-success" href="<?= URL_APP . "geofocus/export/{$row->id}" ?>">
+            <i class="fas fa-download"></i> Exportar
+        </a>
     </div>

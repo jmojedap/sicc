@@ -71,10 +71,11 @@
 /*-----------------------------------------------------------------------------*/
 
     #map-container {
-        height: calc(100vh - 100px);
-        min-width: 310px;
+        height: calc(100vh - 150px);
+        min-width: 480px;
         max-width: 920px;
         margin: 0 auto;
+        /*border: 1px solid red;*/
         /*transform: rotate(-90deg); /* Rotar 90 grados */
         /*transform-origin: center; /* Rotar alrededor del centro */
     }

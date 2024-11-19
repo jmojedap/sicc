@@ -3,11 +3,11 @@
 <script src="https://code.highcharts.com/maps/modules/offline-exporting.js"></script>
 <script src="https://code.highcharts.com/maps/modules/accessibility.js"></script>
 
-<?php $this->load->view('app/geofocus/parametrizacion/style_v') ?>
+<?php $this->load->view('app/geofocus/priorizacion/style_v') ?>
 
-<?php $this->load->view('app/geofocus/parametrizacion/mapa_script_v') ?>
+<?php $this->load->view('app/geofocus/priorizacion/mapa_script_v') ?>
 
-<div id="parametrizacionApp">
+<div id="priorizacionApp">
     <div class="container">
         
 
@@ -26,13 +26,13 @@
             </li>
         </ul>
 
-        <?php $this->load->view('app/geofocus/parametrizacion/variables_v') ?>
-        <?php $this->load->view('app/geofocus/parametrizacion/territorios_v') ?>
-        <?php $this->load->view('app/geofocus/parametrizacion/mapa_v') ?>
+        <?php $this->load->view('app/geofocus/priorizacion/variables_v') ?>
+        <?php $this->load->view('app/geofocus/priorizacion/territorios_v') ?>
+        <?php $this->load->view('app/geofocus/priorizacion/mapa_v') ?>
 
     </div>
 
-    <?php $this->load->view('app/geofocus/parametrizacion/detalles_variable_v') ?>
+    <?php $this->load->view('app/geofocus/priorizacion/detalles_variable_v') ?>
 </div>
 
-<?php $this->load->view('app/geofocus/parametrizacion/vue_v') ?>
+<?php $this->load->view('app/geofocus/priorizacion/vue_v') ?>

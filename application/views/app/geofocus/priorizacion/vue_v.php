@@ -8,10 +8,11 @@
 <script>
 // VueApp
 //-----------------------------------------------------------------------------
-var parametrizacionApp = createApp({
+var priorizacionApp = createApp({
     data(){
         return{
             section: 'variables',
+            //section: 'territorios',
             loading: false,
             priorizacion: <?= json_encode($row) ?>,
             display: {
@@ -21,7 +22,7 @@ var parametrizacionApp = createApp({
             currentVariable: {},
             variables: <?= json_encode($variables) ?>,
             allSelected: false,
-            territorios: [],
+            territorios: <?= json_encode($territorios->result()) ?>,
             localidades: <?= json_encode($localidades) ?>,
             userRole: 7,
         }
@@ -46,7 +47,8 @@ var parametrizacionApp = createApp({
             .then(response => {
                 this.loading = false
                 this.territorios = response.data.territorios
-                this.section = 'territorios'
+                this.section = 'mapa'
+                this.actualizarMapa()
             })
             .catch( function(error) {console.log(error)} )
         },
@@ -116,6 +118,21 @@ var parametrizacionApp = createApp({
         },
         // Mapas
         //-----------------------------------------------------------------------------
+        actualizarMapa: function(){
+            this.section = 'mapa'
+            axios.get(URL_API + 'geofocus/get_variable_valores/priorizacion_id/' + this.priorizacion.id)
+            .then(response => {
+                console.log(typeof(response.data.summary['min']))
+                mapChartBogota.setTitle({ text: this.priorizacion.nombre });
+                mapChartBogota.series[0].update({data: response.data['valores']})
+                mapChartBogota.colorAxis[0].update({
+                    min: parseFloat(response.data['summary']['min']),
+                    max: parseFloat(response.data['summary']['max']),
+                    tickInterval: (parseFloat(response.data['summary']['max']) - parseFloat(response.data['summary']['min']))/5,
+                });
+            })
+            .catch(function(error) { console.log(error) })
+        },
         actualizarCapa: function(variable){
             this.currentVariable = variable
             this.section = 'mapa'
@@ -123,6 +140,7 @@ var parametrizacionApp = createApp({
             axios.get(URL_API + 'geofocus/get_variable_valores/variable_id/' + this.currentVariable.id)
             .then(response => {
                 console.log(typeof(response.data.summary['min']))
+                mapChartBogota.setTitle({ text: variable.nombre });
                 mapChartBogota.series[0].update({data: response.data['valores']})
                 // Actualizar el valor 'max' de colorAxis
                 mapChartBogota.colorAxis[0].update({
@@ -143,6 +161,7 @@ var parametrizacionApp = createApp({
     },
     mounted(){
         this.startVariables()
+        this.actualizarMapa()
     }
-}).mount('#parametrizacionApp')
+}).mount('#priorizacionApp')
 </script>

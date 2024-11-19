@@ -38,7 +38,7 @@
                 </div>
                 <div class="col-md-9">
                     <h5 class="card-title text-main">
-                        <a v-bind:href="`<?= URL_APP ?>geofocus/parametrizacion/` + elemento['id']"
+                        <a v-bind:href="`<?= URL_APP ?>geofocus/priorizacion/` + elemento['id']"
                             v-bind:title="`[` + elemento['id'] + `] ` + elemento['nombre']">
                             {{ elemento['nombre'] }}
                         </a>

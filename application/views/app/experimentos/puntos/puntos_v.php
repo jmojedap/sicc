@@ -3,14 +3,14 @@
     #survey-container {
         display: flex;
         flex-wrap: wrap;
-        justify-content: space-between;
-        gap: 1px;
+        justify-content: start;
+        gap: 2px;
     }
 
     /* Estilos básicos para cada cuadrado */
     .survey-square {
         background-color: #DEAFD0;
-        height: 0.3em;
+        height: 3px;
     }
 
     .sexo-hombre{background-color: #00ADC2;}
@@ -25,19 +25,19 @@
 </style>
 
 <div id="puntosApp">
-    <div class="center_box_920">
+    <div class="container-fluid">
         <h3>Encuesta Bienal de Culturas 2023</h3>
-        <!-- <div id="survey-container">
+        <div id="survey-container">
             <div class="survey-square" v-for="point in encuestados" :style="pointStyle(point)" :title="point.factor_expansion"
                 :class="getPointClass(point)"
             >
 
             </div>
-        </div> -->
-        <div id="d-flex flex-wrap">
+        </div>
+        <!-- <div id="d-flex flex-wrap">
             <div v-for="point in encuestados" :title="point.factor_expansion" class="span-repeat"
             >{{ getPointContent(point) }}</div>
-        </div>
+        </div> -->
     </div>
 </div>
 
@@ -60,7 +60,7 @@ var puntosApp = createApp({
     methods: {
         pointStyle(point) {
             // Calcula el tamaño basado en el factor de expansión
-            const size = point.factor_expansion / 76; // Puedes ajustar el multiplicador según sea necesario
+            const size = point.factor_expansion / 20; // Puedes ajustar el multiplicador según sea necesario
 
             // Devuelve los estilos dinámicos para tamaño y posición
             return {

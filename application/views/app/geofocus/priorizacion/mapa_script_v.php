@@ -2,7 +2,7 @@
     // Declara la variable en el ámbito global, accesible para VueApp
     let mapChartBogota;
     let barrios;
-    let variableId = 1;
+    let variableId = <?= $row->id ?>;
     const URL_CONTENT = '<?= URL_CONTENT ?>';
 
     // Preparación del mapa
@@ -13,10 +13,10 @@
         barrios = Highcharts.geojson(mapData, 'map');
 
         let territoriosData = await fetch(
-            URL_API + 'geofocus/get_variable_valores/priorizacion_id/1'
+            URL_API + 'geofocus/get_variable_valores/priorizacion_id/' + variableId
         )
         .then(response => response.json())
-        .then(data => data.valores);
+        .then(data => data);
 
         // Initialize the chart
         mapChartBogota = Highcharts.mapChart('map-container', {
@@ -27,7 +27,10 @@
             },
             title: {
                 text: 'Barrios de Bogotá',
-                align: 'left'
+                align: 'center'
+            },
+            credits: {
+                enabled: false // Deshabilita los créditos
             },
 
             legend: {
@@ -47,9 +50,12 @@
             },
 
             colorAxis: {
-                min: 0,
+                min: parseFloat(territoriosData['summary']['min']),
+                max: parseFloat(territoriosData['summary']['max']),
+                tickInterval: (parseFloat(territoriosData['summary']['max']) - parseFloat(territoriosData['summary']['min']))/5,
+                /*min: 0,
                 max: 9,
-                tickInterval: 0.5,
+                tickInterval: 0.5,*/
                 /*stops: [[0, '#F1EEF6'], [0.65, '#900037'], [1, '#500007']],*/
                 stops: [[0, '#F1EEF6'], [0.65, '#AA0066']],
                 labels: {
@@ -69,7 +75,7 @@
 
             series: [
                 {
-                    data: territoriosData,
+                    data: territoriosData['valores'],
                     joinBy: ['ID_BARRIO', 'code'],
                     name: 'Puntaje',
                     tooltip: {

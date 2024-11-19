@@ -1,5 +1,10 @@
-<div class="d-flex" v-bind:class="{'hidden-map': section != 'mapa' }">
-    <div class="">
+<div v-bind:class="{'hidden-map': section != 'mapa' }">
+    <div id="map-container"></div>
+</div>
+
+<div class="d-flex d-none" v-bind:class="{'hidden-map': section != 'mapa' }">
+    <div class="row">
+        <div class="col-md-6">
         <p>
             {{ currentVariable.descripcion }}
         </p>
@@ -58,8 +63,9 @@
                 <td>{{ currentVariable.clave }}</td>
             </tr>
         </table>
-    </div>
-    <div style="width: 80%;">
-        <div id="map-container"></div>
+        </div>
+        <div class="col-md-6">
+            
+        </div>
     </div>
 </div>
