@@ -134,4 +134,85 @@ class Geofocus extends CI_Controller{
         $this->output->set_content_type('application/json')->set_output(json_encode($data));
     }
 
+    /**
+     * Obtener descripción en texto de la parametrización de la priorización del usuario
+     * 2024-11-23
+     */
+    function get_descripcion($priorizacionId) {
+        $apiKey = 'AIzaSyCcelTenQpGgFCzbY66kI7st8qk-Sc_J0A';
+        $url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent?key=" . $apiKey;
+
+        $instruction = 'Genera un párrafo que describa y resuma en lenguaje natural la parametrización 
+            que un usuario realizó de una herramienta web de datos que realiza priorización geográfica 
+            de barrios de bogotá mediante la ponderación de diferentes variables culturales, demográficas 
+            y sociales. A cada variable se le asigna uno de dos tipo de priorización
+            (1. priorizar valores altos, 2. Priorizar valores bajos), 
+            y también se le asigna un peso o ponderación a cada variable, que va de 0 a 100.\nPara generar 
+            el texto ordena la descripción mencionando primero las variables a las que se les asignó mayor puntaje. 
+            Cuando se mencionen las ponderaciones no deben hacerse como porcentaje sino como puntos.
+            El párrafo será utilizado en un informe o reporte de análisis geográfico y debe iniciar 
+            con \"La priorización geográfica realizada ...\"\nDatos de cada variable:\n
+            1. Nombre de la variable\n
+            2. Descripción de la variable\n
+            3. Tipo de priorización seleccionada (Valores altos o valores bajos)\n
+            4. Peso/Ponderación asignada a la variable.';
+        $inputUser = $this->input->post('texto_parametrizacion');
+    
+        $payload = [
+            "contents" => [
+                [
+                    "role" => "user",
+                    "parts" => [
+                        [
+                            "text" => "Parametrización realizada por el usuario:\n{$inputUser}"
+                        ]
+                    ]
+                ]
+            ],
+            "systemInstruction" => [
+                "role" => "user",
+                "parts" => [
+                    [
+                        "text" => $instruction
+                    ]
+                ]
+            ],
+            "generationConfig" => [
+                "temperature" => 1,
+                "topK" => 40,
+                "topP" => 0.95,
+                "maxOutputTokens" => 8192,
+                "responseMimeType" => "text/plain"
+            ]
+        ];
+    
+        $jsonData = json_encode($payload);
+    
+        $ch = curl_init($url);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+            'Content-Type: application/json',
+        ]);
+        curl_setopt($ch, CURLOPT_POST, 1);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonData);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    
+        $response = curl_exec($ch);
+        $arrResponse = json_decode($response,true);
+
+        $descripcion = $arrResponse['candidates'][0]['content']['parts'][0]['text'] ?? '(Descripción no disponible)';
+        $aRow['descripcion_generada'] = $descripcion;
+
+
+        curl_close($ch);
+
+        $aRow['updater_id'] = $this->session->userdata('user_id');
+        $aRow['updated_at'] = date('Y-m-d H:i:s');
+
+        $data['descripcion_generada'] = $aRow['descripcion_generada'];
+        $data['saved_id'] = $this->Db_model->save('gf_priorizaciones', "id = {$priorizacionId}", $aRow);
+        $data['response'] = $arrResponse;
+    
+        $this->output->set_content_type('application/json')->set_output(json_encode($data));
+    }
+
 }

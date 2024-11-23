@@ -6,22 +6,15 @@
                 {{ variablesActivas.length }}
             </span>
         </div>
-        <button class="btn btn-main btn-lg" v-on:click="validateSubmit">
-            Calcular
-        </button>
-
-        
+        <div>
+            <button class="btn btn-main btn-lg" v-on:click="validateSubmit">
+                Calcular
+            </button>
+        </div>
     </div>
-
 
     <form accept-charset="utf-8" method="POST" id="priorizacionForm" @submit.prevent="validateSubmit">
         <fieldset v-bind:disabled="loading">
-
-            <div class="d-flex justify-content-center mb-2">
-                <div class="d-flex" v-show="loading">
-                    <div class="loader" v-show="loading"></div>
-                </div>
-            </div>
 
             <table class="table bg-white table-sm" v-show="!loading">
                 <thead>
@@ -30,9 +23,9 @@
                     </th>
                     <th>Variable</th>
                     <th>Tema</th>
+                    <th width="70px" title="Tipo de prirización, valores altos o bajos">Tipo</th>
                     <th width="200px"></th>
                     <th width="10px">Puntaje</th>
-                    <th width="70px" title="Tipo de prirización, valores altos o bajos">Tipo</th>
                     <th width="10px"></th>
                     <th width="10px"></th>
                     <th width="10px" v-show="userRole <= 2"></th>
@@ -53,16 +46,6 @@
                                 {{ variable.tema }}
                             </div>
                         </td>
-                        
-                        <td>
-                            <div class="puntaje-slider" v-if="variable.estado == 'Cargada'" v-show="variable.active">
-                                <input class="range" type="range" min="0" max="100" v-model="variable.puntaje"
-                                    class="slider w-100" v-bind:name="variable.key">
-                            </div>
-                        </td>
-                        <td class="text-center">
-                            <span v-show="variable.active">{{ variable.puntaje }}</span>
-                        </td>
                         <td class="text-center">
                             <span v-show="variable.active" class="selector-tipo">
                                 <i class="fas fa-arrow-circle-up pointer me-1" v-bind:class="{'text-info': variable.tipo_priorizacion == 1, 'text-off': variable.tipo_priorizacion == -1 }"
@@ -72,6 +55,16 @@
                                     v-on:click="setTipoPriorizacion(key, -1)" 
                                     title="Inversa, priorizar territorios con valores más bajos"></i>
                             </span>
+                        </td>
+                        
+                        <td>
+                            <div class="puntaje-slider" v-if="variable.estado == 'Cargada'" v-show="variable.active">
+                                <input class="range" type="range" min="1" max="100" v-model="variable.puntaje"
+                                    class="slider w-100" v-bind:name="variable.key">
+                            </div>
+                        </td>
+                        <td class="text-center">
+                            <span v-show="variable.active">{{ variable.puntaje }}</span>
                         </td>
                         
                         <td>

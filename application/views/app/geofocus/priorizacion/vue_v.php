@@ -24,6 +24,11 @@ var priorizacionApp = createApp({
             allSelected: false,
             territorios: <?= json_encode($territorios->result()) ?>,
             localidades: <?= json_encode($localidades) ?>,
+            descripcion: {
+                texto: `<?= $row->descripcion_generada ?>`,
+                active: false,
+                loading: false
+            },
             userRole: 7,
         }
     },
@@ -37,6 +42,8 @@ var priorizacionApp = createApp({
         },
         submitForm: function(){
             this.loading = true
+            this.section = 'territorios'
+            this.descripcion.texto = ''
             var payload = {
                 'priorizacion': this.priorizacion,
                 'variables': this.variablesActivas
@@ -47,8 +54,9 @@ var priorizacionApp = createApp({
             .then(response => {
                 this.loading = false
                 this.territorios = response.data.territorios
-                this.section = 'mapa'
-                this.actualizarMapa()
+                this.section = 'territorios'
+                this.actualizarMapa('territorios')
+                this.descripcion.active = true //Para poder generar descripción
             })
             .catch( function(error) {console.log(error)} )
         },
@@ -118,8 +126,8 @@ var priorizacionApp = createApp({
         },
         // Mapas
         //-----------------------------------------------------------------------------
-        actualizarMapa: function(){
-            this.section = 'mapa'
+        actualizarMapa: function(newSection){
+            this.section = newSection
             axios.get(URL_API + 'geofocus/get_variable_valores/priorizacion_id/' + this.priorizacion.id)
             .then(response => {
                 console.log(typeof(response.data.summary['min']))
@@ -153,15 +161,76 @@ var priorizacionApp = createApp({
             })
             .catch(function(error) { console.log(error) })
         },
+        getDescripcionPriorizacion: function(){
+            this.loading = true
+            var formValues = new FormData()
+            formValues.append('texto_parametrizacion', this.textoParametrizacion)
+            axios.post(URL_API + 'geofocus/get_descripcion/' + this.priorizacion.id, formValues)
+            .then(response => {
+                //this.descripcion.texto = response.data.candidates[0].content.parts[0].text
+                console.log(response.data.descripcion_generada)
+                this.descripcion.texto = response.data.descripcion_generada
+                this.descripcion.active = false
+                typeText(this.descripcion.texto, 10);
+                this.loading = false
+            })
+            .catch( function(error) {console.log(error)} )
+        },
     },
     computed: {
         variablesActivas: function(){
             return this.variables.filter(variable => variable.active == true)
         },
+        textoParametrizacion: function(){
+            var texto = 'Variables: '
+            this.variables.forEach((variable,index) => {
+                if ( variable.active ) {
+                    texto += "Variable " + (index+1) + ': '
+                    texto += `Nombre: ${variable.nombre}. `;
+                    texto += `Tema: ${variable.tema}. `;
+                    texto += `Descripción: ${variable.descripcion}. `;
+                    if ( variable.tipo_priorizacion == 1 ) {
+                        texto += `Tipo de priorización: Priorizar territorios con valores altos. `;
+                    } else {
+                        texto += `Tipo de priorización: Priorizar territorios con valores bajos. `;
+                    }
+                    texto += `Ponderación de la variable: ${variable.puntaje}. `;
+                    texto += '. ---';
+                    texto += "\n"
+                }
+            });
+            return texto
+        },
     },
     mounted(){
         this.startVariables()
-        this.actualizarMapa()
+        this.actualizarMapa('variables')
     }
-}).mount('#priorizacionApp')
+}).mount('#priorizacionApp');
+
+
+// Mostrar texto caracter por caracter
+//-----------------------------------------------------------------------------
+function typeText(text, interval) {
+    const container = document.getElementById('typing-respuesta');
+    let index = 0;
+    container.textContent = ''
+    
+    function showText() {
+        if (index < text.length) {
+            container.textContent += text[index];
+            index++;
+        } else {
+            /*clearInterval(intervalId);
+            var chatElemento = {
+                'user':'ele',
+                'texto': text
+            }
+            chatEle.agregarIAMensaje(chatElemento)
+            chatEle.iaLoading = false*/
+        }
+    }
+    
+    const intervalId = setInterval(showText, interval);
+}
 </script>

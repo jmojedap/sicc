@@ -1,7 +1,7 @@
-/**
+/*
  * FUNCIONES DE BÚSQUEDA Y FILTRO DE REGISTROS PARA EL USO EN EL LENGUAJE JAVASCRIPT
  * DESARROLLADAS POR Pacarina Media Lab (Pml)
- * 2024-08-24
+ * 2024-11-21
  * 
  */
 
@@ -23,7 +23,7 @@ const getSearchedWords = function(searchedText) {
  * Quita las tildes de un texto
  * 2024-05-13
  * @param {string} text 
- * @returns {strig} //
+ * @returns {string} //
  */
 const removeAccents = function(text) {
     var accents = {

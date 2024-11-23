@@ -33,7 +33,7 @@ class Pcc {
     /**
      * Control de acceso de usuarios basado en el archivo config/acl.php
      * CF > Ruta Controller/Function
-     * 2024-11-09
+     * 2024-11-21
      */
     function allow_cf($cf)
     {
@@ -72,6 +72,13 @@ class Pcc {
 
             //Es administrador, todos los permisos
             if ( in_array($role, array(1,2)) ) $allow_cf = TRUE;
+
+            //Funciones para el rol actual
+            if ( array_key_exists($cf, $acl['function_roles']) )
+            {
+                $roles = $acl['function_roles'][$cf];
+                if ( in_array($role, $roles) ) $allow_cf = TRUE;
+            }
 
             //Autorizado por userkey
             $user_request = $this->user_request();
