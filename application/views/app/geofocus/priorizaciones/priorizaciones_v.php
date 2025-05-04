@@ -49,12 +49,14 @@
                     <span class="text-primary">{{ elemento.creator_username }}</span>
                 </div>
                 <div class="col-md-2 text-end">
-                    <button class="a4 me-1" v-on:click="goToEditForm(elemento['id'])">
-                        <i class="fas fa-pencil-alt"></i>
-                    </button>
-                    <button class="a4" v-on:click="setCurrent(elemento['id'])" data-bs-toggle="modal" data-bs-target="#deleteModal">
-                        <i class="fas fa-trash"></i>
-                    </button>
+                    <div v-show="isEditable(elemento)">
+                        <button class="a4 me-1" v-on:click="goToEditForm(elemento['id'])">
+                            <i class="fas fa-pencil-alt"></i>
+                        </button>
+                        <button class="a4" v-on:click="setCurrent(elemento['id'])" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>

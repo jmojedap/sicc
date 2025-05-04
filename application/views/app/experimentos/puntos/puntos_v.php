@@ -4,13 +4,13 @@
         display: flex;
         flex-wrap: wrap;
         justify-content: start;
-        gap: 2px;
+        gap: 1px;
     }
 
     /* Estilos básicos para cada cuadrado */
     .survey-square {
         background-color: #DEAFD0;
-        height: 3px;
+        height: 4px;
     }
 
     .sexo-hombre{background-color: #00ADC2;}
@@ -27,40 +27,31 @@
 <div id="puntosApp">
     <div class="container-fluid">
         <h3>Encuesta Bienal de Culturas 2023</h3>
-        <div id="survey-container">
-            <div class="survey-square" v-for="point in encuestados" :style="pointStyle(point)" :title="point.factor_expansion"
-                :class="getPointClass(point)"
-            >
-
+        <div class="center_box_750">
+            <div id="survey-container">
+                <div class="survey-square" v-for="point in encuestados" :style="pointStyle(point)" :title="point.factor_expansion"
+                    :class="getPointClass(point)"
+                >
+                </div>
             </div>
         </div>
-        <!-- <div id="d-flex flex-wrap">
-            <div v-for="point in encuestados" :title="point.factor_expansion" class="span-repeat"
-            >{{ getPointContent(point) }}</div>
-        </div> -->
     </div>
 </div>
 
 <script>
-// Ejemplo de datos (puedes reemplazarlo con tu propio array de objetos con factores de expansión)
-const surveyData = Array.from({ length: 435 }, () => ({
-    expansionFactor: Math.random() * 10 + 1 // Genera un factor de expansión aleatorio entre 1 y 10
-}));
-
 
 var puntosApp = createApp({
     data(){
         return{
             loading: false,
             fields: {},
-            points: surveyData,
             encuestados: []
         }
     },
     methods: {
         pointStyle(point) {
             // Calcula el tamaño basado en el factor de expansión
-            const size = point.factor_expansion / 20; // Puedes ajustar el multiplicador según sea necesario
+            const size = point.factor_expansion / 25; // Puedes ajustar el multiplicador según sea necesario
 
             // Devuelve los estilos dinámicos para tamaño y posición
             return {
@@ -69,12 +60,6 @@ var puntosApp = createApp({
         },
         getPointClass: function(point){
             return this.textToClass(point.sexo, 'sexo')
-            //return ''
-        },
-        getPointContent: function(point){
-            var qtyRepeat = point.factor_expansion / 75;
-            qtyRepeat = Math.floor(point.factor_expansion / 75);
-            return '*'.repeat(qtyRepeat)
         },
         getList: function(){
             axios.get('<?= URL_CONTENT ?>datasets/mediciones/m162/m162_encuestados.json')

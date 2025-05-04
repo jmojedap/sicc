@@ -71,9 +71,13 @@ class Observatorio extends CI_Controller{
             $data['fileId'] = '1vdCB9ZOyay0eHCqSxNVKcylW4FHU0jeHyAL0kuM2OB0';
             $data['tablas'] = [
                 ['nombre' => 'investigaciones', 'gid' => '1209666804'],
+                ['nombre' => 'productos', 'gid' => '102478999'],
+                ['nombre' => 'hallazgos', 'gid' => '352378717'],
             ];
             $basePath = PATH_CONTENT . 'json/pai_2024/';
             $data['investigaciones'] = $this->App_model->getJsonContent($basePath . 'investigaciones.json');
+            $data['productos'] = $this->App_model->getJsonContent($basePath . 'productos.json');
+            $data['hallazgos'] = $this->App_model->getJsonContent($basePath . 'hallazgos.json');
             $data['view_a'] = $this->views_folder . 'pai_2024/pai_2024_v';
         }
 
@@ -149,6 +153,17 @@ class Observatorio extends CI_Controller{
         $data['gid'] = '0';
 
         $data['view_a'] = $this->views_folder . "equipos/equipos_v";
+        $this->App_model->view(TPL_FRONT, $data);
+    }
+
+    function demo_ambiente()
+    {
+        $data['head_title'] = 'Criterios residuos';
+        $data['view_a'] = 'app/observatorio/demo/ambiente_v';
+
+        $filePath = PATH_CONTENT . 'observatorio/demo/ambiente_criterios.json';
+        $data['criterios'] = $this->App_model->getJsonContent($filePath);
+
         $this->App_model->view(TPL_FRONT, $data);
     }
 }

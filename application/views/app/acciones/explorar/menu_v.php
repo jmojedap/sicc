@@ -21,24 +21,10 @@
             roles: [1,2,3,6,8,99]
         },
         {
-            text: 'Usuarios',
-            id: 'acciones_usuarios',
-            cf: 'acciones/usuarios',
+            text: 'Exportar',
+            id: 'acciones_exportar_datos',
+            cf: 'acciones/exportar_datos',
             roles: [1,2,3,6,8]
-        },
-        {
-            text: 'Detalle asistentes',
-            id: 'acciones_acciones_asistentes',
-            cf: 'acciones/acciones_asistentes',
-            roles: [1,2,3,6,8],
-            anchor: true,
-        },
-        {
-            text: 'Detalle itinerantes',
-            id: 'acciones_acciones_asistentes_itinerantes',
-            cf: 'acciones/acciones_asistentes_itinerantes',
-            roles: [1,2,3,6,8],
-            anchor: true,
         },
         {
             text: 'Procesos',

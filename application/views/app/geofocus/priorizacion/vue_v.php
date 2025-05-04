@@ -1,4 +1,5 @@
 <?php
+    // Estado actual de las variables de la priorización
     $variablesParametrizadas = '[]';
     if ( strlen($row->configuracion) > 0 ) {
         $variablesParametrizadas = $row->configuracion;
@@ -12,14 +13,19 @@ var priorizacionApp = createApp({
     data(){
         return{
             section: 'variables',
-            //section: 'territorios',
+            //section: 'mapa',
             loading: false,
             priorizacion: <?= json_encode($row) ?>,
             display: {
                 descripcion: false
             },
             variablesParametrizadas: <?= $variablesParametrizadas ?>,
-            currentVariable: {},
+            currentTema: 'Cultura',
+            currentVariableId: 0,
+            currentVariable: {
+                'id': 0, 'nombre': '', 'descripcion': '', 'tema': '', 'anio_valores': '', 'descripcion_calculo': '', 'entidad': '', 'unidad_medida': '', 'minimo': '', 'media': '', 'desviacion_estandar': ''
+            },
+            tipoInformacion: 'variable',
             variables: <?= json_encode($variables) ?>,
             allSelected: false,
             territorios: <?= json_encode($territorios->result()) ?>,
@@ -29,7 +35,9 @@ var priorizacionApp = createApp({
                 active: false,
                 loading: false
             },
-            userRole: 7,
+            arrTemas: <?= json_encode($arrTemas) ?>,
+            userRole: APP_RID,
+            userId: APP_UID,
         }
     },
     methods: {
@@ -43,6 +51,7 @@ var priorizacionApp = createApp({
         submitForm: function(){
             this.loading = true
             this.section = 'territorios'
+            this.territorios = []
             this.descripcion.texto = ''
             var payload = {
                 'priorizacion': this.priorizacion,
@@ -53,15 +62,43 @@ var priorizacionApp = createApp({
             })
             .then(response => {
                 this.loading = false
-                this.territorios = response.data.territorios
-                this.section = 'territorios'
+                this.mostrarTerritorios(response.data.territorios)
                 this.actualizarMapa('territorios')
                 this.descripcion.active = true //Para poder generar descripción
             })
             .catch( function(error) {console.log(error)} )
         },
-        setCurrent: function(variable){
-            this.currentVariable = variable
+        // Al recibir los territorios mostrarlos secuencialmente en tabla
+        mostrarTerritorios: function(newTerritorios){
+            // Índice para seguir el progreso de los elementos agregados
+            let index = 0;
+
+            // Utilizamos setInterval para agregar un elemento cada 250 ms
+            const intervalo = setInterval(() => {
+                // Verifica si hay elementos restantes en newTerritorios
+                if (index < newTerritorios.length) {
+                    // Agrega el elemento actual al array territorios
+                    this.territorios.push(newTerritorios[index]);
+                    console.log(`Agregado: ${JSON.stringify(newTerritorios[index])}`);
+                    
+                    // Incrementa el índice
+                    index++;
+                } else {
+                    // Si se han agregado todos los elementos, detén el intervalo
+                    clearInterval(intervalo);
+                    console.log('Todos los elementos han sido agregados.');
+                }
+            }, 250); // Intervalo de 250 ms
+        },
+        updateVariable: function(){
+            this.setVariable(this.currentVariableId)
+        },
+        setVariable: function(variableId, newSection = 'mapa'){
+            this.currentVariableId = variableId
+            this.currentVariable = this.variables.find(variable => variable.id == variableId)
+            this.currentTema = this.currentVariable.tema
+            this.actualizarCapa()
+            this.section = newSection
         },
         startVariables: function(){
             this.variables.forEach(variable => {
@@ -92,12 +129,12 @@ var priorizacionApp = createApp({
             this.variables[index].active = !this.variables[index].active
         },
         setTipoPriorizacion: function(index, newValue){
-            console.log(newValue)
             this.variables[index].tipo_priorizacion = newValue
         },
         normalizarVariable: function(variable){
             axios.get(URL_API + 'geofocus/normalizar_variable/' + variable.id)
             .then(response => {
+                toastr['info']('Variable normalizada')
                 console.log(response.data)
             })
             .catch(function(error) { console.log(error) })
@@ -110,6 +147,10 @@ var priorizacionApp = createApp({
             var localidad = this.localidades.find(row => row.cod_localidad == codLocalidad)
             if ( localidad != undefined ) localidadValor = localidad[field]
             return localidadValor
+        },
+        classSector: function(codLocalidad = ''){
+            var sector = this.localidadValor(codLocalidad, field = 'sector')
+            return this.textToClass(sector, 'sector')
         },
         variableClass: function(variable){
             if ( variable.active == true ) {
@@ -128,6 +169,8 @@ var priorizacionApp = createApp({
         //-----------------------------------------------------------------------------
         actualizarMapa: function(newSection){
             this.section = newSection
+            this.tipoInformacion = 'priorizacion'
+            this.currentTema = ''
             axios.get(URL_API + 'geofocus/get_variable_valores/priorizacion_id/' + this.priorizacion.id)
             .then(response => {
                 console.log(typeof(response.data.summary['min']))
@@ -141,14 +184,12 @@ var priorizacionApp = createApp({
             })
             .catch(function(error) { console.log(error) })
         },
-        actualizarCapa: function(variable){
-            this.currentVariable = variable
-            this.section = 'mapa'
-            var variableId = this.currentVariable.id
+        actualizarCapa: function(){
+            this.tipoInformacion = 'variable'
             axios.get(URL_API + 'geofocus/get_variable_valores/variable_id/' + this.currentVariable.id)
             .then(response => {
                 console.log(typeof(response.data.summary['min']))
-                mapChartBogota.setTitle({ text: variable.nombre });
+                mapChartBogota.setTitle({ text: this.currentVariable.nombre });
                 mapChartBogota.series[0].update({data: response.data['valores']})
                 // Actualizar el valor 'max' de colorAxis
                 mapChartBogota.colorAxis[0].update({
@@ -161,6 +202,13 @@ var priorizacionApp = createApp({
             })
             .catch(function(error) { console.log(error) })
         },
+        setTema: function(){
+            var newVariableId = this.variables.find(variable => variable.tema == this.currentTema).id
+            console.log(newVariableId)
+            this.setVariable(newVariableId)
+        },
+        // Descripción de la priorización
+        //-----------------------------------------------------------------------------
         getDescripcionPriorizacion: function(){
             this.loading = true
             var formValues = new FormData()
@@ -176,6 +224,17 @@ var priorizacionApp = createApp({
             })
             .catch( function(error) {console.log(error)} )
         },
+        formatNumber: function(value){
+            return Pcrn.round(value)
+        },
+        isEditable: function(){
+            console.log(this.userRole)
+            console.log(this.priorizacion.creator_id)
+            if ( this.userRole <= 2 ) return true
+            if ( this.priorizacion.creator_id == this.userId ) return true
+            return false
+        },
+
     },
     computed: {
         variablesActivas: function(){
@@ -209,7 +268,7 @@ var priorizacionApp = createApp({
 }).mount('#priorizacionApp');
 
 
-// Mostrar texto caracter por caracter
+// Show text in a container, one character at a time
 //-----------------------------------------------------------------------------
 function typeText(text, interval) {
     const container = document.getElementById('typing-respuesta');
@@ -220,14 +279,6 @@ function typeText(text, interval) {
         if (index < text.length) {
             container.textContent += text[index];
             index++;
-        } else {
-            /*clearInterval(intervalId);
-            var chatElemento = {
-                'user':'ele',
-                'texto': text
-            }
-            chatEle.agregarIAMensaje(chatElemento)
-            chatEle.iaLoading = false*/
         }
     }
     

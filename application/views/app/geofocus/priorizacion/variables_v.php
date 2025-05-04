@@ -1,13 +1,14 @@
 <div v-show="section == 'variables'">
     <div class="mb-2 d-flex justify-content-between">
         <div class="py-2">
+            <span class="text-muted" v-show="!isEditable()">Solo lectura &middot;</span>
             Variables seleccionadas:
             <span class="text-primary">
                 {{ variablesActivas.length }}
             </span>
         </div>
         <div>
-            <button class="btn btn-main btn-lg" v-on:click="validateSubmit">
+            <button class="btn btn-main btn-lg" v-on:click="validateSubmit" v-bind:disabled="!isEditable()">
                 Calcular
             </button>
         </div>
@@ -27,8 +28,6 @@
                     <th width="200px"></th>
                     <th width="10px">Puntaje</th>
                     <th width="10px"></th>
-                    <th width="10px"></th>
-                    <th width="10px" v-show="userRole <= 2"></th>
                 </thead>
                 <tbody>
                     <tr v-for="(variable, key) in variables" v-show="variable.estado == 'Cargada'">
@@ -67,21 +66,37 @@
                             <span v-show="variable.active">{{ variable.puntaje }}</span>
                         </td>
                         
-                        <td>
-                            <button class="a4" data-bs-toggle="modal" data-bs-target="#detallesModal" type="button"
-                                v-on:click="setCurrent(variable)">
-                                <i class="fas fa-info-circle"></i>
-                            </button>
-                        </td>
-                        <td>
-                            <button class="a4" v-on:click="actualizarCapa(variable)" type="button">
-                                <i class="fas fa-globe"></i>
-                            </button>
-                        </td>
-                        <td v-show="userRole <= 2">
-                            <button class="a4" v-on:click="normalizarVariable(variable)" type="button" title="Normalizar valores de la viariable">
-                                <i class="fa-solid fa-calculator"></i>
-                            </button>
+                        
+                        <td class="text-center">
+                            <div class="dropdown">
+                                <button class="a4" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fas fa-ellipsis-v"></i>
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li>
+                                        <button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#detallesModal" type="button"
+                                            v-on:click="setVariable(variable.id, 'variables')">
+                                            Información
+                                        </button>
+                                    </li>
+                                    <li>
+                                        <button class="dropdown-item" v-on:click="setVariable(variable.id, 'mapa')" type="button">
+                                            Ver en mapa
+                                        </button>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" v-bind:href="`<?= URL_APP ?>geofocus/export_variable/`  + variable.id + '/' + variable.clave" target="_blank">
+                                            Descargar Excel
+                                        </a>
+                                    </li>
+                                    <li v-show="userRole <= 2">
+                                        <button class="dropdown-item" v-on:click="normalizarVariable(variable)" type="button" title="Normalizar valores de la variable">
+                                            Normalizar
+                                        </button>
+                                    </li>
+                                    
+                                </ul>
+                            </div>
                         </td>
 
                     </tr>

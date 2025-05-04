@@ -267,13 +267,13 @@ class App_model extends CI_Model{
      * @param string $condition
      * @return array $options
      */
-    function arr_periods($condition)
+    function arr_periods($condition, $orderType = 'ASC')
     {
         $select = 'CONCAT("0", (id)) AS str_cod, id, period_name AS name';
 
         $query = $this->db->select($select)
             ->where($condition)
-            ->order_by('id', 'ASC')
+            ->order_by('id', $orderType)
             ->get('periods');
         
         $options = $query->result_array();

@@ -10,7 +10,7 @@
         </div>
     </div>
 
-    <div class="center_box_750" v-show="!loading">
+    <div class="center_box_920" v-show="!loading">
         <div class="search-container">
             <input class="search-input mb-2" type="text" v-model="q" placeholder="Buscar investigación" autofocus>
             <button class="search-button" v-show="this.q.length > 0" v-on:click="clearSearch()">
@@ -18,15 +18,25 @@
             </button>
         </div>
 
-        <div class="mb-2">
-            <select v-model="filters.grupo_1" class="search-filter" v-bind:class="{'selected': filters.grupo_1 != '' }">
-                <option value="">Todas</option>
-                <option v-for="optionGrupo1 in grupos" v-bind:value="optionGrupo1">{{ optionGrupo1 }}</option>
-            </select>
+        <div class="d-flex justify-content-center mb-2">
+            <div class="mb-2 me-2">
+                <select v-model="filters.grupo_1" class="search-filter" v-bind:class="{'selected': filters.grupo_1 != '' }">
+                    <option value="">Todas</option>
+                    <option v-for="optionGrupo1 in grupos" v-bind:value="optionGrupo1">{{ optionGrupo1 }}</option>
+                </select>
+            </div>
+            <div class="mb-2">
+                <select v-model="filters.linea_investigacion" class="search-filter" v-bind:class="{'selected': filters.linea_investigacion != '' }">
+                    <option value="">Todas</option>
+                    <option v-for="lineaInvestigacion in lineasInvestigacion" v-bind:value="lineaInvestigacion">{{ lineaInvestigacion }}</option>
+                </select>
+            </div>
         </div>
+
 
         <p class="text-center"><strong class="color-text-1">{{ investigacionesFiltrados.length }}</strong> resultados</p>
 
+        <!-- BOTONES DE SELECCIÓN DE INVESTIGACIONES -->
         <div class="d-flex my-3 justify-content-between">
             <div class="d-none">
                 <button class="btn btn-circle btn-light me-2">
@@ -49,40 +59,44 @@
 
 
         <!-- LISTADO DE investigaciones -->
-        <table class="table" v-show="seccion == 'listado'">
-            <tr v-for="investigacion in investigacionesFiltrados">
-                <td>
-                    <strong class="color-text-5">
-                        {{ investigacion['ID'] }}
-                    </strong>
-                </td>
-                <td>
-                    <span class="grupo-investigacion color-text-2">
-                        {{ investigacion['grupo_1'] }}
-                    </span>
-                    <br>
-                    <span class="label-linea-investigacion me-2" v-bind:class="`linea-` + textToClass(investigacion['Línea de investigación'])">
-                        {{ investigacion['Línea de investigación'] }}
+        <div v-show="seccion == 'listado'">
+            <div class="row mb-4" v-for="investigacion in investigacionesFiltrados">
+                <div class="col-md-3">
+                    <img
+                        v-bind:src="`<?= URL_CONTENT ?>observatorio/investigaciones/` + investigacion['ID'] + `.jpg`"
+                        class="rounded w-100 pointer"
+                        alt="Miniatura investigación"
+                        onerror="this.src='<?= URL_CONTENT ?>observatorio/investigaciones/nd.jpg'"
+                        v-on:click="setCurrent(investigacion)"
+                    >
+
+                </div>
+                <div class="col-md-9">
+                    <span class="grupo-investigacion pointer text-main" v-on:click="setCurrent(investigacion)" style="font-size: 1.5em;">
+                        {{ investigacion['Nombre clave'].substring(3) }}
                     </span>
                     
                     <br>
-                    <strong class="color-text-1 pointer" v-on:click="setCurrent(investigacion)">
+                    <strong class="text-muted pointer" v-on:click="setCurrent(investigacion)">
                         {{ investigacion['Título'] }}
                     </strong>
                     <br>
-                    {{ investigacion['Descripción'] }}
-                </td>
-                <td width="25%;">
-                    <span class="text-main">{{ investigacion['Entidad'] }}</span>
+                    
                     <br>
-                    <small>{{ investigacion['Tema'] }}</small>
-                    <br>
-                    <small>Inicio en campo: </small>
-                    <br>
-                    <small>{{ dateFormat(investigacion['Inicio Recolección'], 'DD MMM') }}</small>
-                </td>
-            </tr>
-        </table>
+                    <p>
+                        {{ investigacion['Descripción'] }}
+                    </p>
+
+                    <span class="color-text-2">
+                        {{ investigacion['grupo_1'] }}
+                    </span>
+                    &middot;
+                    <span class="label-linea-investigacion me-2" v-bind:class="`linea-` + textToClass(investigacion['Línea de investigación'])">
+                        {{ investigacion['Línea de investigación'] }}
+                    </span>
+                </div>
+            </div>
+        </div>
 
         <div class="row mb-4 ficha-investigacion d-none" v-for="investigacion in investigacionesFiltrados" v-show="seccion == 'listado'">
             <div class="col-md-3 text-end">
@@ -102,7 +116,7 @@
             </div>
         </div>
 
-        <!-- DETALLES DE UN LABORATORIO SELECCIONADO -->
+        <!-- DETALLES DE UNA INVESTIGACIÓN SELECCIONADA -->
         <div v-show="seccion == 'detalles'">
             <div class="mb-2">
                 <button class="btn btn-light btn-sm" v-on:click="setSeccion('listado')">
@@ -112,13 +126,18 @@
             <div class="card">
                 <div class="card-body">
                     <div class="text-center">
+                        <span class="entidad" v-bind:class="textToClass(currentInvestigacion['Entidad'], 'entidad')">{{ currentInvestigacion['Entidad'] }}</span>
+                        <br>
                         <span class="text-muted">{{ currentInvestigacion['Tema'] }}</span>
                     </div>
-                    <h3 class="card-title text-center mb-5 color-text-1">
-                        {{ currentInvestigacion['Título'] }}
+                    <h3 class="card-title text-center color-text-1">
+                        {{ currentInvestigacion['Nombre clave'].substring(3) }}
                     </h3>
+                    <h4 class="card-title text-center mb-5 color-text-2">
+                        {{ currentInvestigacion['Título'] }}
+                    </h4>
                     <div class="row">
-                        <div class="col-md-4">
+                        <div class="col-md-4 text-end">
                             <span class="text-muted">{{ currentInvestigacion['Tema'] }}</span>
                             <br>
                             <span class="text-muted">{{ currentInvestigacion['Línea de investigación'] }}</span>
@@ -131,6 +150,31 @@
                             </p>
                         </div>
                     </div>
+
+                    <!-- PRODUCTOS DE LA INVESTIGACIÓN -->
+                    <h5 class="text-center color-text-1">Productos ({{ productosFiltrados.length }})</h5>
+                    <div class="row">
+                        <div class="col-md-4">
+                            
+                        </div>
+                        <div class="col-md-8">
+                            <div v-for="producto in productosFiltrados" class="producto">
+                                <a class="d-flex" v-bind:href="producto['Link para ficha']" target="_blank">
+                                    <div width="65px" class="text-center me-3">
+                                        <div class="icon-container">
+                                            <span>
+                                                <i v-bind:class="getProductoClass(producto['Tipo producto'])"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        {{ tituloProducto(producto) }}
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
             </div>
             

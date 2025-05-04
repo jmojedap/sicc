@@ -3,7 +3,8 @@
 <script src="https://code.highcharts.com/maps/modules/offline-exporting.js"></script>
 <script src="https://code.highcharts.com/maps/modules/accessibility.js"></script>
 
-<?php $this->load->view('app/geofocus/priorizacion/style_v') ?>
+<!-- <link rel="stylesheet" href="<?= URL_RESOURCES ?>css/sicc/geofocus.css"> -->
+<?php $this->load->view('app/geofocus/priorizacion/test_style_v') ?>
 
 <?php $this->load->view('app/geofocus/priorizacion/mapa_script_v') ?>
 
@@ -13,7 +14,7 @@
 
         <ul class="nav nav-tabs mb-2">
             <li class="nav-item">
-                <a class="nav-link pointer" href="<?= URL_APP ?>geofocus/priorizaciones/"><i class="fas fa-arrow-left"></i> Volver</a>
+                <a class="nav-link pointer" href="<?= URL_APP ?>geofocus/priorizaciones/"><i class="fas fa-arrow-left"></i> Priorizaciones</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link pointer" v-on:click="setSection('variables')" v-bind:class="{'active': section == 'variables' }">Variables</a>

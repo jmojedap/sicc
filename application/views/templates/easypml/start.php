@@ -8,6 +8,7 @@
     <head>
         <?php $this->load->view('templates/easypml/main/head'); ?>
         <?php $this->load->view('templates/easypml/minimal/style') ?>
+        <link type="text/css" rel="stylesheet" href="<?= URL_RESOURCES . 'templates/easypml/minimal.css' ?>">
         <link rel="stylesheet" href="<?= URL_RESOURCES . 'templates/easypml/start.css' ?>">
     </head>
     <body>

@@ -396,6 +396,12 @@ class Medicion_model extends CI_Model{
 // CÁLCULOS DE RESULTADOS
 //-----------------------------------------------------------------------------
 
+    /**
+     * Sumatoria de los factores de expansión de los encuestados de una medición
+     * @param int $medicion_id :: ID de la medición
+     * @return int $sumatoria_encuestados :: Sumatoria de los factores de expansión
+     * 2025-03-14
+     */
     function sumatoria_encuestados($medicion_id)
     {
         $sumatoria_encuestados = 1; //Valor por defecto para evitar divisiones por cero

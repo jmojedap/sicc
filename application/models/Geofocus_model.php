@@ -22,13 +22,16 @@ class Geofocus_model extends CI_Model{
 
     /**
      * Segmento Select SQL, con diferentes formatos, consulta de tablas
-     * 2024-11-24
+     * 2025-03-13
      */
     function select($format = 'general')
     {
         $arr_select['export_territorios_valor'] = 'orden, gf_territorios.poligono_id, gf_territorios.nombre,
             tipo_territorio, descripcion, localidad, cod_localidad, upz,
             variable_key AS clave_priorizacion, valor_normalizado AS puntaje_calculado, ';
+        $arr_select['export_territorios_variable'] = 'orden, gf_territorios.poligono_id, gf_territorios.nombre,
+            tipo_territorio, descripcion, localidad, cod_localidad, upz,
+            variable_key AS variable, valor, valor_normalizado, ';
 
         return $arr_select[$format];
     }
@@ -343,6 +346,23 @@ class Geofocus_model extends CI_Model{
     {
         //Select
         $select = $this->select('export_territorios_valor');
+        $this->db->select($select);
+        $this->db->where($condition);
+        $this->db->join('gf_territorios', 'gf_territorios.poligono_id = gf_territorios_valor.poligono_id', 'left');
+        $this->db->order_by('orden', 'ASC');
+        $query = $this->db->get('gf_territorios_valor', 10000);  //Hasta 10.000 registros
+
+        return $query;
+    }
+
+    /**
+     * Query para exportar una variable
+     * 2025-03-13
+     */
+    function query_export_territorios_variable($condition)
+    {
+        //Select
+        $select = $this->select('export_territorios_variable');
         $this->db->select($select);
         $this->db->where($condition);
         $this->db->join('gf_territorios', 'gf_territorios.poligono_id = gf_territorios_valor.poligono_id', 'left');

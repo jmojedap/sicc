@@ -21,6 +21,8 @@ var priorizacionesApp = createApp({
             },
             currentElement: elementos[0],
             currentId: -1,
+            userRole: APP_RID,
+            userId: APP_UID,
         }
     },
     methods: {
@@ -85,6 +87,11 @@ var priorizacionesApp = createApp({
                 this.loading = false
             })
             .catch(function(error) { console.log(error) })
+        },
+        isEditable: function(priorizacionRow){
+            if ( this.userRole <= 2 ) return true
+            if ( priorizacionRow.creator_id == this.userId ) return true
+            return false
         },
     },
     computed: {

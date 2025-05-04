@@ -22,12 +22,16 @@
         mapChartBogota = Highcharts.mapChart('map-container', {
             chart: {
                 map: mapData,
-                height: '80%',
+                height: '85%',
                 backgroundColor: '#FCFCFC'  // Cambiar el color de fondo
             },
             title: {
                 text: 'Barrios de Bogotá',
-                align: 'center'
+                align: 'center',
+                style: {
+                    color: '#666',
+                    fontWeight: '400'
+                }
             },
             credits: {
                 enabled: false // Deshabilita los créditos
@@ -53,10 +57,6 @@
                 min: parseFloat(territoriosData['summary']['min']),
                 max: parseFloat(territoriosData['summary']['max']),
                 tickInterval: (parseFloat(territoriosData['summary']['max']) - parseFloat(territoriosData['summary']['min']))/5,
-                /*min: 0,
-                max: 9,
-                tickInterval: 0.5,*/
-                /*stops: [[0, '#F1EEF6'], [0.65, '#900037'], [1, '#500007']],*/
                 stops: [[0, '#F1EEF6'], [0.65, '#AA0066']],
                 labels: {
                     format: '{value}'

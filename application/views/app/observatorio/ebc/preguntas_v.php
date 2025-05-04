@@ -40,8 +40,8 @@
             </nav>
         </div>
         <iframe v-bind:src="`<?= URL_APP ?>mediciones/hc_resultados_pregunta/` + medicionPreguntaActiva" v-show="medicionPreguntaActiva > 0"
-            frameborder="0" style="min-height: 600px;"
-            class="w-100 rounded"></iframe>
+            frameborder="0" style="min-height: 600px;" class="w-100 rounded">
+        </iframe>
         <div class="alert alert-light text-center" v-show="medicionPreguntaActiva == 0">
             Las preguntas de este módulo de la encuesta todavía se encuentra en proceso de recolección, procesamiento y análisis.
         </div>

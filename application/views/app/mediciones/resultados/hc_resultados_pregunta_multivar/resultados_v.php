@@ -45,7 +45,7 @@ Highcharts.chart({
     title: {
         text: pregunta.enunciado_1,
         style: {
-            color: '#c53c99' // Cambia el color del título aquí
+            color: '#777' // Cambia el color del título aquí
         }
     },
     xAxis: {

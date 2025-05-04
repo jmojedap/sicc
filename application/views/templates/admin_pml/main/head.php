@@ -3,10 +3,8 @@
         <link rel="shortcut icon" href="<?= URL_BRAND ?>favicon.png" type="image/png"/>
         <meta content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' name='viewport'>
 
-        <!--Icons font-->
-        <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.0/css/all.min.css" integrity="sha512-BnbUDfEUfV0Slx6TunuB042k9tuKe3xrD6q4mg5Ed72LTgzDIcLPxg6yI2gcMFRyomt+yJJxE+zJwNmxki6/RA==" crossorigin="anonymous" referrerpolicy="no-referrer" /> -->
         <!-- Font Awesome -->
-        <script src="https://kit.fontawesome.com/f45fca298e.js" crossorigin="anonymous"></script>
+        <script src="<?= URL_RESOURCES?>js/fa_f45fca298e.js" ></script>
 
         <!--JQuery-->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>

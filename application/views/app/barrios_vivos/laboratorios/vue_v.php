@@ -7,14 +7,10 @@ var laboratoriosApp = createApp({
             seccion:'listado',
             currentSubseccion:'actividades',
             laboratorios: <?= json_encode($laboratorios) ?>,
-            actividades: <?= json_encode($actividades) ?>,
             loading: false,
             fields: {},
             currentLaboratorio: {},
             displayUrl: false,
-            fileId: '<?= $fileId ?>',
-            gid: '<?= $gid ?>',
-            tablas: <?= json_encode($tablas) ?>,
             subsecciones: [
                 {name:'info', title:'Info'},
                 {name:'actividades', title:'Actividades'},
@@ -64,7 +60,7 @@ var laboratoriosApp = createApp({
     computed: {
         laboratoriosFiltrados: function() {
             var listaFiltrada = this.laboratorios
-            listaFiltrada = listaFiltrada.filter(laboratorio => laboratorio['Incluir'] == 'Sí')
+            //listaFiltrada = listaFiltrada.filter(laboratorio => laboratorio['Incluir'] == 'Sí')
             if (this.q.length > 0) {
                 var fieldsToSearch = ['nombre_laboratorio', 'nombre_corto' ,'descripcion','palabras_clave',
                     'barrio_ancla', 'equipo_lider_duplas', 'categoria_laboratorio', 'gerente']
@@ -74,7 +70,7 @@ var laboratoriosApp = createApp({
         }
     },
     mounted(){
-        this.setCurrent(this.laboratorios[5], 'actividades')
+        //this.setCurrent(this.laboratorios[5], 'actividades')
     }
 }).mount('#laboratoriosApp');
 </script>

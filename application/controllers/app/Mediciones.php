@@ -79,19 +79,6 @@ class Mediciones extends CI_Controller {
     }
 
     /**
-     * Listado de Mediciones, filtrados por búsqueda, JSON
-     */
-    function get($num_page = 1, $per_page = 100)
-    {
-        $this->load->model('Search_model');
-        $filters = $this->Search_model->filters();
-        //$filters['sf'] = 'general';  //Select format
-
-        $data = $this->Medicion_model->get($filters, $num_page, $per_page);
-        $this->output->set_content_type('application/json')->set_output(json_encode($data));
-    }
-
-    /**
      * Vista Lectura de un contenido
      * 2022-04-02
      */
@@ -231,7 +218,7 @@ class Mediciones extends CI_Controller {
     /**
      * Vista pantalla completa de los resultados de una pregunta de una medición
      * o encuesta
-     * 2023-11-21
+     * 2025-03-21
      */
     function hc_resultados_pregunta($pregunta_id)
     {
@@ -258,30 +245,4 @@ class Mediciones extends CI_Controller {
         $data['view_a'] = $view_a;
         $this->App_model->view('templates/easypml/empty', $data);
     }
-
-    function hc_resultados_pregunta_test($pregunta_id)
-    {
-        $pregunta = $this->Db_model->row_id('med_pregunta', $pregunta_id);
-        $medicion_id = 
-
-        $data['pregunta'] = $pregunta;
-        $data['medicion'] = $this->Db_model->row_id('med_medicion', $data['pregunta']->medicion_id);
-        $data['variables'] = $this->Medicion_model->variables("pregunta_id = {$pregunta_id}");
-        $data['opciones'] = $this->Medicion_model->opciones_agrupadas("pregunta_id = {$pregunta_id}");
-
-        $sumatoria_encuestados = $this->Medicion_model->sumatoria_encuestados($pregunta->medicion_id);
-        $frecuencias = $this->Medicion_model->frecuencias($pregunta->medicion_id, $pregunta_id);
-        $frecuencias_array = $this->Medicion_model->frecuencias_array($frecuencias, $sumatoria_encuestados);
-
-        $data['sumatoria_encuestados'] = $sumatoria_encuestados;
-        $data['frecuencias'] = $frecuencias;
-        $data['frecuencias_array'] = $frecuencias_array;
-        
-        $data['head_title'] = 'Resultados pregunta' . $pregunta_id;
-        $data['view_a'] = $this->views_folder . 'resultados/hc_resultados_pregunta/test_v';
-
-        //Salida JSON
-        $this->output->set_content_type('application/json')->set_output(json_encode($data));
-    }
-
 }

@@ -12,20 +12,20 @@ class Pcc {
         //Crea instancia para obtener acceso a las librerías de codeigniter, basado en el id
             $this->CI = &get_instance();
         
-        //Identificar controlador/función, y allow
-            $cf = $this->CI->uri->segment(2) . '/' . $this->CI->uri->segment(3);
-            $allow_cf = $this->allow_cf($cf);    //Permisos de acceso al recurso controlador/función
+        //Identificar mfc: module/controlador/función, y allow
+            $mcf = $this->CI->uri->segment(1) . '/' . $this->CI->uri->segment(2) . '/' . $this->CI->uri->segment(3);
+            $allow_mcf = $this->allow_mcf($mcf);    //Permisos de acceso al recurso module/controlador/función
             
             //Verificar allow
-            if ( $allow_cf )
+            if ( $allow_mcf )
             {
                 //$this->no_leidos();     //Actualizar variable de sesión, cant mensajes no leídos
             } else {
                 //No tiene autorización
                 if ( $this->CI->uri->segment(1) == 'api' ) {
-                    redirect("app/app/denied/{$cf}");
+                    redirect("app/app/denied/{$mcf}");
                 } else {
-                    redirect("app/app/denied/{$cf}");
+                    redirect("app/app/denied/{$mcf}");
                 }
             }
     }
@@ -35,7 +35,7 @@ class Pcc {
      * CF > Ruta Controller/Function
      * 2024-11-21
      */
-    function allow_cf($cf)
+    function allow_mcf($mcf)
     {
         //Cargando lista de control de acceso, application/config/acl.php
         $this->CI->config->load('acl', TRUE);
@@ -43,49 +43,28 @@ class Pcc {
 
         //Variables
         $role = $this->CI->session->userdata('role');
-        $allow_cf = FALSE;
+        $allow_mcf = FALSE;
         
         //Verificar en funciones públicas
-        if ( in_array($cf, $acl['public_functions']) ) $allow_cf = TRUE;
+        if ( in_array($mcf, $acl['public_functions']) ) $allow_mcf = TRUE;
         
         //Si inició sesión
         if ( $this->CI->session->userdata('logged') == TRUE )
         {
             //Es administrador, todos los permisos
-            if ( in_array($role, array(1,2)) ) $allow_cf = TRUE;
+            if ( in_array($role, array(1,2)) ) $allow_mcf = TRUE;
             //Funciones para todos los usuarios con sesión iniciada
-            if ( in_array($cf, $acl['logged_functions']) ) $allow_cf = TRUE;
+            if ( in_array($mcf, $acl['logged_functions']) ) $allow_mcf = TRUE;
         }
 
         //Funciones para el rol actual
-        if ( array_key_exists($cf, $acl['function_roles']) )
+        if ( array_key_exists($mcf, $acl['function_roles']) )
         {
-            $roles = $acl['function_roles'][$cf];
-            if ( in_array($role, $roles) ) $allow_cf = TRUE;
+            $roles = $acl['function_roles'][$mcf];
+            if ( in_array($role, $roles) ) $allow_mcf = TRUE;
         }
 
-        //Funciones de API
-        if ( $this->CI->uri->segment(1) == 'api' ) {
-            $allow_cf = FALSE;
-            //Está en las funciones públicas
-            if ( in_array($cf, $acl['api_public_functions']) ) $allow_cf = TRUE;
-
-            //Es administrador, todos los permisos
-            if ( in_array($role, array(1,2)) ) $allow_cf = TRUE;
-
-            //Funciones para el rol actual
-            if ( array_key_exists($cf, $acl['function_roles']) )
-            {
-                $roles = $acl['function_roles'][$cf];
-                if ( in_array($role, $roles) ) $allow_cf = TRUE;
-            }
-
-            //Autorizado por userkey
-            $user_request = $this->user_request();
-            if ( ! is_null($user_request) ) $allow_cf = TRUE;
-        }
-
-        return $allow_cf;
+        return $allow_mcf;
     }
     
     /**

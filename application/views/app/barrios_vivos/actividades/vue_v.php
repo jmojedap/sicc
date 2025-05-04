@@ -1,81 +1,107 @@
 <script>
-// VueApp
-//-----------------------------------------------------------------------------
+
+
 var actividadesApp = createApp({
-    data() {
-        return {
-            seccion:'listado',
-            laboratorios: <?= json_encode($laboratorios) ?>,
-            actividades: <?= json_encode($actividades) ?>,
+    data(){
+        return{
+            displayFormat: 'table',
+            laboratorio: <?= json_encode($row) ?>,
+            fields: {
+                relacionado_1: '',
+                cod_detalle: Math.floor(Math.random() * (99999 - 10000 + 1)) + 10000,
+                fecha_1: moment().format('YYYY-MM-DD'),
+            },
+            detalleId: 0,
+            filters:{
+                'prnt':<?= $row->id ?>,
+            },
             loading: false,
-            fields: {},
-            displayUrl: false,
-            fileId: '<?= $fileId ?>',
-            gid: '<?= $gid ?>',
-            tablas: <?= json_encode($tablas) ?>,
-            q: ''
+            detalles: [],
+            arrFase: <?= json_encode($arrFase) ?>,
+            appUid: APP_UID,
+            appRid: APP_RID,
         }
     },
     methods: {
-        ago: function(date){
-            if (!date) return ''
-            return moment(date, 'YYYY-MM-DD HH:mm:ss').fromNow()            
-        },
-        dateFormat: function(date){
-            if (!date) return ''
-            return moment(date).format('D MMM')
-        },
-        setSeccion: function(nuevaSeccion){
-            this.seccion = nuevaSeccion
-        },
-        updateList: function(tabla){
+        handleSubmit: function(){
             this.loading = true
-            axios.get('<?= base_url() ?>api/tools/googlesheet_save_json/' + this.fileId + '/' + tabla.gid + '/barrios_vivos/' + tabla.nombre)
+            var formValues = new FormData(document.getElementById('actividadesForm'))
+            formValues.append('cod_detalle', this.fields.cod_detalle)  
+            axios.post(URL_API + 'barrios_vivos/save_detail/', formValues)
             .then(response => {
-                if ( response.data.status == 1 ) {
-                    toastr['success']('Datos actualizados, presione F5')
+                if ( response.data.saved_id > 0 ) {
+                    toastr['success']('Actividad guardada')
+                    this.getDetails()
+                    modalForm.hide()
+                    this.clearForm()
                 }
                 this.loading = false
             })
+            .catch( function(error) {console.log(error)} )
+        },
+        getDetails: function(){
+            this.loading = true
+            var formValues = new FormData()
+            formValues.append('prnt', this.laboratorio.id)  //ID Laboratorio
+            formValues.append('type', 17101)  //Tipo detalle actividad del laboratorio
+            axios.post(URL_API + 'barrios_vivos/get_details/', formValues)
+            .then(response => {
+                this.detalles = response.data.details
+                this.loading = false
+            })
+            .catch( function(error) {console.log(error)} )
+        },
+        deleteElement: function(){
+            axios.get(URL_API + 'barrios_vivos/delete_detail/' + this.laboratorio.id + '/' + this.detalleId)
+            .then(response => {
+                if ( response.data.qty_deleted > 0 ) {
+                    toastr['info']('Actividad eliminada')
+                    this.getDetails()
+                }
+            })
             .catch(function(error) { console.log(error) })
         },
-        clearSearch: function(){
-            this.q = ''
-        },
-        laboratorioDetalle: function(laboratorioId, campo){
-            var laboratorioDetalle = ''
-            var laboratorio = this.laboratorios.find(laboratorio => laboratorio.laboratorio = laboratorioId)
-            if ( laboratorio != null ) {
-                laboratorioDetalle = laboratorio[campo]
+        clearForm: function(){
+            this.detalleId = 0
+            this.fields = {
+                relacionado_1: '',
+                fecha_1: moment().format('YYYY-MM-DD'),
             }
-            return laboratorioDetalle
+            this.setCodDetalle()
         },
-        textToClass: function(text, prefix = null){
-            if ( prefix == null) {
-                return Pcrn.textToClass(text)
-            }
-            return prefix + '-' + Pcrn.textToClass(text)
+        setCodDetalle: function(){
+            //Establecer valor diferente para que pueda ser guardado en otro registro
+            this.fields.cod_detalle = Math.floor(Math.random() * (99999 - 10000 + 1)) + 10000;
+
         },
-        ordenarActividades: function(){
-            //Ordenar actividades de forma ascendente
-            this.actividades.sort((a, b) => new Date(a.fecha) - new Date(b.fecha));
+        setDetalle: function(detalleId){
+            this.detalleId = detalleId
+            this.fields = this.detalles.find((item) => {
+                return item.id == detalleId
+            })
         },
-    },
-    computed: {
-        actividadesFiltrados: function() {
-            var listaFiltrada = this.actividades
-            listaFiltrada = listaFiltrada.filter(actividad => actividad['fecha'].length > 0)
-            listaFiltrada = listaFiltrada.filter(actividad => actividad['laboratorio_id'] != 20)
-            if (this.q.length > 0) {
-                var fieldsToSearch = ['laboratorio', 'sesion' ,'interaccion','fase_laboratorio',
-                    'fase_metodologia', 'estado', 'lugar', 'descripcion', 'descripcion_evidencias']
-                listaFiltrada = PmlSearcher.getFilteredResults(this.q, this.actividades, fieldsToSearch)
-            }
-            return listaFiltrada
-        }
+        // Formato y valores
+        //-----------------------------------------------------------------------------
+        ago: function(date){
+            if (!date) return ''
+            return moment(date, 'YYYY-MM-DD HH:mm:ss').fromNow()
+        },
+        dateFormat: function(date, format = 'D MMM YYYY'){
+            if (!date) return ''
+            return moment(date).format(format)
+        },
+        timeFormat: function(time) {
+            if (!time) return '';
+            return moment(time, 'HH:mm').format('h:mm A');
+        },
+        textToClass: function(texto){
+            return Pcrn.textToClass(texto)
+        },
     },
     mounted(){
-        this.ordenarActividades()
+        this.getDetails()
     }
 }).mount('#actividadesApp');
+
+const modalForm = new bootstrap.Modal(document.getElementById('formModal'))
 </script>

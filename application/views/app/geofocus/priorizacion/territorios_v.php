@@ -3,7 +3,7 @@
         <!-- v-bind:disabled="!descripcion.active" -->
             <button class="btn btn-light me-2" v-on:click="getDescripcionPriorizacion"
                 title="Generar una descripción de la configuración realizada a la priorización"
-                
+                v-bind:disabled="!isEditable()"
                 >
                 <img src="<?= URL_IMG ?>icons/ia-generate.png" alt="Icono generar contenido" style="width: 20px;"> Generar descripción
             </button>
@@ -33,6 +33,7 @@
             <thead>
                 <th width="10px">Orden</th>
                 <th>Barrio</th>
+                <th>UPZ</th>
                 <th>Localidad</th>
                 <th>Sector</th>
                 <th>Puntaje <i class="fas fa-info-circle text-muted" title="Puntaje calculado ponderado por las variables seleccionadas"></i></th>
@@ -40,10 +41,17 @@
             <tbody v-show="!loading">
                 <tr v-for="(territorio, key) in territorios">
                     <td class="text-center text-muted">{{ territorio.orden }}</td>
-                    <td>{{ territorio.nombre }}</td>
+                    <td>
+                        {{ territorio.nombre }}
+                    </td>
+                    <td>{{ territorio.upz }}</td>
                     <td>{{ territorio.localidad }}</td>
-                    <td>{{ localidadValor(territorio.cod_localidad, 'sector') }}</td>
-                    <td class="text-center">{{ territorio.valor }}</td>
+                    <td>
+                        <span class="sector" v-bind:class="classSector(territorio.cod_localidad)">
+                            {{ localidadValor(territorio.cod_localidad, 'sector') }}
+                        </span>
+                    </td>
+                    <td class="text-center">{{ formatNumber(territorio.valor) }}</td>
                 </tr>
             </tbody>
         </table>

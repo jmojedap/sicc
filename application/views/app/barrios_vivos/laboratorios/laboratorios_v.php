@@ -51,18 +51,14 @@
                 &middot;
                 <small class="text-muted">{{ laboratorio.categoria_laboratorio }}</small>
                 &middot;
-                <small class="text-muted">{{ laboratorio.origen_propuesta }}</small>
+                <small class="text-muted">{{ laboratorio.tipo_origen }}</small>
                 &middot;
-                <small class="text-muted">{{ laboratorio.direccion_lider_corto }}</small>
+                <small class="text-muted">{{ laboratorio.direccion_lider }}</small>
                 &middot;
                 <small class="text-muted">Inicio: {{ ago(laboratorio.fecha_inicio) }}</small>
                 <br>
 
-                <div class="progress">
-                    <div class="progress-bar" role="progressbar" v-bind:style="`width: ` + laboratorio['avance'] + `;`" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
-                        {{ laboratorio['avance'] }}
-                    </div>
-                </div>
+                
             </div>
         </div>
 
@@ -143,57 +139,10 @@
                 </table>
             </div>
 
-            <div class="w-100" v-show="currentSubseccion == 'actividades'">
-                <table class="table bg-white">
-                    <tr v-for="actividad in actividades" v-show="showActividad(actividad)">
-                        <td>
-                            <strong class="fecha-dia color-text-5">
-                                {{ dateFormat(actividad.fecha, `DD`) }}
-                            </strong>
-                            <br>    
-                            {{ dateFormat(actividad.fecha, `MMM`) }}
-                        </td>
-                        <td>{{ actividad.fase_metodologia }}</td>
-                        <td width="70%">
-                            <p>
-                                <span class="text-muted">Fase: </span>
-                                <span class="text-main">{{ actividad.fase_laboratorio }}</span>
-                                &middot;
-
-                                <span class="text-muted">Sesión: </span>
-                                <span class="text-main">{{ actividad.sesion }}</span>
-                                &middot;
-
-                                <span class="text-muted">Interacción: </span>
-                                <span class="text-main">{{ actividad.interaccion }}</span>
-                                &middot;
-
-                                <span class="text-muted">Lugar: </span>
-                                <span class="text-main">{{ actividad.lugar }}</span>
-                                <span class="text-main">{{ actividad.direccion }}</span>
-                                &middot;
-
-                                <span class="text-muted">Asistentes: </span>
-                                <span class="text-main">{{ actividad.total_mujeres }}</span>
-                                &middot;
-                            </p>
-                            <p>
-                                {{ actividad.descripcion }}
-                            </p>
-                        </td>
-                    </tr>
-                </table>
-            </div>
+            
         </div>
 
-        <?php if ( $this->session->userdata('role') == 1 ) : ?>
-        <div class="mt-2">
-            <button class="btn btn-light btn-sm me-1" v-on:click="updateList(tabla)" type="button" title="Actualizar"
-                v-for="tabla in tablas">
-                <i class="fa-solid fa-rotate-right"></i> {{ tabla.nombre }}
-            </button>
-        </div>
-        <?php endif; ?>
+        
 
     </div>
 </div>

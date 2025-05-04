@@ -10,7 +10,7 @@ class Cuidado_model extends CI_Model{
         $filePath = PATH_CONTENT . 'mecc/ehc_acciones.json';
 
         if ($readDrive == 1) {
-            $fileId = '1GvmA_N6BJ3wjfsRMCocIHj3HoXGM_L4K7xH1foWk0RU';
+            $fileId = '1W3ZLOLkgClTqRQqocpRTxqGOhzt2Es1mlyCjdLd5MXk';
             $gid = '1891263053';    //Hoja export
             $this->load->library('Google_sheets');
             $arrAcciones = $this->google_sheets->sheetToArray($fileId, $gid);

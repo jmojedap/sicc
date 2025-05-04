@@ -60,7 +60,7 @@ class Acciones extends CI_Controller {
         //Opciones de filtros de búsqueda
             $data['arrPrograma'] = $this->Item_model->arr_options('category_id = 221');
             $data['arrEstrategia'] = $this->Item_model->arr_options('category_id = 222');
-            $data['arrPeriodo'] = $this->App_model->arr_periods('year IN (2023,2024) AND type_id = 7');
+            $data['arrPeriodo'] = $this->App_model->arr_periods('year IN (2024,2025) AND type_id = 7', 'DESC');
             $data['arrLocalidad'] = $this->Item_model->arr_options('category_id = 121');
             
         //Cargar vista
@@ -262,6 +262,17 @@ function mapa()
         $this->output->set_content_type('application/json')->set_output(json_encode($data));
     }
 
+// EXPORTAR DATOS DE ACCIONES
+//-----------------------------------------------------------------------------
+
+    function exportar_datos()
+    {
+        $data['head_title'] = 'Exportar datos';
+        $data['view_a'] = $this->views_folder . 'exportar_datos_v';
+        $data['nav_2'] = 'app/acciones/explorar/menu_v';
+        $this->App_model->view(TPL_FRONT, $data);
+    }
+
 // REGISTRO DE USUARIOS
 //-----------------------------------------------------------------------------
 
@@ -277,9 +288,49 @@ function mapa()
         $filters = $this->Search_model->filters();
         $filters['role'] = 22;
         $filters['sf'] = 'cuidado_estudiantes';
-        $data['users'] = $this->User_model->get($filters, 1, 2000);
+        $data['users'] = $this->User_model->get($filters, 1, 10000);
 
         $this->App_model->view(TPL_FRONT, $data);
+    }
+
+
+    /**
+     * AJAX JSON
+     * Listado de usuarios, filtrados por búsqueda, JSON}
+     * 2025-04-29
+     */
+    function usuarios_exportar()
+    {
+        set_time_limit(120);    //120 segundos, 2 minutos para el proceso
+
+        //Identificar filtros y búsqueda
+        $this->load->model('Search_model');
+        $filters = $this->Search_model->filters();
+
+        $this->load->model('Search_model');
+        $filters = $this->Search_model->filters();
+        $filters['role'] = 22;
+        $filters['sf'] = 'cuidado_estudiantes';
+        $this->load->model('User_model');
+        $data['query'] = $this->User_model->search($filters);
+
+        if ( $data['query']->num_rows() > 0 ) {
+            //Preparar datos
+                $data['sheet_name'] = 'usuarios_cuidado';
+
+            //Objeto para generar archivo excel
+                $this->load->library('Excel');
+                $file_data['obj_writer'] = $this->excel->file_query($data);
+
+            //Nombre de archivo
+                $file_data['file_name'] = date('Ymd_His') . '_' . $data['sheet_name'];
+
+            $this->load->view('common/download_excel_file_v', $file_data);
+        } else {
+            $data = array('message' => 'No se encontraron usuarios para exportar');
+            //Salida JSON
+            $this->output->set_content_type('application/json')->set_output(json_encode($data));
+        }
     }
 
 
@@ -333,6 +384,40 @@ function mapa()
         $this->App_model->view(TPL_FRONT, $data);
     }
 
+    function acciones_asistentes_exportar()
+    {
+        set_time_limit(120);    //120 segundos, 2 minutos para el proceso
+
+        //Identificar filtros y búsqueda
+        $this->load->model('Search_model');
+        $filters = $this->Search_model->filters();
+
+        $this->load->model('Search_model');
+        $filters = $this->Search_model->filters();
+        $filters['role'] = 22;
+        $filters['sf'] = 'cuidado_estudiantes';
+        $this->load->model('User_model');
+        $data['query'] = $this->Accion_model->details_asistentes();
+
+        if ( $data['query']->num_rows() > 0 ) {
+            //Preparar datos
+                $data['sheet_name'] = 'acciones_asistentes';
+
+            //Objeto para generar archivo excel
+                $this->load->library('Excel');
+                $file_data['obj_writer'] = $this->excel->file_query($data);
+
+            //Nombre de archivo
+                $file_data['file_name'] = date('Ymd_His') . '_' . $data['sheet_name'];
+
+            $this->load->view('common/download_excel_file_v', $file_data);
+        } else {
+            $data = array('message' => 'No se encontraron asistentes para exportar');
+            //Salida JSON
+            $this->output->set_content_type('application/json')->set_output(json_encode($data));
+        }
+    }
+
     /**
      * HTML VIEW
      * Vista y formulario para registro de asistentes itinerantes a una acción
@@ -370,6 +455,31 @@ function mapa()
         $data['view_a'] = $this->views_folder . 'acciones_asistentes_itinerantes_v';
         $data['nav_2'] = $this->views_folder . 'explorar/menu_v';
         $this->App_model->view(TPL_FRONT, $data);
+    }
+
+    function acciones_asistentes_itinerantes_exportar()
+    {
+        set_time_limit(120);    //120 segundos, 2 minutos para el proceso
+
+        $data['query'] = $this->Accion_model->details_asistentes_itinerantes();
+
+        if ( $data['query']->num_rows() > 0 ) {
+            //Preparar datos
+                $data['sheet_name'] = 'asistentes_itinerantes';
+
+            //Objeto para generar archivo excel
+                $this->load->library('Excel');
+                $file_data['obj_writer'] = $this->excel->file_query($data);
+
+            //Nombre de archivo
+                $file_data['file_name'] = date('Ymd_His') . '_' . $data['sheet_name'];
+
+            $this->load->view('common/download_excel_file_v', $file_data);
+        } else {
+            $data = array('message' => 'No se encontraron asistentes para exportar');
+            //Salida JSON
+            $this->output->set_content_type('application/json')->set_output(json_encode($data));
+        }
     }
 
 // POBLACIÓN BENEFICIARIA DE LAS ACCIONES

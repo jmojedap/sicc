@@ -135,7 +135,7 @@ class User_model extends CI_Model{
         //q words condition
         $q_search_fields = [
             'first_name', 'last_name', 'display_name', 'email', 'document_number',
-            'team_1', 'team_2', 'job_role'
+            'team_1', 'team_2', 'job_role', 'admin_notes'
         ];
         $words_condition = $this->Search_model->words_condition($filters['q'], $q_search_fields);
         if ( $words_condition )
@@ -524,7 +524,7 @@ class User_model extends CI_Model{
             if ( strlen($row_data[1]) == 0 ) { $error_text .= 'El apellido está vacío. '; }        //Debe tener apellido
             if ( strlen($row_data[2]) == 0 ) { $error_text .= 'El e-mail está vacío. '; }          //Debe tener email
             if ( strlen($row_data[3]) < 8 ) { $error_text .= 'La contraseña debe tener al menos 8 caracteres. '; }       //Debe tener contraseña de 8 caracteres
-            if ( strlen($row_data[4]) <= 1 ) { $error_text .= 'El código del rol no es válido.'; } //No rol de administrador o desarrollador
+            if ( $row_data[4] <= 1 ) { $error_text .= 'El código del rol no es válido.'; } //No rol de administrador o desarrollador
             if ( ! $this->Db_model->is_unique('users', 'email', $row_data[2]) ) { $error_text .= 'El e-mail ya está registrado. '; } //El email debe ser único
             if ( ! $this->Db_model->is_unique('users', 'document_number', $row_data[6]) ) { $error_text .= 'El No. documento ya está registrado para otro usuario. '; } //El documento debe ser único
 

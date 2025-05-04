@@ -39,8 +39,7 @@ class Geofocus extends CI_Controller{
         //$data['nav_2'] = '';
 
         $this->App_model->view('templates/easypml/minimal', $data);
-    }
-    
+    }    
 
 // Priorización geográfica
 //-----------------------------------------------------------------------------
@@ -53,6 +52,8 @@ class Geofocus extends CI_Controller{
     {
         $data = $this->Geofocus_model->basic($priorizacionId);
         $data['view_a'] = $this->views_folder . 'priorizacion/priorizacion_v';
+
+        $data['arrTemas'] = $this->Item_model->arr_options('category_id = 131');
 
         $filePath = PATH_CONTENT . 'json/geofocus/variables.json';
         $data['variables'] = $this->App_model->getJsonContent($filePath);
@@ -111,5 +112,40 @@ class Geofocus extends CI_Controller{
         $data['head_title'] = 'Geofocus Mapas';
         $data['view_a'] = $this->views_folder . 'mapas/mapas_v';
         $this->App_model->view('templates/easypml/minimal', $data);
+    }
+
+    /**
+     * Exportar valores de una variable para cada territorio
+     * 2025-03-13
+     */
+    function export_variable($variableId, $variableClave)
+    {
+        set_time_limit(120);    //120 segundos, 2 minutos para el proceso
+
+        $this->load->model('Geofocus_model');
+        $this->load->model('Search_model');
+
+        $condition = "variable_id = {$variableId}";
+        $data['query'] = $this->Geofocus_model->query_export_territorios_variable($condition);
+
+        if ( $data['query']->num_rows() > 0 ) {
+            //Preparar datos
+                $data['sheet_name'] = substr($variableClave,0,30);
+
+            //Objeto para generar archivo excel
+                $this->load->library('Excel');
+                $file_data['obj_writer'] = $this->excel->file_query($data);
+
+            //Nombre de archivo
+                $file_data['file_name'] = date('Ymd_His') . '_territorios_' . $variableClave;
+
+            $this->load->view('common/download_excel_file_v', $file_data);
+            //Salida JSON
+            //$this->output->set_content_type('application/json')->set_output(json_encode($file_data['obj_writer']));
+        } else {
+            $data = array('message' => 'No se encontraron registros para exportar');
+            //Salida JSON
+            $this->output->set_content_type('application/json')->set_output(json_encode($data));
+        }
     }
 }

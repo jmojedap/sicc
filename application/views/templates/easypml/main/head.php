@@ -4,6 +4,7 @@
 <title><?= $head_title ?></title>
 <link rel="shortcut icon" href="<?= URL_BRAND ?>favicon.png"> 
 
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 
 <!-- Bootstrap CSS 5.2.3 -->
@@ -51,6 +52,6 @@
 
 <link rel="stylesheet" href="<?= URL_RESOURCES ?>css/sicc/app.css">
 <link rel="stylesheet" href="<?= URL_RESOURCES ?>templates/easypml/style.css">
-<link rel="stylesheet" href="<?= URL_RESOURCES ?>templates/easypml/theme-dogcc.css">
+<link rel="stylesheet" href="<?= URL_RESOURCES ?>templates/easypml/theme-dogcc-v3.css">
 <link rel="stylesheet" href="<?= URL_RESOURCES ?>templates/easypml/app.css">
 <link rel="stylesheet" href="<?= URL_RESOURCES ?>templates/easypml/mobile.css">

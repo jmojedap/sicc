@@ -493,4 +493,40 @@ class Accion_model extends CI_Model{
 
         return $qty_deleted;
     }
+
+// FUNCIONES PARA EXPORTAR DATOS
+//-----------------------------------------------------------------------------
+
+    function details_asistentes()
+    {
+        $select = 'mecc_acciones_detalle.id, accion_id, nombre_accion, mecc_acciones.fecha,
+            mecc_acciones_detalle.cod_detalle AS num_documento, nombre';
+
+        $this->db->select($select);
+        $this->db->where('tipo_detalle', 110);
+        $this->db->order_by('accion_id', 'ASC');
+        $this->db->join('mecc_acciones', 'mecc_acciones.id = mecc_acciones_detalle.accion_id', 'left');
+        
+        $query = $this->db->get('mecc_acciones_detalle');
+
+        return $query;
+    }
+
+    function details_asistentes_itinerantes()
+    {
+        $select = 'mecc_acciones_detalle.id, accion_id, nombre_accion, mecc_acciones.fecha,
+            mecc_acciones_detalle.cod_detalle AS num_documento, nombre, items_1.item_name AS identidad_genero,
+            items_2.item_name AS grupo_poblacion, cantidad AS edad, mecc_acciones_detalle.descripcion AS telefono';
+
+        $this->db->select($select);
+        $this->db->where('tipo_detalle', 140);
+        $this->db->order_by('accion_id', 'ASC');
+        $this->db->join('mecc_acciones', 'mecc_acciones.id = mecc_acciones_detalle.accion_id', 'left');
+        $this->db->join('items AS items_1', 'items_1.cod = mecc_acciones_detalle.relacionado_2 AND items_1.category_id = 111', 'left');
+        $this->db->join('items AS items_2', 'items_2.cod = mecc_acciones_detalle.relacionado_1 AND items_2.category_id = 251', 'left');
+        
+        $query = $this->db->get('mecc_acciones_detalle');
+
+        return $query;
+    }
 }
