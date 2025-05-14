@@ -50,7 +50,7 @@ class Barrios_vivos extends CI_Controller {
         if ( is_null($filters['y']) ) $filters['y'] = 2025;
 
         //Datos básicos de la exploración
-            $data = $this->Barrios_vivos_model->explore_data($filters, $num_page, 60);
+            $data = $this->Barrios_vivos_model->explore_data($filters, $num_page, 10);
             $data['cf'] = 'barrios_vivos/explorar/';
             $data['controller'] = 'barrios_vivos/';
             $data['views_folder'] = $this->views_folder . 'explorar/';      //Carpeta donde están las vistas de exploración
@@ -62,6 +62,7 @@ class Barrios_vivos extends CI_Controller {
             $data['arrTipoBV'] = $this->Item_model->arr_options('category_id = 431');
             $data['arrCategoriaBV'] = $this->Item_model->arr_options('category_id = 432');
             $data['arrFaseBV'] = $this->Item_model->arr_options('category_id = 433');
+            $data['arrDependencia'] = $this->Item_model->arr_options('category_id = 215');
             
         //Cargar vista
             $this->App_model->view(TPL_FRONT, $data);
@@ -118,6 +119,18 @@ class Barrios_vivos extends CI_Controller {
             //Salida JSON
             $this->output->set_content_type('application/json')->set_output(json_encode($data));
         }
+    }
+
+    /**
+     * Vista de tutoriales del módulo Barrios Vivos
+     * 2025-05-05
+     */
+    function tutoriales()
+    {
+        $data['head_title'] = 'Tutoriales';
+        $data['view_a'] = $this->views_folder . 'tutoriales_v';
+        $data['nav_2'] = $this->views_folder . 'menus/explorar_v';
+        $this->App_model->view(TPL_FRONT, $data);
     }
 
 // INFORMACIÓN

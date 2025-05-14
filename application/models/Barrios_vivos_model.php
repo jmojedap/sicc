@@ -125,6 +125,7 @@ class Barrios_vivos_model extends CI_Model{
         //Otros filtros
         if ( $filters['type'] != '' ) { $condition .= "tipo_laboratorio = '{$filters['type']}' AND "; }
         if ( $filters['cat'] != '' ) { $condition .= "categoria_laboratorio = '{$filters['cat']}' AND "; }
+        if ( $filters['cat_1'] != '' ) { $condition .= "direccion_lider_sigla = '{$filters['cat_1']}' AND "; }
         if ( $filters['y'] != '' ) { $condition .= "vigencia = '{$filters['y']}' AND "; }
         
         //Quitar cadena final de ' AND '
@@ -254,12 +255,24 @@ class Barrios_vivos_model extends CI_Model{
     function update_dependent_fields($laboratorioId, $aRow)
     {
         // Actualizar datos del barrio
-        $rowBarrio = $this->Db_model->row_id('gf_territorios', $aRow['barrio_id']);
-        $aRow['barrio_ancla'] = $rowBarrio->nombre . ' / ' . $rowBarrio->upz . ' / ' . $rowBarrio->localidad;
-        $aRow['localidad'] = $rowBarrio->localidad;
-        $aRow['localidad_cod'] = $rowBarrio->cod_localidad;
-        $aRow['latitud'] = $rowBarrio->latitud;
-        $aRow['longitud'] = $rowBarrio->longitud;
+        if ( isset($aRow['barrio_id']) && $aRow['barrio_id'] > 0 ) {
+            $rowBarrio = $this->Db_model->row_id('gf_territorios', $aRow['barrio_id']);
+            $aRow['barrio_ancla'] = $rowBarrio->nombre . ' / ' . $rowBarrio->upz . ' / ' . $rowBarrio->localidad;
+            $aRow['localidad'] = $rowBarrio->localidad;
+            $aRow['localidad_cod'] = $rowBarrio->cod_localidad;
+            $aRow['latitud'] = $rowBarrio->latitud;
+            $aRow['longitud'] = $rowBarrio->longitud;
+        }
+
+        // Actualizar dependencia líder del laboratorio
+        if ( isset($aRow['direccion_lider_sigla']) ) {
+            $dependencia = $this->Db_model->row('items', "abbreviation = '{$aRow['direccion_lider_sigla']}' AND category_id = 215");
+            if ( ! is_null($dependencia) ) {
+                $aRow['direccion_lider'] = $dependencia->item_name;
+            } else {
+                $aRow['direccion_lider'] = '';
+            }
+        }
 
         $this->db->where('id', $laboratorioId)->update('bv_laboratorios', $aRow);
     }

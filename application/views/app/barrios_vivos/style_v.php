@@ -17,8 +17,25 @@
         color: #333;
     }
 
+    .fase-1-empatia {
+        background-color: #FFCFC9;
+        color:rgb(173, 34, 3);
+    }
     .fase-2-conversacional-y-experimental {
-        background-color: #e6e6fa;
-        color: #4b0082;
+        background-color: #FFE5A0;
+        color: #473825;
+    }
+    .fase-3-diseo-colaborativo {
+        background-color: #BFE1F6;
+        color: #2753AF;
+    }
+    .fase-4-futuros {
+        background-color: #E6CFF2;
+        color: #5A3286;
+    }
+
+    .bg-bv-rojo {
+        background-color: #FF0000;
+        color: #FFFFFF;
     }
 </style>

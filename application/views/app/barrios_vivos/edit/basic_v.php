@@ -37,14 +37,14 @@
                     </div>
 
                     <div class="mb-1 row">
-                        <label for="direccion_lider" class="col-md-4 col-form-label text-end">Dirección lider
+                        <label for="direccion_lider_sigla" class="col-md-4 col-form-label text-end">Dirección lider
                             <span class="text-danger">*</span>
                         </label>
                         <div class="col-md-8">
-                            <select name="direccion_lider" v-model="fields.direccion_lider" class="form-select form-control"
+                            <select name="direccion_lider_sigla" v-model="fields.direccion_lider_sigla" class="form-select form-control"
                                 required>
                                 <option v-for="optionDependencia in arrDependencia"
-                                    v-bind:value="optionDependencia.name">{{ optionDependencia.name }}</option>
+                                    v-bind:value="optionDependencia.abbreviation">{{ optionDependencia.abbreviation }} &middot; {{ optionDependencia.name }}</option>
                             </select>
                         </div>
                     </div>
@@ -56,7 +56,7 @@
                         <div class="col-md-8">
                             <input
                                 name="nombre_corto" type="text" class="form-control"
-                                required v-bind:disabled="APP_RID == 1" maxlength="32"  
+                                required v-bind:disabled="APP_RID == 1" maxlength="24"  
                                 title="Nombre corto" placeholder="Nombre corto"
                                 v-model="fields.nombre_corto"
                             >
@@ -74,29 +74,50 @@
                     </div>
 
                     <div class="mb-1 row">
-                        <label for="descripcion" class="col-md-4 col-form-label text-end">Descripción <span
-                                class="text-danger">*</span></label>
+                        <label for="relato_barrial" class="col-md-4 col-form-label text-end">
+                            Relato barrial
+                            <span class="text-danger">*</span></label>
                         <div class="col-md-8">
-                            <textarea class="form-control" name="descripcion" rows="6" v-model="fields.descripcion"
-                                required></textarea>
+                            <textarea class="form-control" name="relato_barrial" rows="5" v-model="fields.relato_barrial" required maxlength="300"
+                                placeholder="Relato barrial, historia del barrio, objetivos del laboratorio"
+                                title="Relato barrial, historia del barrio, objetivos del laboratorio">
+                            </textarea>
+                            <small class="text-form">
+                                {{ 300 - fields.relato_barrial.length }} &middot;
+                                Expliqué en 300 caracteres el relato barrial, la historia del barrio, los objetivos del laboratorio.
+                            </small>
                         </div>
                     </div>
 
-                    <div class="mb-3 row">
+                    <div class="mb-1 row">
+                        <label for="descripcion" class="col-md-4 col-form-label text-end">
+                            Descripción
+                            <span class="text-danger">*</span></label>
+                        <div class="col-md-8">
+                            <textarea class="form-control" name="descripcion" rows="7" v-model="fields.descripcion" maxlength="512"
+                                required>
+                            </textarea>
+                            <small class="text-form">
+                                Descripción más detallada del laboratorio que se está diseñando o implementando.
+                            </small>
+                        </div>
+                    </div>
+
+                    <div class="mb-1 row">
                         <label for="palabras_clave" class="col-md-4 col-form-label text-end">
                             Palabras clave
-                        </label>
+                            <span class="text-danger">*</span></label>
                         </label>
                         <div class="col-md-8">
                             <textarea
                                 name="palabras_clave" class="form-control" rows="3"
                                 title="Palabras clave" placeholder="Palabras clave"
-                                v-model="fields.palabras_clave"
+                                v-model="fields.palabras_clave" required
                             ></textarea>
                         </div>
                     </div>
 
-                    <div class="mb-3 row">
+                    <div class="mb-1 row">
                         <label for="gerente" class="col-md-4 col-form-label text-end text-right">Gerente</label>
                         <div class="col-md-8">
                             <input
@@ -108,7 +129,7 @@
                         </div>
                     </div>
 
-                    <div class="mb-3 row">
+                    <div class="mb-1 row">
                         <label for="duplas" class="col-md-4 col-form-label text-end text-right">Duplas</label>
                         <div class="col-md-8">
                             <textarea
@@ -118,6 +139,19 @@
                             ></textarea>
                         </div>
                     </div>
+
+                    <div class="mb-3 row">
+                        <label for="expediente_orfeo" class="col-md-4 col-form-label text-end text-right">Expediente Orfeo</label>
+                        <div class="col-md-8">
+                            <input
+                                name="expediente_orfeo" type="text" class="form-control"
+                                title="Expediente Orfeo" placeholder="Expediente Orfeo del Laboratorio"
+                                v-model="fields.expediente_orfeo"
+                            >
+                        </div>
+                    </div>
+
+                    <hr>
 
                     <div class="mb-1 row">
                         <label for="localidad_cod" class="col-md-4 col-form-label text-end">Localidad</label>

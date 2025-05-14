@@ -20,14 +20,16 @@
                 </div>
             </div>
 
+            <!-- VISTA TARJETAS -->
             <div class="center_box_750" v-show="displayFormat == 'cards'">
                 <div v-for="(detalle, key) in detalles" class="card mb-2">
                     <div class="card-body">
                         <div class="d-flex justify-content-between">
                             <h3>
-                                {{ detalle.nombre }}
+                                {{ detalle.titulo_3 }}) {{ detalle.nombre }}
                             </h3>
-                            <div v-if="appRid <= 2">
+                            
+                            <div v-if="appRid <= 8">
                                 <button class="btn-circle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                                     <i class="fa-solid fa-ellipsis-v"></i>
                                 </button>
@@ -49,6 +51,14 @@
                             </div>
 
                         </div>
+
+                        <p>
+                            <span class="fase" v-bind:class="`fase-` + textToClass(detalle.categoria_1)">
+                                {{ detalle.categoria_1 }}
+                            </span>
+                            &middot;
+                            <span class="">{{ detalle.titulo_2 }}</span>
+                        </p>
                         <p>
                             {{ detalle.descripcion }}
                         </p>
@@ -57,6 +67,9 @@
                             {{ dateFormat(detalle.fecha_1, 'dddd, D [de] MMMM') }} &middot;
                             {{ timeFormat(detalle.hora_1) }} - {{ timeFormat(detalle.hora_2) }}
                             &middot;
+                            <span class="badge bg-secondary">
+                                {{ ago(detalle.fecha_1) }}
+                            </span>
                         </p>
                         <p>
                             <i class="color-text-6 fas fa-map-marker-alt"></i>
@@ -66,10 +79,53 @@
                             </a>
                         </p>
 
+                        <div class="d-flex">
+                            <p>
+                                <span class="text-muted">
+                                    Radicado Orfeo
+                                </span>
+                                {{ detalle.num_radicacion }}
+                            </p>
+                        </div>
+                        <div class="d-flex">
+                            <p>
+                                <a class="btn btn-light btn-sm me-1" v-bind:href="detalle.url_1" target="_blank" v-if="detalle.url_1">
+                                    <i class="fas fa-check text-muted"></i>
+                                    Evidencias
+                                </a>
+                            </p>
+                            <p>
+                                <a class="btn btn-light btn-sm me-1" v-bind:href="detalle.url_2" target="_blank" v-if="detalle.url_2">
+                                    <i class="fas fa-laptop text-muted"></i>
+                                    Presentación
+                                </a>
+                            </p>
+                            <p>
+                                <a class="btn btn-light btn-sm me-1" v-bind:href="detalle.url_3" target="_blank" v-if="detalle.url_3">
+                                    <i class="fas fa-users text-muted"></i>
+                                    Asistentes
+                                </a>
+                            </p>
+                            <p>
+                                <a class="btn btn-light btn-sm me-1" v-bind:href="detalle.url_4" target="_blank" v-if="detalle.url_4">
+                                    <i class="fa fa-folder text-muted"></i>
+                                    Carpeta
+                                </a>
+                            </p>
+
+                        </div>
+                        <p>
+                            <small class="text-muted">
+                                {{ detalle.notas }}
+                            </small>
+                        </p>
+
+
                     </div>
                 </div>
             </div>
 
+            <!-- VISTA TABLA -->
             <table class="table bg-white table-sm" style="font-size: 0.9rem;" v-show="displayFormat == 'table'">
                 <thead>
                     <th width="10px">Núm</th>
@@ -79,7 +135,7 @@
                     <th>Lugar</th>
                     <th>Participantes</th>
                     <th v-if="appUid > 0">Actualizado por</th>
-                    <th width="20px" v-if="appRid <= 2"></th>
+                    <th width="20px" v-if="appRid <= 8"></th>
                 </thead>
                 <tbody>
                     <tr v-for="(detalle, key) in detalles" v-bind:class="{'table-info': detalle.id == detalleId}">
@@ -125,7 +181,7 @@
                             <small class="text-muted">{{ dateFormat(detalle.updated_at, 'DD/MMMM') }} &middot; {{ ago(detalle.updated_at) }}</small>
                         </td>
                         
-                        <td v-if="appRid <= 2">
+                        <td v-if="appRid <= 8">
                             <button class="btn-circle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 <i class="fa-solid fa-ellipsis-v"></i>
                             </button>

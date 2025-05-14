@@ -10,9 +10,17 @@
         },
         {
             text: '+ Nuevo',
-            id: 'barrrios_vivos_add',
+            id: 'barrios_vivos_add',
             cf: 'barrios_vivos/add',
-            roles: [1,2,3,6,8]
+            roles: [1,2,3,6,8],
+            anchor: true
+        },
+        {
+            text: 'Tutoriales',
+            id: 'barrios_vivos_tutoriales',
+            cf: 'barrios_vivos/tutoriales',
+            roles: [1,2,3,6,8,99],
+            anchor: true
         }
     ];
     

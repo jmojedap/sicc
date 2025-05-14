@@ -37,8 +37,8 @@ class Observatorio extends CI_Controller{
     function inicio()
     {
         //Datos básicos de la exploración
-            $data['head_title'] = 'Observatorio de Cultura, Recreación y Deporte';
-            $data['page_title'] = 'Observatorio de Culturas';
+            $data['head_title'] = 'Prototipos SICC';
+            $data['page_title'] = 'Módulos prototipo';
             $data['view_a'] = $this->views_folder . 'inicio/inicio_v';
             
         //Cargar vista

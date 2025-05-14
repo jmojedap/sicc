@@ -5,6 +5,7 @@
 var arrTipoBV = <?= json_encode($arrTipoBV); ?>;
 var arrCategoriaBV = <?= json_encode($arrCategoriaBV); ?>;
 var arrFaseBV = <?= json_encode($arrFaseBV); ?>;
+var arrDependencia = <?= json_encode($arrDependencia); ?>;
 
 // VueApp
 //-----------------------------------------------------------------------------
@@ -19,7 +20,7 @@ var appExplore = createApp({
             list: <?= json_encode($list) ?>,
             filters: <?= json_encode($filters) ?>,
             strFilters: '<?= $strFilters ?>',
-            perPage: 60,
+            perPage: 10,
             element: [],
             selected: [],
             allSelected: false,
@@ -29,6 +30,7 @@ var appExplore = createApp({
             arrTipoBV: arrTipoBV,
             arrCategoriaBV: arrCategoriaBV,
             arrFaseBV: arrFaseBV,
+            arrDependencia: arrDependencia,
             appRid: parseInt(APP_RID),
             viewFormat: 'table',
         }
@@ -135,6 +137,12 @@ var appExplore = createApp({
             var item = this.arrFaseBV.find(row => row.cod == value)
             if ( item != undefined ) faseBVName = item[field]
             return faseBVName
+        },
+        dependenciaName: function(value = '', field = 'name'){
+            var dependenciaName = ''
+            var item = this.arrDependencia.find(row => row.abbreviation == value)
+            if ( item != undefined ) dependenciaName = item[field]
+            return dependenciaName
         },
     },
     computed: {

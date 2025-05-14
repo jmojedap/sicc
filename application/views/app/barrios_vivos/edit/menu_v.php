@@ -5,14 +5,14 @@ var sections = [
     {
         id: 'basic',
         text: 'General',
-        cf: 'acciones/edit/' + nav3RowId + '/basic',
+        cf: 'barrios_vivos/edit/' + nav3RowId + '/basic',
         roles: [1,2,4,8],
         anchor: true
     },
     {
         id: 'details',
         text: 'Detalles',
-        cf: 'acciones/edit/' + nav3RowId + '/details',
+        cf: 'barrios_vivos/edit/' + nav3RowId + '/details',
         roles: [1,2,4,8],
         anchor: true
     },

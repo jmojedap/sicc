@@ -59,10 +59,32 @@
                     </div>
 
                     <div class="mb-1 row">
-                        <label for="descripcion" class="col-md-4 col-form-label text-end">Descripción</label>
+                        <label for="relato_barrial" class="col-md-4 col-form-label text-end">
+                            Relato barrial
+                            <span class="text-danger">*</span></label>
                         <div class="col-md-8">
-                            <textarea class="form-control" name="descripcion" rows="3" v-model="fields.descripcion"
-                                required></textarea>
+                            <textarea class="form-control" name="relato_barrial" rows="5" v-model="fields.relato_barrial" required maxlength="300"
+                                placeholder="Relato barrial, historia del barrio, objetivos del laboratorio"
+                                title="Relato barrial, historia del barrio, objetivos del laboratorio">
+                            </textarea>
+                            <small class="text-form">
+                                {{ 300 - fields.relato_barrial.length }} &middot;
+                                Expliqué en 300 caracteres el relato barrial, la historia del barrio, los objetivos del laboratorio.
+                            </small>
+                        </div>
+                    </div>
+
+                    <div class="mb-1 row">
+                        <label for="descripcion" class="col-md-4 col-form-label text-end">
+                            Descripción
+                            <span class="text-danger">*</span></label>
+                        <div class="col-md-8">
+                            <textarea class="form-control" name="descripcion" rows="7" v-model="fields.descripcion" maxlength="512"
+                                required>
+                            </textarea>
+                            <small class="text-form">
+                                Descripción más detallada del laboratorio que se está diseñando o implementando.
+                            </small>
                         </div>
                     </div>
 

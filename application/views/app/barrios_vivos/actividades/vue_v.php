@@ -4,7 +4,7 @@
 var actividadesApp = createApp({
     data(){
         return{
-            displayFormat: 'table',
+            displayFormat: 'cards',
             laboratorio: <?= json_encode($row) ?>,
             fields: {
                 relacionado_1: '',

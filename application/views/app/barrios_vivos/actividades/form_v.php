@@ -94,6 +94,17 @@
         </div>
     </div>
 
+    <div class="mb-3 row">
+        <label for="descripcion" class="col-md-4 col-form-label text-end text-right">Descripción</label>
+        <div class="col-md-8">
+            <textarea
+                name="descripcion" class="form-control" rows="3"
+                title="Descripción" placeholder="Añade una descripción de la actividad"
+                v-model="fields.descripcion"
+            ></textarea>
+        </div>
+    </div>
+
     <div class="mb-1 row">
         <label for="entero_1" class="col-md-4 col-form-label text-end text-right">Participantes | H | M | ND |</label>
         <div class="col-md-2">

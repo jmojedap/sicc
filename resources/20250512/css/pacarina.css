@@ -24,7 +24,7 @@
 
 .grid-3 {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr;
     gap: 0.5em 0.5em;
 }
 
@@ -99,6 +99,30 @@ a.a4{
     color: #333;
     background-color: #eaeaea;
     border: 1px solid #eaeaea;
+}
+
+.btn-pagination {
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    border-radius: 50%;
+    border: none;
+    background-color: transparent;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s ease;
+}
+
+.btn-pagination:hover {
+    background-color: #e9ecef;
+    /* gris claro, mismo tono que Bootstrap usa en hover */
+    cursor: pointer;
+}
+
+.btn-pagination:disabled {
+    cursor: default;
+    opacity: 0.5;
 }
 
 .pointer{cursor:pointer}

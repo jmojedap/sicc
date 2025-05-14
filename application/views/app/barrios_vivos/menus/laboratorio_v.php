@@ -7,14 +7,14 @@ var sections = [
         text: 'Información',
         cf: 'barrios_vivos/info/' + nav2RowId,
         roles: [1,2,3,6,8,99],
-        anchor: false
+        anchor: true
     },
     {
         id: 'barrios_vivos_actividades',
         text: 'Actividades',
         cf: 'barrios_vivos/actividades/' + nav2RowId,
         roles: [1,2,3,6,8,99],
-        anchor: false
+        anchor: true
     },
     {
         id: 'barrios_vivos_edit',

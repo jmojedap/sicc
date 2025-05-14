@@ -4,6 +4,7 @@ var randomValue = Math.floor(Math.random() * 1000);
 var fields = {
     nombre_laboratorio: '',
     descripcion: '',
+    relato_barrial: '',
     tipo_laboratorio: '',
     categoria_laboratorio: '',
     notas: '',
@@ -14,6 +15,7 @@ if ( test == '1' ) {
         nombre_laboratorio: 'Laboratorio Prueba ' + randomValue,
         nombre_corto: 'Lab' + randomValue,
         descripcion: 'Laboratorio de prueba, se puede eliminar tras la prueba. Decripción del laboratorio' + randomValue,
+        relato_barrial: 'Relato barrial del kaboratorio de prueba, se puede eliminar tras la prueba. Relato barrial del laboratorio' + randomValue,
         tipo_laboratorio: 'Transformaciones culturales, deportivas y recreativas',
         categoria_laboratorio: 'Transformaciones culturales - CC',
         direccion_lider: 'Observatorio',

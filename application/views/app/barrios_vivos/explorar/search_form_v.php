@@ -23,6 +23,12 @@
                 <option v-for="optionCategoriaBV in arrCategoriaBV" v-bind:value="optionCategoriaBV.name">{{ optionCategoriaBV.name }}</option>
             </select>
         </div>
+        <div class="mb-1">
+            <select name="cat_1" v-model="filters.cat_1" class="form-select" v-on:change="getList" title="Filtrar por dependencia">
+                <option value="">[ Todas las dependencias ]</option>
+                <option v-for="optionDependencia in arrDependencia" v-bind:value="optionDependencia.abbreviation">{{ optionDependencia.abbreviation }} &middot; {{ optionDependencia.short_name }}</option>
+            </select>
+        </div>
         
         <!-- Botón ejecutar y limpiar filtros -->
         <div class="d-flex justify-content-end">

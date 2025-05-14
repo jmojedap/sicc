@@ -1,26 +1,63 @@
-<div v-show="viewFormat == `cards`">
+<!-- VISTA TARJETAS -->
+<div v-show="viewFormat == `cards`" class="center_box_750">
     <div class="card mb-2" v-for="(row,key) in list">
         <div class="card-body">
             <div class="d-flex justify-content-between">
-                <h4 class="card-title"><span class="badge bg-primary">{{ row.id }}</span>
-                    <a v-bind:href="`<?= URL_APP . "acciones/edit/" ?>` + row.id" class="ms-2">
-                        {{ row.nombre_laboratorio }}
-                    </a>
+                <h4 class="card-title">
+                    <span class="badge bg-bv-rojo">{{ row.id }}</span>
+                    
+                    {{ row.nombre_laboratorio }}
+                    
                 </h4>
                 <div v-show="appRid <= 8">
-                    <a v-bind:href="`<?= URL_APP . "acciones/edit/" ?>` + row.id" class="a4">
-                        <i class="fas fa-pencil"></i>
-                    </a>
+                    <button class="btn-circle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fa-solid fa-ellipsis-v"></i>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li class="d-none">
+                            <button class="dropdown-item" v-on:click="setCurrent(key)" data-bs-toggle="modal" data-bs-target="#detailModal">
+                                Detalles
+                            </button>
+                        </li>
+                        <li v-show="appRid <= 8">
+                            <a class="dropdown-item" v-bind:href="`<?= URL_APP . "barrios_vivos/info/" ?>` + row.id">
+                                Detalles
+                            </a>
+                        </li>
+                        <li v-show="appRid <= 8">
+                            <a class="dropdown-item" v-bind:href="`<?= URL_APP . "barrios_vivos/edit/" ?>` + row.id">
+                                Editar
+                            </a>
+                        </li>
+                        <li v-show="appRid <= 3">
+                            <button class="dropdown-item" v-on:click="setCurrent(key)" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                                Eliminar
+                            </button>
+                        </li>
+                    </ul>
                 </div>
             </div>
             <p class="text-muted">
-                {{ dateFormat(row.fecha, 'DD/MMMM') }} &middot;
-                {{ ago(row.fecha) }} &middot;
+                {{ dateFormat(row.fecha_inicio, 'DD/MMMM') }} &middot;
+                {{ ago(row.fecha_inicio) }} &middot;
                 <span class="badge bg-info">{{ row.localidad }}</span>
             </p>
-            <p>{{ row.descripcion }}</p>
             <p>
+                <strong>Relato barrial: </strong>
+                {{ row.relato_barrial }}
+            </p>
+            
+            <p>
+                <strong>Descripción: </strong>
+                {{ row.descripcion }}
+            </p>
+            <p>
+                <span class="text-muted">
+                    Dependencia líder:
+                </span>
                 {{ row.direccion_lider }} &middot;
+
+
                 {{ row.equipo_lider_duplas }} &middot;
             </p>
             
@@ -28,6 +65,8 @@
     </div>
 </div>
 
+
+<!-- VISTA TABLA -->
 <div class="table-responsive" v-show="viewFormat == `table`">
     <table class="table bg-white table-sm">
         <thead>
@@ -76,17 +115,27 @@
                 <td>
                     
                 </td>
-                <td v-show="appRid <= 3">
+                <td v-show="appRid <= 8">
                     <button class="btn-circle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                         <i class="fa-solid fa-ellipsis-v"></i>
                     </button>
                     <ul class="dropdown-menu">
-                        <li>
+                        <li class="d-none">
                             <button class="dropdown-item" v-on:click="setCurrent(key)" data-bs-toggle="modal" data-bs-target="#detailModal">
                                 Detalles
                             </button>
                         </li>
-                        <li>
+                        <li v-show="appRid <= 8">
+                            <a class="dropdown-item" v-bind:href="`<?= URL_APP . "barrios_vivos/info/" ?>` + row.id">
+                                Información
+                            </a>
+                        </li>
+                        <li v-show="appRid <= 8">
+                            <a class="dropdown-item" v-bind:href="`<?= URL_APP . "barrios_vivos/edit/" ?>` + row.id">
+                                Editar
+                            </a>
+                        </li>
+                        <li v-show="appRid <= 3">
                             <button class="dropdown-item" v-on:click="setCurrent(key)" data-bs-toggle="modal" data-bs-target="#deleteModal">
                                 Eliminar
                             </button>
