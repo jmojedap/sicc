@@ -7,62 +7,41 @@ var status_icons = {
     "1":'<i class="fa fa-check-circle text-success" title="Activo"></i>'
 };
 
-// Filters
+// VueApp
 //-----------------------------------------------------------------------------
-
-Vue.filter('status_icon', function (value) {
-    if (!value) return ''
-    value = status_icons[value]
-    return value
-})
-
-Vue.filter('ago', function (date) {
-    if (!date) return ''
-    return moment(date, "YYYY-MM-DD HH:mm:ss").fromNow()
-})
-
-Vue.filter('age', function (date) {
-    if (!date) return ''
-    return moment().diff(date, 'years',false)
-})
-
-// App
-//-----------------------------------------------------------------------------
-
-var app_explore = new Vue({
-    el: '#app_explore',
-    created: function(){
-        this.calculate_active_filters()
-    },
-    data: {
-        cf: '<?= $cf ?>',
-        controller: '<?= $controller ?>',
-        search_num_rows: <?= $search_num_rows ?>,
-        num_page: <?= $num_page ?>,
-        max_page: <?= $max_page ?>,
-        list: <?= json_encode($list) ?>,
-        element: [],
-        selected: [],
-        all_selected: false,
-        filters: <?= json_encode($filters) ?>,
-        str_filters: '<?= $str_filters ?>',
-        display_filters: false,
-        loading: false,
-        active_filters: false,
-        arrRole: <?= json_encode($arrRole) ?>,
-        today: '<?= date('Y-m-d') ?>',
+var appExploree = createApp({
+    data(){
+        return{
+            cf: '<?= $cf ?>',
+            controller: '<?= $controller ?>',
+            qtyResults: <?= $qtyResults ?>,
+            numPage: <?= $numPage ?>,
+            maxPage: <?= $maxPage ?>,
+            perPage: <?= $perPage ?>,
+            list: <?= json_encode($list) ?>,
+            element: [],
+            selected: [],
+            all_selected: false,
+            filters: <?= json_encode($filters) ?>,
+            str_filters: '<?= $str_filters ?>',
+            display_filters: false,
+            loading: false,
+            active_filters: false,
+            arrRole: <?= json_encode($arrRole) ?>,
+            today: '<?= date('Y-m-d') ?>',
+        }
     },
     methods: {
-        get_list: function(e, num_page = 1){
+        get_list: function(e, numPage = 1){
             this.loading = true
-            axios.post(URL_APP + this.controller + '/get/' + num_page, $('#search_form').serialize())
+            axios.post(URL_API + this.controller + '/get/' + numPage, $('#search_form').serialize())
             .then(response => {
-                this.num_page = num_page
+                this.numPage = numPage
                 this.list = response.data.list
-                this.max_page = response.data.max_page
-                this.search_num_rows = response.data.search_num_rows
+                this.maxPage = response.data.maxPage
+                this.qtyResults = response.data.qtyResults
                 this.str_filters = response.data.str_filters
-                history.pushState(null, null, URL_APP + this.cf + this.num_page +'/?' + response.data.str_filters)
+                history.pushState(null, null, URL_APP + this.cf + this.numPage +'/?' + response.data.str_filters)
                 this.all_selected = false
                 this.selected = []
                 this.loading = false
@@ -77,9 +56,9 @@ var app_explore = new Vue({
             else
             { this.selected = [] }
         },
-        sum_page: function(sum){
-            var new_num_page = Pcrn.limit_between(this.num_page + sum, 1, this.max_page)
-            this.get_list(null, new_num_page)
+        sumPage: function(sum){
+            var new_numPage = Pcrn.limit_between(this.numPage + sum, 1, this.maxPage)
+            this.get_list(null, new_numPage)
         },
         delete_selected: function(){
             var params = new FormData()
@@ -142,6 +121,22 @@ var app_explore = new Vue({
             if ( item != undefined ) roleName = item[field]
             return roleName
         },
+        ago: function(date){
+            if (!date) return ''
+            return moment(date, "YYYY-MM-DD HH:mm:ss").fromNow()
+        },
+        status_icon: function(value){
+            if (!value) return ''
+            value = status_icons[value]
+            return value
+        },
+        age: function(date){
+            if (!date) return ''
+            return moment().diff(date, 'years',false)
+        },
+    },
+    mounted(){
+        this.calculate_active_filters()
     }
-})
+}).mount('#appExplore');
 </script>

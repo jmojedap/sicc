@@ -35,11 +35,11 @@ class Users extends CI_Controller{
      * JSON
      * Listado de users, según filtros de búsqueda
      */
-    function get($num_page = 1, $per_page = 10)
+    function get($numPage = 1, $perPage = 10)
     {
         $this->load->model('Search_model');
         $filters = $this->Search_model->filters();
-        $data = $this->User_model->get($filters, $num_page, $per_page);
+        $data = $this->User_model->get($filters, $numPage, $perPage);
 
         //Salida JSON
         $this->output->set_content_type('application/json')->set_output(json_encode($data));

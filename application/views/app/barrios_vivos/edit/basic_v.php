@@ -14,6 +14,17 @@
                         </div>
                     </div>
                     <div class="mb-1 row">
+                        <label for="estado_registro" class="col-md-4 col-form-label text-end text-right">Estado</label>
+                        <div class="col-md-8">
+                            <select name="estado_registro" v-model="fields.estado_registro" class="form-select form-control" required>
+                                <option v-for="optionEstadoRegistro in arrEstadoRegistro" v-bind:value="optionEstadoRegistro.cod">{{ optionEstadoRegistro.name }}</option>
+                            </select>
+                            <small class="text-form">
+                                El laboratorio solo se contará en reportes finales si el estado es "Activo".
+                            </small>
+                        </div>
+                    </div>
+                    <div class="mb-1 row">
                         <label for="tipo_laboratorio" class="col-md-4 col-form-label text-end">Tipo</label>
                         <div class="col-md-8">
                             <select name="tipo_laboratorio" v-model="fields.tipo_laboratorio" class="form-select"
@@ -38,7 +49,7 @@
 
                     <div class="mb-1 row">
                         <label for="direccion_lider_sigla" class="col-md-4 col-form-label text-end">Dirección lider
-                            <span class="text-danger">*</span>
+                            
                         </label>
                         <div class="col-md-8">
                             <select name="direccion_lider_sigla" v-model="fields.direccion_lider_sigla" class="form-select form-control"
@@ -147,6 +158,17 @@
                                 name="expediente_orfeo" type="text" class="form-control"
                                 title="Expediente Orfeo" placeholder="Expediente Orfeo del Laboratorio"
                                 v-model="fields.expediente_orfeo"
+                            >
+                        </div>
+                    </div>
+
+                    <div class="mb-3 row">
+                        <label for="url_carpeta" class="col-md-4 col-form-label text-end text-right">Carpeta Drive</label>
+                        <div class="col-md-8">
+                            <input
+                                name="url_carpeta" type="url" class="form-control"
+                                title="Carpeta Drive" placeholder="URL de la carpeta Drive del Laboratorio en la Unidad Compartida de Barrios Vivos"
+                                v-model="fields.url_carpeta"
                             >
                         </div>
                     </div>

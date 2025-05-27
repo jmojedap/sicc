@@ -15,6 +15,7 @@ var editLaboratorioApp = createApp({
             arrDependencia: <?= json_encode($arrDependencia) ?>,
             arrLocalidad: <?= json_encode($arrLocalidad) ?>,
             arrBarrios: <?= json_encode($arrBarrios) ?>,
+            arrEstadoRegistro: <?= json_encode($arrEstadoRegistro) ?>,
             validationStatus: 0,
             validation: {
                 hora_fin_posterior: -1

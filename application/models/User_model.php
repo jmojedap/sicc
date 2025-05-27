@@ -20,20 +20,20 @@ class User_model extends CI_Model{
     /**
      * Array con los datos para la vista de exploración
      */
-    function explore_data($filters, $num_page, $per_page = 10)
+    function explore_data($filters, $numPage, $perPage = 10)
     {
         //Data inicial, de la tabla
-            $data = $this->get($filters, $num_page, $per_page);
+            $data = $this->get($filters, $numPage, $perPage);
         
         //Elemento de exploración
             $data['controller'] = 'users';                      //Nombre del controlador
             $data['cf'] = 'users/explore/';                     //Nombre del controlador
             $data['views_folder'] = 'admin/users/explore/';           //Carpeta donde están las vistas de exploración
-            $data['num_page'] = $num_page;                      //Número de la página
+            $data['numPage'] = $numPage;                      //Número de la página
             
         //Vistas
             $data['head_title'] = 'Usuarios';
-            $data['head_subtitle'] = $data['search_num_rows'];
+            $data['head_subtitle'] = $data['qtyResults'];
             $data['view_a'] = $data['views_folder'] . 'explore_v';
             $data['nav_2'] = $data['views_folder'] . 'menu_v';
         
@@ -45,20 +45,21 @@ class User_model extends CI_Model{
      * la búsqueda, filtros aplicados, total resultados, página máxima.
      * 2020-08-01
      */
-    function get($filters, $num_page, $per_page)
+    function get($filters, $numPage, $perPage)
     {
         //Referencia
-            $offset = ($num_page - 1) * $per_page;      //Número de la página de datos que se está consultado
+            $offset = ($numPage - 1) * $perPage;      //Número de la página de datos que se está consultado
 
         //Búsqueda y Resultados
-            $elements = $this->search($filters, $per_page, $offset);    //Resultados para página
+            $elements = $this->search($filters, $perPage, $offset);    //Resultados para página
         
         //Cargar datos
             $data['filters'] = $filters;
-            $data['list'] = $this->list($filters, $per_page, $offset);    //Resultados para página
+            $data['list'] = $this->list($filters, $perPage, $offset);    //Resultados para página
             $data['str_filters'] = $this->Search_model->str_filters();      //String con filtros en formato GET de URL
-            $data['search_num_rows'] = $this->search_num_rows($data['filters']);
-            $data['max_page'] = ceil($this->pml->if_zero($data['search_num_rows'],1) / $per_page);   //Cantidad de páginas
+            $data['qtyResults'] = $this->qtyResults($data['filters']);
+            $data['perPage'] = $perPage;   //Cantidad de resultados por página
+            $data['maxPage'] = ceil($this->pml->if_zero($data['qtyResults'],1) / $perPage);   //Cantidad de páginas
 
         return $data;
     }
@@ -96,7 +97,7 @@ class User_model extends CI_Model{
      * Query de users, filtrados según búsqueda, limitados por página
      * 2020-08-01
      */
-    function search($filters, $per_page = NULL, $offset = NULL)
+    function search($filters, $perPage = NULL, $offset = NULL)
     {
         //Construir consulta
             $select_format = 'general';
@@ -117,7 +118,7 @@ class User_model extends CI_Model{
             if ( $search_condition ) { $this->db->where($search_condition);}
             
         //Obtener resultados
-            $query = $this->db->get('users', $per_page, $offset); //Resultados por página
+            $query = $this->db->get('users', $perPage, $offset); //Resultados por página
         
         return $query;
     }
@@ -157,9 +158,9 @@ class User_model extends CI_Model{
      * Array Listado elemento resultado de la búsqueda (filtros).
      * 2020-06-19
      */
-    function list($filters, $per_page = NULL, $offset = NULL)
+    function list($filters, $perPage = NULL, $offset = NULL)
     {
-        $query = $this->search($filters, $per_page, $offset);
+        $query = $this->search($filters, $perPage, $offset);
         $list = array();
 
         foreach ($query->result() as $row)
@@ -181,7 +182,7 @@ class User_model extends CI_Model{
      * Devuelve la cantidad de registros encontrados en la tabla con los filtros
      * establecidos en la búsqueda
      */
-    function search_num_rows($filters)
+    function qtyResults($filters)
     {
         $this->db->select('id');
         $search_condition = $this->search_condition($filters);

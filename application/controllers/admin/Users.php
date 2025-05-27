@@ -31,33 +31,33 @@ class Users extends CI_Controller{
             
     /**
      * Exploración y búsqueda de usuarios
-     * 2022-08-19
+     * 2025-05-18
      */
-    function explore($num_page = 1)
+    function explore($numPage = 1)
     {        
         //Identificar filtros de búsqueda
             $this->load->model('Search_model');
             $filters = $this->Search_model->filters();
 
         //Datos básicos de la exploración
-            $data = $this->User_model->explore_data($filters, $num_page);
+            $data = $this->User_model->explore_data($filters, $numPage);
             
         //Arrays con valores para contenido en lista
             $data['arrRole'] = $this->Item_model->arr_options('category_id = 58');
             
         //Cargar vista
-            $this->App_model->view(TPL_ADMIN, $data);
+            $this->App_model->view(TPL_ADMIN_5, $data);
     }
 
     /**
      * JSON
      * Listado de users, según filtros de búsqueda
      */
-    function get($num_page = 1, $per_page = 10)
+    function get($numPage = 1, $perPage = 10)
     {
         $this->load->model('Search_model');
         $filters = $this->Search_model->filters();
-        $data = $this->User_model->get($filters, $num_page, $per_page);
+        $data = $this->User_model->get($filters, $numPage, $perPage);
 
         //Salida JSON
         $this->output->set_content_type('application/json')->set_output(json_encode($data));

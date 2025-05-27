@@ -38,4 +38,34 @@
         background-color: #FF0000;
         color: #FFFFFF;
     }
+
+    .estado-registro {
+        border-radius: 5px;
+        padding: 2px 5px;
+        font-size: 0.8em;
+    }
+
+    /* Activo */
+    .estado-registro-1 {
+        background-color: #28a745;
+        color: #FFFFFF;
+    }
+
+    /* Borrador */
+    .estado-registro-2 {
+        background-color: #ffc107;
+        color: #000000;
+    }
+
+    /* Ejemplo */
+    .estado-registro-4 {
+        background-color: #17a2b8;
+        color: #FFFFFF;
+    }
+
+    /** Oculto */
+    .estado-registro-5 {
+        background-color: #6c757d;
+        color: #FFFFFF;
+    }
 </style>

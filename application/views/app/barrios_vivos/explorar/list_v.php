@@ -9,6 +9,11 @@
                     {{ row.nombre_laboratorio }}
                     
                 </h4>
+                <div>
+                    <span class="estado-registro" v-bind:class="`estado-registro-` + row.estado_registro">
+                        {{ estadoRegistroName(row.estado_registro) }}
+                    </span>
+                </div>
                 <div v-show="appRid <= 8">
                     <button class="btn-circle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                         <i class="fa-solid fa-ellipsis-v"></i>
@@ -72,8 +77,8 @@
         <thead>
             <th width="20px">ID</th>
             
-            
             <th>Nombre</th>
+            <th></th>
             <th>Tipo / Categoría</th>
             <th v-if="displayPrivate">Gerente / Duplas</th>
             <th v-if="displayPrivate">Actualizado por</th>
@@ -85,11 +90,20 @@
                 <td class="text-center table-warning">{{ row.id }}</td>
                 
                 <td>
-                    <a v-bind:href="`<?= URL_FRONT ?>barrios_vivos/info/` + row.id">
+                    <a v-bind:href="`<?= URL_FRONT ?>barrios_vivos/info/` + row.id" class="ms-1">
                         {{ row.nombre_laboratorio }}
                     </a>
                     <br>
+                    <span class="estado-registro" v-bind:class="`estado-registro-` + row.estado_registro">
+                        {{ estadoRegistroName(row.estado_registro) }}
+                    </span>
+                    <br>
                     <small class="text-muted">{{ row.barrio_ancla }}</small>
+                </td>
+                <td>
+                    <a v-bind:href="row.url_carpeta" class="btn btn-link" v-if="row.url_carpeta" target="_blank" title="Carpeta en Google Drive">
+                        <img src="<?= URL_IMG ?>icons/google-drive.png" alt="Logo Google Drive" width="20px">
+                    </a>
                 </td>
                 <td>
                     {{ row.tipo_laboratorio }}

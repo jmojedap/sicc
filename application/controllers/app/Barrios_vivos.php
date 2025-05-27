@@ -63,6 +63,7 @@ class Barrios_vivos extends CI_Controller {
             $data['arrCategoriaBV'] = $this->Item_model->arr_options('category_id = 432');
             $data['arrFaseBV'] = $this->Item_model->arr_options('category_id = 433');
             $data['arrDependencia'] = $this->Item_model->arr_options('category_id = 215');
+            $data['arrEstadoRegistro'] = $this->Item_model->arr_options('category_id = 435');
             
         //Cargar vista
             $this->App_model->view(TPL_FRONT, $data);
@@ -187,6 +188,7 @@ class Barrios_vivos extends CI_Controller {
         $data['arrDependencia'] = $this->Item_model->arr_options('category_id = 215');
         $data['arrFase'] = $this->Item_model->arr_options('category_id = 433');
         $data['arrLocalidad'] = $this->Item_model->arr_options('category_id = 121');
+        $data['arrEstadoRegistro'] = $this->Item_model->arr_options('category_id = 435');
 
         //Barrios
         $this->db->select('*');

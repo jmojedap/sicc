@@ -32,4 +32,4 @@ nav_2.forEach((section,i) => {
 </script>
 
 <?php
-$this->load->view('common/nav_2_v');
+$this->load->view('common/bs5/nav_2_v');

@@ -6,6 +6,7 @@ var arrTipoBV = <?= json_encode($arrTipoBV); ?>;
 var arrCategoriaBV = <?= json_encode($arrCategoriaBV); ?>;
 var arrFaseBV = <?= json_encode($arrFaseBV); ?>;
 var arrDependencia = <?= json_encode($arrDependencia); ?>;
+var arrEstadoRegistro = <?= json_encode($arrEstadoRegistro); ?>;
 
 // VueApp
 //-----------------------------------------------------------------------------
@@ -31,6 +32,7 @@ var appExplore = createApp({
             arrCategoriaBV: arrCategoriaBV,
             arrFaseBV: arrFaseBV,
             arrDependencia: arrDependencia,
+            arrEstadoRegistro: arrEstadoRegistro,
             appRid: parseInt(APP_RID),
             viewFormat: 'table',
         }
@@ -143,6 +145,12 @@ var appExplore = createApp({
             var item = this.arrDependencia.find(row => row.abbreviation == value)
             if ( item != undefined ) dependenciaName = item[field]
             return dependenciaName
+        },
+        estadoRegistroName: function(value = '', field = 'name'){
+            var estadoRegistroName = ''
+            var item = this.arrEstadoRegistro.find(row => row.cod == value)
+            if ( item != undefined ) estadoRegistroName = item[field]
+            return estadoRegistroName
         },
     },
     computed: {
