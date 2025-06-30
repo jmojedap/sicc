@@ -56,7 +56,7 @@ new Vue({
             if ( this.elements[i].subelements.length == 0 )
             {
                 if ( this.elements[i].anchor ) {
-                    window.location = url_admin + this.elements[i].cf;
+                    window.location = URL_ADMIN + this.elements[i].cf;
                 } else {
                     this.elements.forEach(element => { element.active = false })
                     this.elements[i].active = true;
@@ -69,7 +69,7 @@ new Vue({
         },
         nav_1_click_sub: function(i,j){
             if ( this.elements[i].subelements[j].anchor ) {
-                window.location = url_admin + this.elements[i].subelements[j].cf;
+                window.location = URL_ADMIN + this.elements[i].subelements[j].cf;
             } else {
                 //Activando elemento
                 this.elements.forEach(element => { element.active = false; });

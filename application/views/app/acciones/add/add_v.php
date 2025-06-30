@@ -9,8 +9,7 @@
         </button>
     </div>
 
-    <div v-show="section == 'selectors'">
-        <!-- <h3 class="text-center mb-2">Elige la estrategia y el tipo</h3> -->
+    <div v-show="section == 'selectors'" class="mb-2">
         <div class="row">
             <div class="col-md-4">
                 <h4>Programa</h4>
@@ -48,8 +47,8 @@
         </div>
     </div>
 
-    <div class="card">
-        <div class="card-body" v-show="section == 'form'">
+    <div class="card" v-show="section == 'form'">
+        <div class="card-body">
             <form id="postForm" accept-charset="utf-8" @submit.prevent="handleSubmit">
                 <fieldset v-bind:disabled="loading">
                     <div class="mb-1 row">

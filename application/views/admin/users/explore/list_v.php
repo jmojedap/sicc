@@ -2,10 +2,10 @@
     <div class="spinner-border text-primary" role="status"><span class="sr-only">Cargando...</span></div>
 </div>
 
-<div class="table-responsive" v-show="!loading">
+<div class="table-responsive">
     <table class="table bg-white">
         <thead>
-            <th width="10px"><input type="checkbox" @change="select_all" v-model="all_selected"></th>
+            <th width="10px"><input type="checkbox" @change="selectAll" v-model="allSelected"></th>
             <th width="50px"></th>
             <th>Usuario</th>
             <th>Username</th>
@@ -29,7 +29,7 @@
                     </a>
                 </td>
                 <td>
-                    <a v-bind:href="URL_APP + `users/profile/` + element.id + `/` + element.username">
+                    <a v-bind:href="`<?= URL_ADMIN ?>users/profile/` + element.id + `/` + element.username">
                         {{ element.display_name }}
                     </a>
                     <br>
@@ -53,7 +53,7 @@
                     {{ element.job_role }}
                 </td>
                 <td>
-                    <button class="a4" data-toggle="modal" data-target="#detail_modal" @click="set_current(key)">
+                    <button class="a4" data-bs-toggle="modal" data-bs-target="#detailsModal" @click="setCurrent(key)">
                         <i class="fa fa-info"></i>
                     </button>
                 </td>

@@ -1,4 +1,4 @@
-<div id="user_lists">
+<div id="userListsApp">
     <div class="center_box_750">
         <table class="table bg-white">
             <thead>

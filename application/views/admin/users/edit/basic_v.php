@@ -10,25 +10,25 @@
                 <fieldset v-bind:disabled="loading">
                     <input type="hidden" name="id" value="<?= $row->id ?>">
                     <div class="mb-3 row">
-                        <label for="role" class="col-md-4 col-form-label text-right">Rol <span class="text-danger">*</span></label>
+                        <label for="role" class="col-md-4 col-form-label text-end">Rol <span class="text-danger">*</span></label>
                         <div class="col-md-8">
-                            <select name="role" v-model="fields.role" class="form-control" required>
+                            <select name="role" v-model="fields.role" class="form-select" required>
                                 <option v-for="optionRole in arrRole" v-bind:value="optionRole.str_cod">{{ optionRole.name }}</option>
                             </select>
                         </div>
                     </div>
 
                     <div class="mb-3 row">
-                        <label for="status" class="col-md-4 col-form-label text-right">Estado <span class="text-danger">*</span></label>
+                        <label for="status" class="col-md-4 col-form-label text-end">Estado <span class="text-danger">*</span></label>
                         <div class="col-md-8">
-                            <select name="status" v-model="fields.status" class="form-select form-control" required>
+                            <select name="status" v-model="fields.status" class="form-select" required>
                                 <option v-for="optionStatus in arrStatus" v-bind:value="optionStatus.cod">{{ optionStatus.name }}</option>
                             </select>
                         </div>
                     </div>
 
                     <div class="mb-3 row">
-                        <label for="first_name" class="col-md-4 col-form-label text-right">Nombre y Apellidos</label>
+                        <label for="first_name" class="col-md-4 col-form-label text-end">Nombre y Apellidos</label>
                         <div class="col-md-4">
                             <input
                                 name="first_name" class="form-control"
@@ -46,7 +46,7 @@
                     </div>
 
                     <div class="mb-3 row">
-                        <label for="display_name" class="col-md-4 col-form-label text-right">Nombre mostrar <span class="text-danger">*</span></label>
+                        <label for="display_name" class="col-md-4 col-form-label text-end">Nombre mostrar <span class="text-danger">*</span></label>
                         <div class="col-md-8">
                             <input
                                 name="display_name" required class="form-control"
@@ -57,7 +57,7 @@
                     </div>
 
                     <div class="mb-3 row">
-                        <label for="email" class="col-md-4 col-form-label text-right">Correo electrónico <span class="text-danger">*</span></label>
+                        <label for="email" class="col-md-4 col-form-label text-end">Correo electrónico <span class="text-danger">*</span></label>
                             
                         <div class="col-md-8">
                             <input
@@ -74,7 +74,7 @@
                     </div>
 
                     <div class="mb-3 row" id="mb-3_username">
-                        <label for="username" class="col-md-4 col-form-label text-right">Username <span class="text-danger">*</span></label>
+                        <label for="username" class="col-md-4 col-form-label text-end">Username <span class="text-danger">*</span></label>
                         <div class="col-md-8">
                             <div class="input-group">
                                 <!-- /btn-group -->
@@ -100,7 +100,7 @@
                     </div>
 
                     <div class="mb-3 row" id="mb-3_document_number">
-                        <label for="document_number" class="col-md-4 col-form-label text-right">No. Documento</label>
+                        <label for="document_number" class="col-md-4 col-form-label text-end">No. Documento</label>
                         <div class="col-md-4">
                             <input
                                 name="document_number" class="form-control"
@@ -115,23 +115,23 @@
                             </span>
                         </div>
                         <div class="col-md-4">
-                            <select name="document_type" v-model="fields.document_type" class="form-control" required>
+                            <select name="document_type" v-model="fields.document_type" class="form-select" required>
                                 <option v-for="optionDocumentType in arrDocumentType" v-bind:value="optionDocumentType.str_cod">{{ optionDocumentType.name }}</option>
                             </select>
                         </div>
                     </div>
 
                     <div class="mb-3 row">
-                        <label for="gender" class="col-md-4 col-form-label text-right">Sexo</label>
+                        <label for="gender" class="col-md-4 col-form-label text-end">Sexo</label>
                         <div class="col-md-8">
-                            <select name="gender" v-model="fields.gender" class="form-control" required>
+                            <select name="gender" v-model="fields.gender" class="form-select" required>
                                 <option v-for="optionGender in arrGender" v-bind:value="optionGender.str_cod">{{ optionGender.name }}</option>
                             </select>
                         </div>
                     </div>
 
                     <div class="mb-3 row">
-                        <label for="birth_date" class="col-md-4 col-form-label text-right">Fecha de nacimiento</label>
+                        <label for="birth_date" class="col-md-4 col-form-label text-end">Fecha de nacimiento</label>
                         <div class="col-md-8">
                             <input
                             name="birth_date" class="form-control" type="date"
@@ -143,16 +143,16 @@
                     <hr>
 
                     <div class="mb-3 row">
-                        <label for="city_id" class="col-md-4 col-form-label text-right">Ciudad residencia</label>
+                        <label for="city_id" class="col-md-4 col-form-label text-end">Ciudad residencia</label>
                         <div class="col-md-8">
-                            <select name="city_id" v-model="fields.city_id" class="form-control form-control-chosen">
+                            <select name="city_id" v-model="fields.city_id" class="form-select form-control-chosen">
                                 <option v-for="(option_city, key_city) in options_city" v-bind:value="key_city">{{ option_city }}</option>
                             </select>
                         </div>
                     </div>
 
                     <div class="mb-3 row">
-                        <label for="address" class="col-md-4 col-form-label text-right">Dirección</label>
+                        <label for="address" class="col-md-4 col-form-label text-end">Dirección</label>
                         <div class="col-md-8">
                             <input
                                 name="address" type="text" class="form-control" title="Dirección"
@@ -162,7 +162,7 @@
                     </div>
 
                     <div class="mb-3 row">
-                        <label for="celular" class="col-md-4 col-form-label text-right">No. celular</label>
+                        <label for="celular" class="col-md-4 col-form-label text-end">No. celular</label>
                         <div class="col-md-8">
                             <input
                                 name="phone_number" class="form-control" title="Número celular"
@@ -172,7 +172,7 @@
                     </div>
 
                     <div class="mb-3 row">
-                        <label for="admin_notes" class="col-md-4 col-form-label text-right">Notas internas</label>
+                        <label for="admin_notes" class="col-md-4 col-form-label text-end">Notas internas</label>
                         <div class="col-md-8">
                             <textarea
                                 name="admin_notes" class="form-control"
@@ -185,7 +185,7 @@
                     <hr>
 
                     <div class="mb-3 row">
-                        <label for="team_1" class="col-md-4 col-form-label text-right">Dependencia</label>
+                        <label for="team_1" class="col-md-4 col-form-label text-end">Dependencia</label>
                         <div class="col-md-8">
                             <input
                                 name="team_1" type="text" class="form-control"
@@ -197,7 +197,7 @@
                     </div>
 
                     <div class="mb-3 row">
-                        <label for="team_2" class="col-md-4 col-form-label text-right">Equipo</label>
+                        <label for="team_2" class="col-md-4 col-form-label text-end">Equipo</label>
                         <div class="col-md-8">
                             <input
                                 name="team_2" type="text" class="form-control"
@@ -209,7 +209,7 @@
                     </div>
 
                     <div class="mb-3 row">
-                        <label for="job_role" class="col-md-4 col-form-label text-right">Rol en equipo</label>
+                        <label for="job_role" class="col-md-4 col-form-label text-end">Rol en equipo</label>
                         <div class="col-md-8">
                             <input
                                 name="job_role" type="text" class="form-control"
@@ -255,36 +255,37 @@ var fields = {
     job_role: '<?= $row->job_role ?>',
 };
 
-// Vue App
+// VueApp
 //-----------------------------------------------------------------------------
-var editUserApp = new Vue({
-    el: '#editUserApp',
-    data: {
-        loading: false,
-        fields: fields,
-        rowId: '<?= $row->id ?>',
-        validation: {
-            document_number_unique: -1,
-            username_unique: -1,
-            email_unique: -1
-        },
-        arrRole: <?= json_encode($arrRole) ?>,
-        arrGender: <?= json_encode($arrGender) ?>,
-        arrDocumentType: <?= json_encode($arrDocumentType) ?>,
-        arrStatus: <?= json_encode($arrStatus) ?>,
-        options_city: <?= json_encode($options_city) ?>,
+var editUserApp = createApp({
+    data(){
+        return{
+            loading: false,
+            fields: fields,
+            rowId: '<?= $row->id ?>',
+            validation: {
+                document_number_unique: -1,
+                username_unique: -1,
+                email_unique: -1
+            },
+            arrRole: <?= json_encode($arrRole) ?>,
+            arrGender: <?= json_encode($arrGender) ?>,
+            arrDocumentType: <?= json_encode($arrDocumentType) ?>,
+            arrStatus: <?= json_encode($arrStatus) ?>,
+            options_city: <?= json_encode($options_city) ?>,
+        }
     },
     methods: {
         validateForm: function() {
             var formValues = new FormData(document.getElementById('userForm'))
-            axios.post(URL_APP + 'users/validate/' + this.rowId, formValues)
+            axios.post(URL_API + 'users/validate/' + this.rowId, formValues)
             .then(response => {
                 this.validation = response.data.validation
             })
             .catch(function (error) { console.log(error) })
         },
         validateAndSubmit: function () {
-            axios.post(URL_APP + 'users/validate/' + this.rowId, $('#userForm').serialize())
+            axios.post(URL_API + 'users/validate/' + this.rowId, $('#userForm').serialize())
             .then(response => {
                 if (response.data.status == 1) {
                     this.handleSubmit()
@@ -297,7 +298,7 @@ var editUserApp = new Vue({
         },
         handleSubmit: function() {
             this.loading = true
-            axios.post(URL_APP + 'users/save/', $('#userForm').serialize())
+            axios.post(URL_API + 'users/save/', $('#userForm').serialize())
             .then(response => {
                 if (response.data.saved_id > 0) toastr['success']('Guardado')
                 this.loading = false
@@ -308,12 +309,15 @@ var editUserApp = new Vue({
             const formValues = new FormData();
             formValues.append('email', this.fields.email)
             
-            axios.post(URL_APP + 'users/username/', formValues)
+            axios.post(URL_API + 'users/username/', formValues)
             .then(response => {
                 this.fields.username = response.data
             })
             .catch(function (error) { console.log(error) })
         }
+    },
+    mounted(){
+        //this.getList()
     }
-});
+}).mount('#editUserApp')
 </script>

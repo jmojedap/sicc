@@ -27,7 +27,7 @@ body {
   font-style: normal;
   font-variation-settings:
     "wdth" 100;
-  font-size: 15px;
+  font-size: 14px;
   overflow-x: hidden;
   overflow-y: auto;
 }
@@ -1307,6 +1307,13 @@ a:focus {
   border-color: #dd4b39;
   box-shadow: none;
 }
+.form-select {
+  border-radius: 2px;
+  box-shadow: none;
+  border-color: #e4eaec;
+  font-size: 1em;
+}
+
 /* Input group */
 .input-group .input-group-addon {
   border-radius: 0;

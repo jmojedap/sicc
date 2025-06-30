@@ -16,6 +16,13 @@
             anchor: true
         },
         {
+            text: '📅 Calendario',
+            id: 'barrios_vivos_calendario',
+            cf: 'barrios_vivos/calendario',
+            roles: [1,2,3,6,8,99],
+            anchor: true
+        },
+        {
             text: 'Tutoriales',
             id: 'barrios_vivos_tutoriales',
             cf: 'barrios_vivos/tutoriales',

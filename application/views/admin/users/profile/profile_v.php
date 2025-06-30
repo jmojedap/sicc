@@ -3,7 +3,7 @@
     $qty_posts = $this->Db_model->num_rows('posts', $condition);
 ?>
 
-<div class="container" id="profile_app">
+<div class="container" id="profileApp">
     <div class="row">
         <div class="col col-md-4">
             <!-- Page Widget -->
@@ -14,7 +14,7 @@
 
                     <?php if ($this->session->userdata('role') <= 2) { ?>
                         <a href="<?= URL_ADMIN . "accounts/ml/{$row->id}" ?>" role="button" class="btn btn-primary" title="Ingresar como este usuario">
-                            <i class="fa fa-sign-in"></i>Acceder
+                            <i class="fas fa-sign-in me-2"></i>Acceder
                         </a>
                     <?php } ?>
                 </div>
@@ -111,20 +111,14 @@
         job_role: '<?= $row->job_role ?>',
     };
 
-// Filtros
-//-----------------------------------------------------------------------------
-Vue.filter('ago', function (date) {
-    if (!date) return ''
-    return moment(date, 'YYYY-MM-DD HH:mm:ss').fromNow()
-});
-
 // VueApp
 //-----------------------------------------------------------------------------
-var profile_app = new Vue({
-    el: '#profile_app',
-    data: {
-        user: user,
-        activation_link: 'Restaurar contraseña'
+var profileApp  = createApp({
+    data(){
+        return{
+            user: user,
+            activation_link: 'Restaurar contraseña'
+        }
     },
     methods: {
         setActivationKey: function(){
@@ -135,6 +129,13 @@ var profile_app = new Vue({
             })
             .catch(function(error) { console.log(error) })   
         },
+        ago: function(date){
+            if (!date) return ''
+            return moment(date, 'YYYY-MM-DD HH:mm:ss').fromNow()            
+        },
+    },
+    mounted(){
+        //this.getList()
     }
-})
+}).mount('#profileApp  ')
 </script>

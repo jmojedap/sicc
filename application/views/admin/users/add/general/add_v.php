@@ -4,9 +4,9 @@
             <form accept-charset="utf-8" method="POST" id="addUserForm" @submit.prevent="handleSubmit">
                 <fieldset v-bind:disabled="loading">
                     <div class="mb-3 row">
-                        <label for="role" class="col-md-4 col-form-label text-right">Rol</label>
+                        <label for="role" class="col-md-4 col-form-label text-end">Rol</label>
                         <div class="col-md-8">
-                            <select name="role" v-model="fields.role" class="form-control" required>
+                            <select name="role" v-model="fields.role" class="form-select" required>
                                 <option v-for="(option_role, key_role) in options_role" v-bind:value="key_role">
                                     {{ option_role }}</option>
                             </select>
@@ -14,7 +14,7 @@
                     </div>
 
                     <div class="mb-3 row">
-                        <label for="first_name" class="col-md-4 col-form-label text-right">Nombre &middot;
+                        <label for="first_name" class="col-md-4 col-form-label text-end">Nombre &middot;
                             Apellidos</label>
                         <div class="col-md-4">
                             <input name="first_name" class="form-control" placeholder="Nombres"
@@ -22,18 +22,19 @@
                         </div>
                         <div class="col-md-4">
                             <input name="last_name" class="form-control" placeholder="Apellidos"
-                                title="Apellidos del usuario" v-model="fields.last_name" v-on:change="setDisplayName(false)">
+                                title="Apellidos del usuario" v-model="fields.last_name"
+                                v-on:change="setDisplayName(false)">
                         </div>
                     </div>
 
                     <div class="mb-3 row">
-                        <label for="display_name" class="col-md-4 col-form-label text-right">Nombre completo</label>
+                        <label for="display_name" class="col-md-4 col-form-label text-end">Nombre completo</label>
                         <div class="col-md-8">
                             <div class="input-group">
                                 <input name="display_name" class="form-control" required v-model="fields.display_name">
                                 <div class="input-group-append">
-                                    <button class="btn btn-light" type="button"
-                                        v-on:click="setDisplayName(true)"><i class="fas fa-magic"></i></button>
+                                    <button class="btn btn-light" type="button" v-on:click="setDisplayName(true)"><i
+                                            class="fas fa-magic"></i></button>
                                 </div>
                             </div>
                             <small id="displayNameTip" class="form-text text-muted">Mostrar usuario como</small>
@@ -41,7 +42,7 @@
                     </div>
 
                     <div class="mb-3 row" id="mb-3_email">
-                        <label for="email" class="col-md-4 col-form-label text-right">Correo electrónico</label>
+                        <label for="email" class="col-md-4 col-form-label text-end">Correo electrónico</label>
                         <div class="col-md-8">
                             <input name="email" type="email" class="form-control"
                                 title="Dirección de correo electrónico" required
@@ -54,7 +55,7 @@
                     </div>
 
                     <div class="mb-3 row">
-                        <label for="password" class="col-md-4 col-form-label text-right">Contraseña</label>
+                        <label for="password" class="col-md-4 col-form-label text-end">Contraseña</label>
                         <div class="col-md-8">
                             <input name="password" class="form-control"
                                 title="Debe tener al menos un número y una letra minúscula, y al menos 8 caractéres"
@@ -63,10 +64,11 @@
                     </div>
 
                     <div class="mb-3 row">
-                        <label for="gender" class="col-md-4 col-form-label text-right">Sexo</label>
+                        <label for="gender" class="col-md-4 col-form-label text-end">Sexo</label>
                         <div class="col-md-8">
-                            <select name="gender" v-model="fields.gender" class="form-control">
-                                <option v-for="optionGender in arrGender" v-bind:value="optionGender.str_cod">{{ optionGender.name }}</option>
+                            <select name="gender" v-model="fields.gender" class="form-select">
+                                <option v-for="optionGender in arrGender" v-bind:value="optionGender.str_cod">
+                                    {{ optionGender.name }}</option>
                             </select>
                         </div>
                     </div>
@@ -84,29 +86,8 @@
         </div>
     </div>
 
-    <!-- Modal -->
-    <div class="modal fade" id="modal_created" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
-        aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLongTitle">Usuario creado</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <i class="fa fa-check text-success"></i> Usuario creado correctamente
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" v-on:click="goToCreated">Abrir usuario</button>
-                    <button type="button" class="btn btn-secondary" v-on:click="clearForm" data-dismiss="modal">
-                        <i class="fa fa-plus"></i> Crear otro
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
+    <?php $this->load->view('admin/users/add/modal_created_v') ?>
+
 </div>
 
 <?php

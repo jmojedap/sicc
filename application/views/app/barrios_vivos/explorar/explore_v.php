@@ -24,8 +24,8 @@
                 </div>
             <?php endif; ?>
             <div>
-                <a v-bind:href="`<?= URL_ADMIN . "{$controller}export/?" ?>` + strFilters"
-                    class="btn btn-light only-lg me-1 d-none" v-bind:title="`Exportar ` + qtyResults + ` registros encontrados a Excel`">
+                <a v-bind:href="`<?= URL_APP . "{$controller}export/?" ?>` + strFilters"
+                    class="btn btn-light only-lg me-1" v-bind:title="`Exportar ` + qtyResults + ` registros encontrados a Excel`">
                     <i class="fa fa-download"></i>
                 </a>
                 <button class="btn btn-warning" title="Eliminar elementos seleccionados"

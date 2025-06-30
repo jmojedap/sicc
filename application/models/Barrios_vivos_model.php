@@ -19,16 +19,17 @@ class Barrios_vivos_model extends CI_Model{
     /**
      * Array con los datos para la vista de exploración
      */
-    function explore_data($filters, $num_page, $per_page = 10)
+    function explore_data($filters, $num_page, $perPage = 10)
     {
         //Data inicial, de la tabla
-            $data = $this->get($filters, $num_page, $per_page);
+            $data = $this->get($filters, $num_page, $perPage);
         
         //Elemento de exploración
             $data['controller'] = 'bv_laboratorios';                       //Nombre del controlador
             $data['cf'] = 'laboratorios/explore/';                      //Nombre del controlador
             $data['views_folder'] = 'admin/laboratorios/explore/';      //Carpeta donde están las vistas de exploración
             $data['numPage'] = $num_page;                       //Número de la página
+            $data['perPage'] = $perPage;                       //Número de la página
             
         //Vistas
             $data['head_title'] = 'Posts';
@@ -38,21 +39,21 @@ class Barrios_vivos_model extends CI_Model{
         return $data;
     }
 
-    function get($filters, $num_page, $per_page = 10)
+    function get($filters, $num_page, $perPage = 10)
     {
         //Load
             $this->load->model('Search_model');
 
         //Búsqueda y Resultados
             $data['filters'] = $filters;
-            $offset = ($num_page - 1) * $per_page;      //Número de la página de datos que se está consultado
-            $elements = $this->search($filters, $per_page, $offset);    //Resultados para página
+            $offset = ($num_page - 1) * $perPage;      //Número de la página de datos que se está consultado
+            $elements = $this->search($filters, $perPage, $offset);    //Resultados para página
         
         //Cargar datos
             $data['list'] = $elements->result();
             $data['strFilters'] = $this->Search_model->str_filters($filters, TRUE);
             $data['qtyResults'] = $this->qty_results($filters);
-            $data['maxPage'] = ceil($this->pml->if_zero($data['qtyResults'],1) / $per_page);   //Cantidad de páginas
+            $data['maxPage'] = ceil($this->pml->if_zero($data['qtyResults'],1) / $perPage);   //Cantidad de páginas
 
         return $data;
     }
@@ -73,7 +74,7 @@ class Barrios_vivos_model extends CI_Model{
      * Query con resultados de laboratorios filtrados, por página y offset
      * 2025-04-20
      */
-    function search($filters, $per_page = NULL, $offset = NULL)
+    function search($filters, $perPage = NULL, $offset = NULL)
     {
         //Segmento SELECT
             $select_format = 'general';
@@ -97,7 +98,7 @@ class Barrios_vivos_model extends CI_Model{
             if ( $search_condition ) { $this->db->where($search_condition);}
             
         //Obtener resultados
-            $query = $this->db->get('bv_laboratorios', $per_page, $offset); //Resultados por página
+            $query = $this->db->get('bv_laboratorios', $perPage, $offset); //Resultados por página
         
         return $query;
         
@@ -405,19 +406,55 @@ class Barrios_vivos_model extends CI_Model{
 // DETALLES DE LOS LABORATORIOS
 //-----------------------------------------------------------------------------
 
+    /**
+     * Segmento Select SQL, con diferentes formatos, consulta de detalles de laboratorios
+     * 2025-06-10
+     */
+    function select_details($format = 'general')
+    {
+        $arr_select['general'] = 'bv_laboratorios_detalles.*, bv_laboratorios.nombre_laboratorio AS laboratorio_nombre, 
+            bv_laboratorios.nombre_corto AS lab_nombre_corto, bv_laboratorios.estado_registro AS lab_estado_registro,
+            bv_laboratorios.vigencia AS lab_vigencia,
+            users.username AS updater_username, users.display_name AS updater_display_name';
+        $arr_select['actividades'] = 'bv_laboratorios_detalles.nombre, bv_laboratorios_detalles.descripcion,
+            bv_laboratorios_detalles.titulo_2 AS fase_laboratorio, bv_laboratorios_detalles.titulo_3 AS numero_actividad,
+            bv_laboratorios_detalles.texto_2 AS lugar, bv_laboratorios_detalles.texto_3 AS direccion,
+            bv_laboratorios_detalles.fecha_1 AS fecha, bv_laboratorios_detalles.hora_1 AS hora_inicio,
+            bv_laboratorios_detalles.hora_2 AS hora_fin, bv_laboratorios_detalles.categoria_1 AS fase_barrios_vivos,
+            bv_laboratorios_detalles.entero_1 AS cantidad_hombres, bv_laboratorios_detalles.entero_2 AS cantidad_mujeres,
+            bv_laboratorios_detalles.entero_3 AS cantidad_sexo_nd,
+            (entero_1 + entero_2 + entero_3) AS total_participantes,
+            bv_laboratorios_detalles.url_1, bv_laboratorios_detalles.url_2, bv_laboratorios_detalles.url_3, bv_laboratorios_detalles.url_4,
+            bv_laboratorios_detalles.num_radicacion, bv_laboratorios_detalles.notas,
+            bv_laboratorios_detalles.updated_at, bv_laboratorios_detalles.created_at,
+            bv_laboratorios.nombre_laboratorio AS laboratorio_nombre, 
+            bv_laboratorios.nombre_corto AS lab_nombre_corto, bv_laboratorios.estado_registro AS lab_estado_registro,
+            bv_laboratorios.vigencia AS lab_vigencia,
+            users.username AS updater_username, users.display_name AS updater_display_name';
+        $arr_select['export'] = '*';
+
+        return $arr_select[$format];
+    }
+
     function get_details($filters)
     {
         $condition = 'bv_laboratorios_detalles.id > 0 AND ';
         if ( $filters['prnt'] != '' ) { $condition .= "laboratorio_id = {$filters['prnt']} AND "; }
         if ( $filters['type'] != '' ) { $condition .= "tipo_detalle = {$filters['type']} AND "; }
+        if ( $filters['y'] != '' ) { $condition .= "vigencia = {$filters['y']} AND "; }
         
         //Quitar cadena final de ' AND '
         if ( strlen($condition) > 0 ) { $condition = substr($condition, 0, -5);}
 
-        $this->db->select('bv_laboratorios_detalles.*, users.username AS updater_username, users.display_name AS updater_display_name');
+        //Segmento SELECT
+        $select_format = 'general';
+        if ( $filters['sf'] != '' ) { $select_format = $filters['sf']; }
+
+        $this->db->select($this->select_details($select_format));
         $this->db->where($condition);
         $this->db->limit(10000);
         $this->db->join('users', 'bv_laboratorios_detalles.updater_id = users.id', 'left'); //Unir con tabla de usuarios
+        $this->db->join('bv_laboratorios', 'bv_laboratorios_detalles.laboratorio_id = bv_laboratorios.id', 'left'); //Unir con tabla de laboratorios
         if ( $filters['o'] != '' ) { $this->db->order_by($filters['o'], $filters['ot']); }
         $details = $this->db->get('bv_laboratorios_detalles');
     
@@ -436,5 +473,17 @@ class Barrios_vivos_model extends CI_Model{
         $qty_deleted = $this->db->affected_rows();
 
         return $qty_deleted;
+    }
+
+    function events()
+    {
+        $this->db->select($this->select_details('actividades'));
+        //$this->db->where($condition);
+        $this->db->limit(10000);
+        $this->db->join('users', 'bv_laboratorios_detalles.updater_id = users.id', 'left'); //Unir con tabla de usuarios
+        $this->db->join('bv_laboratorios', 'bv_laboratorios_detalles.laboratorio_id = bv_laboratorios.id', 'left'); //Unir con tabla de laboratorios
+        $details = $this->db->get('bv_laboratorios_detalles');
+
+        return $details;
     }
 }

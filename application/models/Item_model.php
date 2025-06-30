@@ -429,11 +429,11 @@ class Item_model extends CI_Model{
      */
     function import_config()
     {
-        $data['help_note'] = 'Se importarán items a la BD';
+        $data['help_note'] = 'Se importarán ítems a la base de datos';
         $data['help_tips'] = array();
         $data['template_file_name'] = 'f60_items.xlsx';
         $data['sheet_name'] = 'items';
-        $data['head_subtitle'] = 'Importar items';
+        $data['head_subtitle'] = 'Importar ítems';
         $data['destination_form'] = "admin/items/import_e/";
 
         return $data;

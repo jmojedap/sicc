@@ -168,7 +168,7 @@ class Acciones extends CI_Controller {
     {
         $data['arrPrograma'] = $this->Item_model->arr_options('category_id = 221');
         $data['arrEstrategia'] = $this->Item_model->arr_options('category_id = 222');
-        $data['arrTipoAccion'] = $this->Item_model->arr_options('category_id = 224');
+        $data['arrTipoAccion'] = $this->Item_model->arr_options('category_id = 224 AND item_group = 0');
         $data['arrDependencia'] = $this->Item_model->arr_options('category_id = 215');
         $data['arrEquipoTrabajo'] = $this->Item_model->arr_options('category_id = 216');
         $data['arrLocalidad'] = $this->Item_model->arr_options('category_id = 121');

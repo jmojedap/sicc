@@ -2,14 +2,11 @@
 <script>
 // Variables
 //-----------------------------------------------------------------------------
-var status_icons = {
-    "0":'<i class="far fa-circle text-danger" title="Inactivo"></i>',
-    "1":'<i class="fa fa-check-circle text-success" title="Activo"></i>'
-};
+var arrRole = <?= json_encode($arrRole); ?>;
 
 // VueApp
 //-----------------------------------------------------------------------------
-var appExploree = createApp({
+var appExplore = createApp({
     data(){
         return{
             cf: '<?= $cf ?>',
@@ -17,126 +14,115 @@ var appExploree = createApp({
             qtyResults: <?= $qtyResults ?>,
             numPage: <?= $numPage ?>,
             maxPage: <?= $maxPage ?>,
-            perPage: <?= $perPage ?>,
             list: <?= json_encode($list) ?>,
+            filters: <?= json_encode($filters) ?>,
+            strFilters: '<?= $strFilters ?>',
+            perPage: 10,
             element: [],
             selected: [],
-            all_selected: false,
-            filters: <?= json_encode($filters) ?>,
-            str_filters: '<?= $str_filters ?>',
-            display_filters: false,
+            allSelected: false,
+            showFilters: false,
             loading: false,
-            active_filters: false,
-            arrRole: <?= json_encode($arrRole) ?>,
-            today: '<?= date('Y-m-d') ?>',
+            activeFilters: false,
+            arrRole: arrRole,
+            appRid: parseInt(APP_RID),
+            viewFormat: 'table',
         }
     },
     methods: {
-        get_list: function(e, numPage = 1){
+        getList: function(e, numPage = 1){
             this.loading = true
-            axios.post(URL_API + this.controller + '/get/' + numPage, $('#search_form').serialize())
+            var formValues = new FormData(document.getElementById('searchForm'))
+            axios.post(URL_API + this.controller + '/get/' + numPage + '/' + this.perPage, formValues)
             .then(response => {
                 this.numPage = numPage
                 this.list = response.data.list
                 this.maxPage = response.data.maxPage
                 this.qtyResults = response.data.qtyResults
-                this.str_filters = response.data.str_filters
-                history.pushState(null, null, URL_APP + this.cf + this.numPage +'/?' + response.data.str_filters)
-                this.all_selected = false
+                this.strFilters = response.data.strFilters
+                history.pushState(null, null, URL_APP + this.cf + this.numPage + '/?' + response.data.strFilters)
+                this.allSelected = false
                 this.selected = []
                 this.loading = false
-
-                this.calculate_active_filters()
             })
             .catch(function (error) { console.log(error) })
         },
-        select_all: function() {
-            if ( this.all_selected )
+        selectAll: function() {
+            if ( this.allSelected )
             { this.selected = this.list.map(function(element){ return element.id }) }
             else
             { this.selected = [] }
         },
         sumPage: function(sum){
-            var new_numPage = Pcrn.limit_between(this.numPage + sum, 1, this.maxPage)
-            this.get_list(null, new_numPage)
+            var newNumPage = Pcrn.limit_between(this.numPage + sum, 1, this.maxPage)
+            this.getList(null, newNumPage)
         },
-        delete_selected: function(){
-            var params = new FormData()
-            params.append('selected', this.selected)
-            
-            axios.post(URL_APP + this.controller + '/delete_selected', params)
+        deleteElement: function(){
+            this.selected = [this.element.id]
+            this.deleteSelected()
+        },
+        deleteSelected: function(){
+            this.loading = true
+            var formValues = new FormData()
+            formValues.append('selected', this.selected)
+            axios.post(URL_API + this.controller + '/delete_selected', formValues)
             .then(response => {
-                this.hide_deleted()
+                this.hideDeleted()
                 this.selected = []
                 if ( response.data.qty_deleted > 0 )
                 {
                     toastr['info']('Registros eliminados: ' + response.data.qty_deleted)
                 }
+                this.loading = false
             })
             .catch(function (error) { console.log(error) })
         },
-        hide_deleted: function(){
-            for ( let index = 0; index < this.selected.length; index++ )
-            {
-                const element = this.selected[index]
-                console.log('ocultando: row_' + element)
-                $('#row_' + element).addClass('table-danger')
-                $('#row_' + element).hide('slow')
-            }
+        hideDeleted: function(){
+            this.selected.forEach(rowId => {
+                $('#row_' + rowId).addClass('table-danger')
+                $('#row_' + rowId).hide('slow')
+            })
         },
-        set_current: function(key){
+        setCurrent: function(key){
             this.element = this.list[key]
         },
-        toggle_filters: function(){
-            this.display_filters = !this.display_filters
-            $('#adv_filters').toggle('fast')
+        toggleFilters: function(){
+            this.showFilters = !this.showFilters
         },
-        remove_filters: function(){
-            this.filters.q = ''
-            this.filters.role = ''
-            this.filters.fe1 = ''
-            this.filters.fe2 = ''
-            this.filters.d1 = ''
-            this.filters.d2 = ''
-            this.display_filters = false
-            //$('#adv_filters').hide()
-            setTimeout(() => { this.get_list() }, 100)
+        clearFilters: function(){
+            Object.keys(this.filters).forEach(key => {
+                this.filters[key] = ''
+            })
+            //this.showFilters = false
+            setTimeout(() => { this.getList() }, 100)
         },
-        calculate_active_filters: function(){
-            var calculated_active_filters = false
-            if ( this.filters.q ) calculated_active_filters = true
-            if ( this.filters.role ) calculated_active_filters = true
-            if ( this.filters.fe1 ) calculated_active_filters = true
-            if ( this.filters.fe2 ) calculated_active_filters = true
-            if ( this.filters.d1 ) calculated_active_filters = true
-            if ( this.filters.d2 ) calculated_active_filters = true
-
-            this.active_filters = calculated_active_filters
+        calculateShowFilters: function(){
+            if ( this.strFilters.length > 0 ) this.showFilters = true
         },
-        // Especiales users
+        clearLineaEstrategica: function(){
+            this.filters.linea_e = ''
+        },
+        // Formato y valores
         //-----------------------------------------------------------------------------
+        ago: function(date){
+            if (!date) return ''
+            if (date == '0000-00-00') return ''
+            return moment(date, 'YYYY-MM-DD HH:mm:ss').fromNow()
+        },
+        dateFormat: function(date, format='YYYY-MM-DD'){
+            if (!date) return ''
+            if (date == '0000-00-00') return 'ND'
+            return moment(date).format(format)
+        },
         roleName: function(value = '', field = 'name'){
             var roleName = ''
             var item = this.arrRole.find(row => row.cod == value)
             if ( item != undefined ) roleName = item[field]
             return roleName
         },
-        ago: function(date){
-            if (!date) return ''
-            return moment(date, "YYYY-MM-DD HH:mm:ss").fromNow()
-        },
-        status_icon: function(value){
-            if (!value) return ''
-            value = status_icons[value]
-            return value
-        },
-        age: function(date){
-            if (!date) return ''
-            return moment().diff(date, 'years',false)
-        },
     },
     mounted(){
-        this.calculate_active_filters()
-    }
-}).mount('#appExplore');
+        this.calculateShowFilters()
+    },
+}).mount('#appExplore')
 </script>

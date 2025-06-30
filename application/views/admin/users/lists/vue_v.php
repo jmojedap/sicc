@@ -1,13 +1,11 @@
 <script>
-var user_lists = new Vue({
-    el: '#user_lists',
-    created: function(){
-        //this.get_list()
-    },
-    data: {
-        user_id: <?= $row->id ?>,
-        user_lists: <?= json_encode($user_lists->result()) ?>,
-        loading: false,
+var userListsApp = createApp({
+    data(){
+        return{
+            user_id: <?= $row->id ?>,
+            user_lists: <?= json_encode($user_lists->result()) ?>,
+            loading: false,
+        }
     },
     methods: {
         update_list: function(current_value, key_list){
@@ -32,6 +30,9 @@ var user_lists = new Vue({
             })
             .catch( function(error) {console.log(error)} )
         },
+    },
+    mounted(){
+        //this.getList()
     }
-})
+}).mount('#userListsApp')
 </script>

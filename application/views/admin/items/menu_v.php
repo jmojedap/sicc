@@ -2,9 +2,9 @@
 var sectionId = '<?= $this->uri->segment(2) . '_' . $this->uri->segment(3) ?>'
 var sections = [
     {
-        id: 'items_manage',
+        id: 'items_values',
         text: 'Lista',
-        cf: 'items/manage',
+        cf: 'items/values',
         roles: [1,2]
     },
     {
@@ -21,8 +21,10 @@ var nav_2 = sections.filter(section => section.roles.includes(parseInt(APP_RID))
 nav_2.forEach((section,i) => {
     nav_2[i].class = ''
     if ( section.id == sectionId ) nav_2[i].class = 'active'
-})
+});
+
+if ( sectionId == 'items_import_e' ) { nav_2[1].class = 'active' }
 </script>
 
 <?php
-$this->load->view('common/nav_2_v');
+$this->load->view('common/bs5/nav_2_v');

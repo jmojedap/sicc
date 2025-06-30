@@ -50,7 +50,7 @@ class Barrios_vivos extends CI_Controller {
         if ( is_null($filters['y']) ) $filters['y'] = 2025;
 
         //Datos básicos de la exploración
-            $data = $this->Barrios_vivos_model->explore_data($filters, $num_page, 10);
+            $data = $this->Barrios_vivos_model->explore_data($filters, $num_page, 100);
             $data['cf'] = 'barrios_vivos/explorar/';
             $data['controller'] = 'barrios_vivos/';
             $data['views_folder'] = $this->views_folder . 'explorar/';      //Carpeta donde están las vistas de exploración
@@ -134,6 +134,9 @@ class Barrios_vivos extends CI_Controller {
         $this->App_model->view(TPL_FRONT, $data);
     }
 
+// VISTA DE ACTIVIDADES
+//-----------------------------------------------------------------------------
+
 // INFORMACIÓN
 //-----------------------------------------------------------------------------
 
@@ -207,6 +210,29 @@ class Barrios_vivos extends CI_Controller {
 // DETALLES DE LOS LABORATORIOS
 //-----------------------------------------------------------------------------
 
+    /**
+     * Calendario de las actividades de Barrios Vivos
+     * 2025-06-27
+     */
+    function calendario()
+    {
+        //$data = $this->Barrios_vivos_model->explore_actividades();
+        $data['head_title'] = 'Calendario Barrios Vivos';
+        //$data['view_a'] = $this->views_folder . 'cronograma/cronograma_v';
+        $data['view_a'] = $this->views_folder . 'cronograma/calendario_v';
+        $data['nav_2'] = $this->views_folder . 'menus/explorar_v';
+
+        $data['events'] = $this->Barrios_vivos_model->events();
+
+        //Opciones de filtros de búsqueda
+        //$data['arrFaseBV'] = $this->Item_model->arr_options('category_id = 433');
+        $this->App_model->view(TPL_FRONT, $data);
+    }
+
+    /**
+     * Vista de detalles de los laboratorios
+     * 2025-04-17
+     */
     function actividades($laboratorioId)
     {
         $data = $this->Barrios_vivos_model->basic($laboratorioId);

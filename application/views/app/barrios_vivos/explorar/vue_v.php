@@ -21,7 +21,7 @@ var appExplore = createApp({
             list: <?= json_encode($list) ?>,
             filters: <?= json_encode($filters) ?>,
             strFilters: '<?= $strFilters ?>',
-            perPage: 10,
+            perPage: <?= $perPage ?>,
             element: [],
             selected: [],
             allSelected: false,

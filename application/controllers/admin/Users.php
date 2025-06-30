@@ -41,43 +41,14 @@ class Users extends CI_Controller{
 
         //Datos básicos de la exploración
             $data = $this->User_model->explore_data($filters, $numPage);
+            $data['nav_2'] = 'admin/users/menus/explore_v';
+
             
         //Arrays con valores para contenido en lista
             $data['arrRole'] = $this->Item_model->arr_options('category_id = 58');
             
         //Cargar vista
             $this->App_model->view(TPL_ADMIN_5, $data);
-    }
-
-    /**
-     * JSON
-     * Listado de users, según filtros de búsqueda
-     */
-    function get($numPage = 1, $perPage = 10)
-    {
-        $this->load->model('Search_model');
-        $filters = $this->Search_model->filters();
-        $data = $this->User_model->get($filters, $numPage, $perPage);
-
-        //Salida JSON
-        $this->output->set_content_type('application/json')->set_output(json_encode($data));
-    }
-
-    /**
-     * AJAX JSON
-     * Eliminar un conjunto de users seleccionados
-     * 2021-02-20
-     */
-    function delete_selected()
-    {
-        $selected = explode(',', $this->input->post('selected'));
-        $data['qty_deleted'] = 0;
-        
-        foreach ( $selected as $row_id ) {
-            $data['qty_deleted'] += $this->User_model->delete($row_id);
-        }
-        
-        $this->output->set_content_type('application/json')->set_output(json_encode($data));
     }
 
     /**
@@ -107,7 +78,6 @@ class Users extends CI_Controller{
 
             $this->load->view('common/download_excel_file_v', $file_data);
             //Salida JSON
-            //$this->output->set_content_type('application/json')->set_output(json_encode($file_data['obj_writer']));
         } else {
             $data = array('message' => 'No se encontraron registros para exportar');
             //Salida JSON
@@ -137,7 +107,7 @@ class Users extends CI_Controller{
 
         $data['back_link'] = $this->url_controller . 'explore';
         
-        $this->App_model->view(TPL_ADMIN, $data);
+        $this->App_model->view(TPL_ADMIN_5, $data);
     }
 
     /**
@@ -145,7 +115,7 @@ class Users extends CI_Controller{
      * Información de un usuario específico
      * 2022-01-05
      */
-    function get_info($user_id)
+    function z_get_info($user_id)
     {
         $data['user'] = $this->User_model->get_info($user_id);
 
@@ -162,9 +132,9 @@ class Users extends CI_Controller{
         //Datos básicos
         $data = $this->User_model->basic($user_id);
         $data['back_link'] = $this->url_controller . 'explore';
-        $data['view_a'] = 'common/row_details_v';
+        $data['view_a'] = 'common/bs5/row_details_v';
 
-        $this->App_model->view(TPL_ADMIN, $data);
+        $this->App_model->view(TPL_ADMIN_5, $data);
     }
     
 // CRUD
@@ -186,11 +156,11 @@ class Users extends CI_Controller{
 
         //Variables generales
             $data['head_title'] = 'Agregar usuario';
-            $data['nav_2'] = 'admin/users/explore/menu_v';
+            $data['nav_2'] = 'admin/users/menus/explore_v';
             $data['nav_3'] = 'admin/users/add/menu_v';
             $data['view_a'] = "admin/users/add/{$role_type}/add_v";
 
-        $this->App_model->view(TPL_ADMIN, $data);
+        $this->App_model->view(TPL_ADMIN_5, $data);
     }
 
     /**
@@ -198,7 +168,7 @@ class Users extends CI_Controller{
      * Se validan los datos de un user add o existente ($user_id), los datos deben cumplir varios criterios
      * 2021-02-02
      */
-    function validate($user_id = NULL)
+    function z_validate($user_id = NULL)
     {
         $data = $this->User_model->validate($user_id);
         
@@ -211,7 +181,7 @@ class Users extends CI_Controller{
      * Guardar datos de un usuario, insertar o actualizar
      * 2022-08-03
      */
-    function save()
+    function z_save()
     {
         $validation = $this->User_model->validate($this->input->post('id'));
         
@@ -265,14 +235,14 @@ class Users extends CI_Controller{
             $data['back_link'] = $this->url_controller . 'explore';
             $data['view_a'] = $view_a;
         
-        $this->App_model->view(TPL_ADMIN, $data);
+        $this->App_model->view(TPL_ADMIN_5, $data);
     }
 
     /**
      * Actualiza el campo user.activation_key, para activar o restaurar la contraseña de un usuario
      * 2019-11-18
      */
-    function set_activation_key($user_id)
+    function z_set_activation_key($user_id)
     {
         $this->load->model('Account_model');
         $activation_key = $this->Account_model->activation_key($user_id);
@@ -286,7 +256,7 @@ class Users extends CI_Controller{
      * Carga file de image y se la asigna a un user.
      * 2020-02-22
      */
-    function set_image($user_id)
+    function z_set_image($user_id)
     {
         //Cargue
         $this->load->model('File_model');
@@ -309,8 +279,8 @@ class Users extends CI_Controller{
      * utiliza los datos del form para hacer el recorte de la image.
      * Actualiza las miniaturas
      * 
-     * @param type $user_id
-     * @param type $file_id
+     * @param int $user_id
+     * @param int $file_id
      */
     function crop_image_e($user_id, $file_id)
     {
@@ -323,9 +293,9 @@ class Users extends CI_Controller{
      * AJAX
      * Desasigna y elimina la image asociada a un user, si la tiene.
      * 
-     * @param type $user_id
+     * @param int $user_id :: ID del usuario al que se le eliminará la imagen
      */
-    function remove_image($user_id)
+    function z_remove_image($user_id)
     {
         $data = $this->User_model->remove_image($user_id);
         $this->output->set_content_type('application/json')->set_output(json_encode($data));
@@ -356,9 +326,9 @@ class Users extends CI_Controller{
         //Variables generales
             $data['head_title'] = 'Usuarios';
             $data['view_a'] = 'common/import_v';
-            $data['nav_2'] = $this->views_folder . 'explore/menu_v';
+            $data['nav_2'] = $this->views_folder . 'menus/explore_v';
         
-        $this->App_model->view(TPL_ADMIN, $data);
+        $this->App_model->view(TPL_ADMIN_5, $data);
     }
 
     /**
@@ -385,12 +355,10 @@ class Users extends CI_Controller{
         
         //Cargar vista
             $data['head_title'] = 'Usuarios';
-            $data['view_a'] = 'common/import_result_v';
-            $data['nav_2'] = $this->views_folder . 'explore/menu_v';
+            $data['view_a'] = 'common/bs5/import_result_v';
+            $data['nav_2'] = $this->views_folder . 'menus/explore_v';
 
-        $this->App_model->view(TPL_ADMIN, $data);
-        //Salida JSON
-        //$this->output->set_content_type('application/json')->set_output(json_encode($imported_data));
+        $this->App_model->view(TPL_ADMIN_5, $data);
     }
     
 //---------------------------------------------------------------------------------------------------
@@ -427,14 +395,12 @@ class Users extends CI_Controller{
         $filters['sf'] = '22_list';
         $filters['condition'] = 'type_id = 22 AND cat_1 = 10';
         
-        $this->load->model('Post_model');
         $data['user_lists'] = $this->User_model->lists($user_id);
 
         $data['head_title'] = 'Listas de usuarios';
         $data['view_a'] = $this->views_folder . 'lists/lists_v';
         $data['back_link'] = $this->url_controller . 'explore';
-        //$data['nav_2'] = $this->views_folder . 'explore/menu_v';
-        $this->App_model->view(TPL_ADMIN, $data);
+        $this->App_model->view(TPL_ADMIN_5, $data);
     }
 
     function update_list()

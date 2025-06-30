@@ -1,6 +1,6 @@
 <script>
-    /*var random = '16073' + Math.floor(Math.random() * 100000);
-    var fields = {
+    var random = '16073' + Math.floor(Math.random() * 100000);
+    /*var fields = {
         role: '021',
         first_name: 'Henry',
         last_name: 'Jones',
@@ -26,22 +26,23 @@
         email: '',
         username: '',
         gender: '',
-        password: ''
+        password: 'hDus*' + random + '7d89D$*f1',
     };
 
 // VueApp
 //-----------------------------------------------------------------------------
-var addUserApp = new Vue({
-    el: '#addUserApp',
-    data: {
-        loading: false,
-        fields: fields,
-        validation: {
-            email_unique: -1,
-        },
-        savedId: 0,
-        options_role: <?= json_encode($options_role) ?>,
-        arrGender: <?= json_encode($arrGender) ?>,
+var addUserApp = createApp({
+    data(){
+        return{
+            loading: false,
+            fields: fields,
+            validation: {
+                email_unique: -1,
+            },
+            savedId: 0,
+            options_role: <?= json_encode($options_role) ?>,
+            arrGender: <?= json_encode($arrGender) ?>,
+        }
     },
     methods: {
         handleSubmit: function () {
@@ -64,7 +65,7 @@ var addUserApp = new Vue({
                 {
                     this.savedId = response.data.saved_id
                     this.clearForm()
-                    $('#modal_created').modal()
+                    new bootstrap.Modal($('#modalCreated')).show();
                     this.loading = false
                 }
             }).catch(function (error) {console.log(error)})
@@ -110,6 +111,6 @@ var addUserApp = new Vue({
         goToCreated: function() {
             window.location = URL_APP + 'users/profile/' + this.savedId
         }
-    }
-});
+    },
+}).mount('#addUserApp')
 </script>

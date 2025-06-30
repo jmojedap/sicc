@@ -57,21 +57,22 @@
 
 // VueApp
 //-----------------------------------------------------------------------------
-var addUserApp = new Vue({
-    el: '#addUserApp',
-    data: {
-        loading: false,
-        fields: fields,
-        validation: {
-            email_unique: -1,
-        },
-        savedId: 0,
-        options_role: <?= json_encode($options_role) ?>,
-        arrGender: <?= json_encode($arrGender) ?>,
-        arrLocalidad: <?= json_encode($arrLocalidad) ?>,
-        arrDocumentType: <?= json_encode($arrDocumentType) ?>,
-        arrEtnia: <?= json_encode($arrEtnia) ?>,
-        arrModalidad: <?= $arrModalidad ?>,
+var addUserApp = createApp({
+    data(){
+        return{
+            loading: false,
+            fields: fields,
+            validation: {
+                email_unique: -1,
+            },
+            savedId: 0,
+            options_role: <?= json_encode($options_role) ?>,
+            arrGender: <?= json_encode($arrGender) ?>,
+            arrLocalidad: <?= json_encode($arrLocalidad) ?>,
+            arrDocumentType: <?= json_encode($arrDocumentType) ?>,
+            arrEtnia: <?= json_encode($arrEtnia) ?>,
+            arrModalidad: <?= $arrModalidad ?>,
+        }
     },
     methods: {
         handleSubmit: function () {
@@ -94,7 +95,7 @@ var addUserApp = new Vue({
                 {
                     this.savedId = response.data.saved_id
                     this.clearForm()
-                    $('#modal_created').modal()
+                    new bootstrap.Modal($('#modalCreated')).show();
                     this.loading = false
                 }
             }).catch(function (error) {console.log(error)})
@@ -140,6 +141,6 @@ var addUserApp = new Vue({
         goToCreated: function() {
             window.location = URL_APP + 'users/profile/' + this.savedId
         }
-    }
-});
+    },
+}).mount('#addUserApp')
 </script>

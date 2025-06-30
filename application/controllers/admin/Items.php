@@ -20,31 +20,35 @@ class Items extends CI_Controller{
         //Para definir hora local
         date_default_timezone_set("America/Bogota");
     }
-
-// EXPLORE
-//-----------------------------------------------------------------------------
-
-    /**
-     * JSON
-     * Listado de ítems, según filtros de búsqueda
-     */
-    function get($num_page = 1, $per_page = 1000)
-    {
-        $this->load->model('Search_model');
-        $filters = $this->Search_model->filters();
-        $data = $this->Item_model->get($filters, $num_page, $per_page);
-
-        //Salida JSON
-        $this->output->set_content_type('application/json')->set_output(json_encode($data));
-    }
     
 //CRUD
 //---------------------------------------------------------------------------------------------------
     
     /**
-     * Vista filtra items por categoría, CRUD de items.
+     * Gestión de valores de los ítems, CRUD por categorías
+     * 2025-06-30
      */
-    function manage($category_id = '58')
+    function values($category_cod = 121, $scope = '')
+    {
+        $categories_condition = 'category_id = 0';
+        if ( $scope != '' ) {
+            $categories_condition .= " AND filters LIKE '%-{$scope}-%'";
+        }
+        $data['categories'] = $this->Item_model->get_items($categories_condition);
+        
+        $data['head_title'] = 'Valores de parámetros';
+        $data['view_a'] = $this->views_folder . 'values/values_v';
+        $data['nav_2'] = $this->views_folder . 'menu_v';
+        $data['category_cod'] = $category_cod;
+        $data['scope'] = $scope;
+        $this->App_model->view(TPL_ADMIN_5, $data);
+    }
+
+    /**
+     * Vista filtra items por categoría, CRUD de items.
+     * DESACTIVADA 2025-06-30
+     */
+    function z_manage($category_id = '58')
     {
         //Variables específicas
             $data['category_id'] = $category_id;
@@ -56,61 +60,7 @@ class Items extends CI_Controller{
             $data['nav_2'] = $this->views_folder . 'menu_v';
             
         //Cargar vista
-            $this->App_model->view(TPL_ADMIN, $data);
-    }
-    
-    /**
-     * AJAX JSON
-     * Listado de ítems de una categoría específica, tabla item
-     * 
-     * @param type $category_id
-     */
-    function get_list($category_id = '058')
-    {
-        $items = $this->Item_model->items($category_id);
-        $this->output->set_content_type('application/json')->set_output(json_encode($items->result()));
-    }
-    
-    /**
-     * AJAX JSON
-     * Guarda los datos enviados por post, registro en la tabla item, insertar
-     * o actualizar.
-     * 
-     */
-    function save($item_id)
-    {
-        $arr_row = $this->input->post();
-        
-        $data = $this->Item_model->save($arr_row, $item_id);
-        $this->output->set_content_type('application/json')->set_output(json_encode($data));
-    }
-    
-    /**
-     * AJAX
-     * Eliminar un registro, devuelve la cantidad de registros eliminados
-     */
-    function delete($item_id, $category_id)
-    {
-        $data = $this->Item_model->delete($item_id, $category_id);   
-        $this->output->set_content_type('application/json')->set_output(json_encode($data));
-    }
-    
-    /**
-     * AJAX Eliminar un grupo de items selected
-     */
-    function delete_selected()
-    {
-        $str_selected = $this->input->post('selected');
-        
-        $selected = explode('-', $str_selected);
-        
-        foreach ( $selected as $elemento_id ) 
-        {
-            $conditions['id'] = $elemento_id;
-            $this->Item_model->delete($conditions);
-        }
-        
-        echo count($selected);
+            $this->App_model->view(TPL_ADMIN_5, $data);
     }
 
     /**
@@ -148,24 +98,6 @@ class Items extends CI_Controller{
         }
     }
 
-// OPCIONES
-//-----------------------------------------------------------------------------
-
-    /**
-     * AJAX JSON
-     * Array con opciones para input select con items, según condición sql
-     * 2021-04-09
-     */
-    function get_options()
-    {
-        $condition = $this->input->post('condition');
-        $empty_value = $this->input->post('empty_value');
-        $data['options'] = $this->Item_model->options($condition, $empty_value);
-
-        //Salida JSON
-        $this->output->set_content_type('application/json')->set_output(json_encode($data));
-    }
-
 // IMPORTACIÓN DE ITEMS
 //-----------------------------------------------------------------------------
 
@@ -185,7 +117,7 @@ class Items extends CI_Controller{
         $data['nav_2'] = $this->views_folder . 'menu_v';
         $data['view_a'] = 'common/import_v';
         
-        $this->App_model->view(TPL_ADMIN, $data);
+        $this->App_model->view(TPL_ADMIN_5, $data);
     }
 
     //Ejecuta la importación de items con archivo Excel
@@ -205,7 +137,7 @@ class Items extends CI_Controller{
             $data['message'] = $imported_data['message'];
             $data['arr_sheet'] = $imported_data['arr_sheet'];
             $data['sheet_name'] = $this->input->post('sheet_name');
-            $data['back_destination'] = "items/manage/";
+            $data['back_destination'] = "items/values/";
         
         //Cargar vista
             $data['head_title'] = 'Items';
@@ -213,6 +145,6 @@ class Items extends CI_Controller{
             $data['view_a'] = 'common/import_result_v';
             $data['nav_2'] = $this->views_folder . 'menu_v';
 
-        $this->App_model->view(TPL_ADMIN, $data);
+        $this->App_model->view(TPL_ADMIN_5, $data);
     }
 }

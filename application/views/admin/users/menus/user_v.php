@@ -6,12 +6,14 @@ var sections = [
         id: 'users_profile',
         text: 'Información',
         cf: 'users/profile/' + nav2RowId,
+        anchor: true,
         roles: [1,2,3],
     },
     {
         id: 'users_details',
         text: 'Detalles',
         cf: 'users/details/' + nav2RowId,
+        anchor: true,
         roles: [1,2,3],
     },
     {
@@ -34,4 +36,4 @@ nav_2.forEach((section,i) => {
 </script>
 
 <?php
-$this->load->view('common/nav_2_v');
+$this->load->view('common/bs5/nav_2_v');

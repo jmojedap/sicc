@@ -29,4 +29,4 @@ if ( sectionId == '' ) nav_3[0].class = 'active'
 </script>
 
 <?php
-$this->load->view('common/nav_3_v');
+$this->load->view('common/bs5/nav_3_v');

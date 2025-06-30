@@ -78,6 +78,21 @@
     </div>
 
     <div class="mb-3 row">
+        <label for="parent_id" class="col-md-4 col-form-label text-end">
+            <span>ID Padre</span>
+        </label>
+        <div class="col-md-8">
+            <input
+                name="parent_id" class="form-control" placeholder=""
+                title="ID del parámetro padre" required
+                v-model="fields.parent_id"
+                >
+                <div class="form-text">Para establecer una jerarquía entre parámetros</div>
+
+        </div>
+    </div>
+
+    <div class="mb-3 row">
         <label for="slug" class="col-md-4 col-form-label text-end">
             <span class="">Slug</span>
         </label>

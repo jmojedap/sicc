@@ -2,7 +2,7 @@
     $condition = "creator_id = {$row->id} AND type_id IN (7,6)";
 ?>
 
-<div class="container" id="profile_app">
+<div class="container" id="profileApp">
     <div class="row">
         <div class="col col-md-4">
             <!-- Page Widget -->
@@ -13,7 +13,7 @@
 
                     <?php if ($this->session->userdata('role') <= 2) { ?>
                         <a href="<?= URL_ADMIN . "accounts/ml/{$row->id}" ?>" role="button" class="btn btn-primary" title="Ingresar como este usuario">
-                            <i class="fa fa-sign-in"></i>Acceder
+                            <i class="fa fa-sign-in me-2"></i>Acceder
                         </a>
                     <?php } ?>
                 </div>
@@ -103,20 +103,14 @@
         admin_notes: '<?= $row->admin_notes ?>',
     };
 
-// Filtros
-//-----------------------------------------------------------------------------
-Vue.filter('ago', function (date) {
-    if (!date) return ''
-    return moment(date, 'YYYY-MM-DD HH:mm:ss').fromNow()
-});
-
 // VueApp
 //-----------------------------------------------------------------------------
-var profile_app = new Vue({
-    el: '#profile_app',
-    data: {
-        user: user,
-        activation_link: 'Restaurar contraseña'
+var profileApp = createApp({
+    data(){
+        return{
+            user: user,
+            activation_link: 'Restaurar contraseña'
+        }
     },
     methods: {
         setActivationKey: function(){
@@ -127,6 +121,10 @@ var profile_app = new Vue({
             })
             .catch(function(error) { console.log(error) })   
         },
-    }
-})
+        ago: function(date){
+            if (!date) return ''
+            return moment(date, 'YYYY-MM-DD HH:mm:ss').fromNow()            
+        },
+    },
+}).mount('#profileApp')
 </script>

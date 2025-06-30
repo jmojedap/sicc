@@ -2,7 +2,8 @@ var nav_1_elements = [
     {
         text: 'Inicio', active: false, icon: 'fa fa-gauge', cf: 'app/dashboard', anchor: false,
         sections: ['app/dashboard'],
-        subelements: []
+        subelements: [],
+        anchor: true
     },
     {
         text: 'Usuarios', active: false, icon: 'fa fa-user', cf: 'users/explore', anchor: false,
@@ -15,7 +16,8 @@ var nav_1_elements = [
         icon: 'far fa-file-alt',
         cf: 'posts/explore',
         sections: ['posts/explore', 'posts/add', 'posts/import', 'posts/info', 'posts/edit', 'posts/image', 'posts/details', 'posts/comments'],
-        subelements: []
+        subelements: [],
+        anchor: true
     },
     {
         text: 'Archivos',
@@ -23,7 +25,8 @@ var nav_1_elements = [
         icon: 'far fa-image',
         cf: 'files/explore',
         sections: ['files/explore', 'files/add', 'files/import', 'files/info', 'files/edit', 'files/image', 'files/details'],
-        subelements: []
+        subelements: [],
+        anchor: true
     },
     {
         text: 'Comentarios',
@@ -31,36 +34,8 @@ var nav_1_elements = [
         icon: 'far fa-comment',
         cf: 'comments/explore',
         sections: ['comments/explore', 'comments/add', 'comments/info'],
-        subelements: []
-    },
-    {
-        text: 'Mediciones',
-        active: false,
-        icon: 'fas fa-chart-bar',
-        cf: '',
-        sections: [],
-        subelements: [
-            {
-                text: 'Mediciones', active: false, icon: 'fas fa-chart-bar', cf: 'mediciones/explore',
-                sections: ['mediciones/explore']
-            },
-            {
-                text: 'Preguntas', active: false, icon: 'fas fa-question', cf: 'preguntas/explore',
-                sections: ['preguntas/explore']
-            },
-            {
-                text: 'Variables', active: false, icon: 'fas fa-x', cf: 'variables/explore',
-                sections: ['variables/explore', 'variables/add','variables/edit','variables/info']
-            },
-        ]
-    },
-    {
-        text: 'Repositorio',
-        active: false,
-        icon: 'fas fa-book',
-        cf: 'repositorio/explore',
-        sections: ['repositorio/explore','repositorio/info','repositorio/edit','repositorio/details','repositorio/add'],
-        subelements: []
+        subelements: [],
+        anchor: true
     },
     {
         text: 'Ajustes',
@@ -72,36 +47,42 @@ var nav_1_elements = [
         subelements: [
             {
                 text: 'General', active: false, icon: 'fa fa-cogs', cf: 'config/options',
-                sections: ['config/options', 'config/processes', 'config/colors', 'config/import', 'config/import_e']
+                sections: ['config/options', 'config/processes', 'config/colors', 'config/import', 'config/import_e'],
+                anchor: true
             },
             {
-                text: 'Ítems', active: false, icon: 'fa fa-bars', cf: 'items/manage',
-                sections: ['items/manage', 'items/import']
+                text: 'Ítems', active: false, icon: 'fa fa-bars', cf: 'items/values',
+                sections: ['items/values', 'items/import'],
+                anchor: true
             },
             {
                 text: 'Base de datos', active: false, icon: 'fa fa-database', cf: 'sync/panel',
-                sections: ['sync/panel']
+                sections: ['sync/panel'],
+                anchor: true
             },
             {
                 text: 'Eventos', active: false, icon: 'far fa-clock', cf: 'events/summary', anchor: false,
-                sections: ['events/explore', 'events/summary']
+                sections: ['events/explore', 'events/summary'],
+                anchor: true
             },
             {
                 text: 'Lugares', active: false, icon: 'fa fa-map-marker-alt', cf: 'places/explore', anchor: false,
                 sections: ['places/explore', 'places/add', 'places/edit'],
+                anchor: true
             },
             {
                 text: 'Periodos', active: false, icon: 'fa fa-calendar', cf: 'periods/explore', anchor: false,
                 sections: ['periods/explore', 'periods/add', 'periods/edit', 'periods/calendar'],
+                anchor: true
             }
         ]
     },
-    {
+    /* {
         text: 'Ayuda',
         active: false,
         icon: 'far fa-question-circle',
         cf: 'app/help',
         sections: ['app/help'],
         subelements: []
-    },
+    }, */
 ];

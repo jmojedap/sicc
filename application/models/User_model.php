@@ -28,7 +28,7 @@ class User_model extends CI_Model{
         //Elemento de exploración
             $data['controller'] = 'users';                      //Nombre del controlador
             $data['cf'] = 'users/explore/';                     //Nombre del controlador
-            $data['views_folder'] = 'admin/users/explore/';           //Carpeta donde están las vistas de exploración
+            $data['views_folder'] = 'admin/users/explore/';     //Carpeta donde están las vistas de exploración
             $data['numPage'] = $numPage;                      //Número de la página
             
         //Vistas
@@ -56,7 +56,7 @@ class User_model extends CI_Model{
         //Cargar datos
             $data['filters'] = $filters;
             $data['list'] = $this->list($filters, $perPage, $offset);    //Resultados para página
-            $data['str_filters'] = $this->Search_model->str_filters();      //String con filtros en formato GET de URL
+            $data['strFilters'] = $this->Search_model->str_filters();      //String con filtros en formato GET de URL
             $data['qtyResults'] = $this->qtyResults($data['filters']);
             $data['perPage'] = $perPage;   //Cantidad de resultados por página
             $data['maxPage'] = ceil($this->pml->if_zero($data['qtyResults'],1) / $perPage);   //Cantidad de páginas

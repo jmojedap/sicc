@@ -2,12 +2,13 @@ var nav_1_elements = [
     {
         text: 'Inicio', active: false, icon: 'fa fa-gauge', cf: 'app/dashboard', anchor: false,
         sections: ['app/dashboard'],
-        subelements: []
+        subelements: [],
     },
     {
         text: 'Usuarios', active: false, icon: 'fa fa-user', cf: 'users/explore', anchor: false,
         sections: ['users/explore', 'users/add', 'users/import', 'users/profile', 'users/edit', 'users/inbody', 'users/orders'],
-        subelements: []
+        subelements: [],
+        anchor: true
     },
     {
         text: 'Posts',
@@ -34,35 +35,6 @@ var nav_1_elements = [
         subelements: []
     },
     {
-        text: 'Mediciones',
-        active: false,
-        icon: 'fas fa-chart-bar',
-        cf: '',
-        sections: [],
-        subelements: [
-            {
-                text: 'Mediciones', active: false, icon: 'fas fa-chart-bar', cf: 'mediciones/explore',
-                sections: ['mediciones/explore']
-            },
-            {
-                text: 'Preguntas', active: false, icon: 'fas fa-question', cf: 'preguntas/explore',
-                sections: ['preguntas/explore']
-            },
-            {
-                text: 'Variables', active: false, icon: 'fas fa-x', cf: 'variables/explore',
-                sections: ['variables/explore', 'variables/add','variables/edit','variables/info']
-            },
-        ]
-    },
-    {
-        text: 'Repositorio',
-        active: false,
-        icon: 'fas fa-book',
-        cf: 'repositorio/explore',
-        sections: ['repositorio/explore','repositorio/info','repositorio/edit','repositorio/details','repositorio/add'],
-        subelements: []
-    },
-    {
         text: 'Ajustes',
         active: false,
         style: '',
@@ -75,8 +47,8 @@ var nav_1_elements = [
                 sections: ['config/options', 'config/processes', 'config/colors', 'config/import', 'config/import_e']
             },
             {
-                text: 'Ítems', active: false, icon: 'fa fa-bars', cf: 'items/manage',
-                sections: ['items/manage', 'items/import']
+                text: 'Ítems', active: false, icon: 'fa fa-bars', cf: 'items/values',
+                sections: ['items/values', 'items/import'], anchor: true
             },
             {
                 text: 'Base de datos', active: false, icon: 'fa fa-database', cf: 'sync/panel',
