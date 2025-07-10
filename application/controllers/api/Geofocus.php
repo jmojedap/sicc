@@ -140,7 +140,8 @@ class Geofocus extends CI_Controller{
      */
     function get_descripcion($priorizacionId) {
         $apiKey = 'AIzaSyCcelTenQpGgFCzbY66kI7st8qk-Sc_J0A';
-        $url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent?key=" . $apiKey;
+        $model_id = "gemini-2.0-flash-lite";
+        $url = "https://generativelanguage.googleapis.com/v1beta/models/{$model_id}:generateContent?key=" . $apiKey;
 
         $instruction = 'Genera un párrafo que describa y resuma en lenguaje natural la parametrización 
             que un usuario realizó de una herramienta web de datos que realiza priorización geográfica 
@@ -196,13 +197,13 @@ class Geofocus extends CI_Controller{
         curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonData);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     
-        /* $response = curl_exec($ch);
+        $response = curl_exec($ch);
         $arrResponse = json_decode($response,true);
-        $descripcion = $arrResponse['candidates'][0]['content']['parts'][0]['text'] ?? '(Descripción no disponible)'; */
+        $descripcion = $arrResponse['candidates'][0]['content']['parts'][0]['text'] ?? '(Descripción no disponible)';
         
         /* PARA PRUEBAS */
-        $descripcion = 'La priorización geográfica realizada se basó en la ponderación de siete variables. Las variables con mayor peso fueron: "Coeficiente expansión" (83 puntos), que prioriza barrios con mayor proporción de área de expansión; "Distancia a estaciones de Transmilenio" (80 puntos), priorizando barrios con menor distancia a estaciones; y "Subíndice de espacio público 2023" (75 puntos), priorizando barrios con valores altos en este subíndice. "Conteo homicidios por barrio" (67 puntos) también tuvo una ponderación importante, priorizando barrios con mayor número de homicidios. Las variables restantes fueron: "Área" (50 puntos), priorizando barrios con menor área; "Equipamientos Culturales" (50 puntos), priorizando barrios con mayor cantidad de equipamientos; y "Subíndice de cultura política y ciudadanía 2023" (21 puntos), priorizando barrios con valores bajos en este subíndice. (testing)';
-        $arrResponse = ['status' => 'Respuesta dummy'];
+        //$descripcion = 'La priorización geográfica realizada se basó en la ponderación de siete variables. Las variables con mayor peso fueron: "Coeficiente expansión" (83 puntos), que prioriza barrios con mayor proporción de área de expansión; "Distancia a estaciones de Transmilenio" (80 puntos), priorizando barrios con menor distancia a estaciones; y "Subíndice de espacio público 2023" (75 puntos), priorizando barrios con valores altos en este subíndice. "Conteo homicidios por barrio" (67 puntos) también tuvo una ponderación importante, priorizando barrios con mayor número de homicidios. Las variables restantes fueron: "Área" (50 puntos), priorizando barrios con menor área; "Equipamientos Culturales" (50 puntos), priorizando barrios con mayor cantidad de equipamientos; y "Subíndice de cultura política y ciudadanía 2023" (21 puntos), priorizando barrios con valores bajos en este subíndice. (TTT)';
+        //$arrResponse = ['status' => 'Respuesta dummy'];
         /** FIN PARA PRUEBAS */
 
         $aRow['descripcion_generada'] = $descripcion;

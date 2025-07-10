@@ -89,6 +89,13 @@ class User_model extends CI_Model{
             text_2 AS identidad_genero, text_3 AS orientacion_sexual, job_role AS ocupacion,
             address AS direccion, phone_number AS celular,
             users.created_at AS creado, users.updated_at AS actualizado, admin_notes AS observaciones';
+        $arr_select['red_cultural'] = 'users.id, username, display_name AS nombre_completo,
+            email, text_1 AS pais_origen, team_1 AS institucion_red, text_2 AS lema, text_3 AS intereses,
+            job_role AS rol_actividad,
+            gender AS sexo, integer_1 AS puntaje,
+            about AS perfil,
+            users.created_at AS creado, users.updated_at AS actualizado, admin_notes AS notas';
+        
 
         return $arr_select[$format];
     }
@@ -205,9 +212,11 @@ class User_model extends CI_Model{
         {   //Desarrollador, todos los user
             $condition = 'users.id > 0';
         } elseif ( $role == 3 ) {
-            $condition = 'users.role IN (3,6,22)';
+            $condition = 'users.role IN (3,6,11,22)';
         } elseif ( $role == 8 ) {
-            $condition = 'users.role IN (8,22)';
+            $condition = 'users.role IN (8,11,22)';
+        } elseif ( $role == 11 ) {
+            $condition = 'users.role IN (11)';
         }
         
         return $condition;

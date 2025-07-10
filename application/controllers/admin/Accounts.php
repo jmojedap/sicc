@@ -253,7 +253,7 @@ class Accounts extends CI_Controller {
         } elseif ( $type == 'login_link' ) {
             $this->Account_model->activation_key($param_1);
             $user = $this->Db_model->row_id('users', $param_1);
-            echo $this->Notification_model->login_link_message($user, 'text');
+            echo $this->Notification_model->login_link_message($user, 'html', 'redcultural');
         }
     }
 

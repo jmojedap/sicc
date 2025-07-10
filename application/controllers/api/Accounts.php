@@ -114,11 +114,15 @@ class Accounts extends CI_Controller {
      * AJAX JSON
      * Enviar por correo electrónico un link para iniciar sesión en la
      * aplicación
-     * 2022-08-06
+     * 2025-07-10
      */
     function get_login_link()
     {
         $email = $this->input->post('email');
+        $template = 'main';
+        if ( $this->input->post('template') ) {
+            $template = $this->input->post('template');
+        }
 
         //Respuesta por defecto
         $data = [
@@ -132,15 +136,8 @@ class Accounts extends CI_Controller {
         $user = $this->Db_model->row('users', "email = '{$email}'");
         
         if ( ! is_null($user) ) {
-            if ( ENV == 'production') {
-                $this->load->model('Notification_model');
-                $data['status'] = $this->Notification_model->send_login_link($user->id);
-                $data['message'] = "El link fue enviado a el correo electrónico {$email}";
-            } else {
-                $data['status'] = 1;
-                $data['link'] =  URL_APP . "accounts/validate_login_link/{$activation_key}";
-                $data['message'] = 'Mensaje no enviado - Versión local';
-            }
+            $this->load->model('Notification_model');
+            $data = $this->Notification_model->send_login_link($user->id, $template);
         }
 
         //Salida JSON

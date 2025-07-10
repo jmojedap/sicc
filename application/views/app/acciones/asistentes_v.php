@@ -43,7 +43,7 @@
                 <td>{{ asistente.nombre }}</td>
                 <td>
                     <button class="a4" v-on:click="deleteDetail(asistente.id)" type="button">
-                        <i class="fa fa-trash"></i>
+                        <i class="fas fa-trash"></i>
                     </button>
                 </td>
             </tr>
@@ -78,6 +78,7 @@ var asistentesApp = createApp({
             formValues = new FormData()
             formValues.append('accion_id', this.row.id)
             formValues.append('tipo_detalle', 110)
+            formValues.append('relacionado_1', this.currentUser.id)
             formValues.append('cod_detalle',this.currentUser.document_number)
             formValues.append('nombre',this.currentUser.display_name)
             axios.post(URL_API + 'acciones/save_detail/', formValues)
@@ -125,7 +126,7 @@ var asistentesApp = createApp({
             var formValues = new FormData(document.getElementById('getUsersForm'))
             axios.post(URL_API + 'users/get/', formValues)
             .then(response => {
-                this.searchStatus = response.data.search_num_rows
+                this.searchStatus = response.data.qtyResults
                 this.users = response.data.list
                 this.loading = false
             })

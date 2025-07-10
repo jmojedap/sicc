@@ -499,13 +499,19 @@ class Accion_model extends CI_Model{
 
     function details_asistentes()
     {
-        $select = 'mecc_acciones_detalle.id, accion_id, nombre_accion, mecc_acciones.fecha,
-            mecc_acciones_detalle.cod_detalle AS num_documento, nombre';
+        $select = 'mecc_acciones_detalle.id AS asistencia_id, ma.estrategia, accion_id, en_manzana,
+            modalidad, 
+            nombre_accion, ma.localidad, ma.fecha, mecc_acciones_detalle.cod_detalle AS numero_de_identificacion,
+            nombre AS nombres_y_apellidos, u.email AS correo_electronico, igender.item_name AS sexo, u.text_2 AS identidad_genero,
+            ma.nombre_accion AS nombre_del_servicio
+            ';
 
         $this->db->select($select);
         $this->db->where('tipo_detalle', 110);
         $this->db->order_by('accion_id', 'ASC');
-        $this->db->join('mecc_acciones', 'mecc_acciones.id = mecc_acciones_detalle.accion_id', 'left');
+        $this->db->join('mecc_acciones AS ma', 'ma.id = mecc_acciones_detalle.accion_id', 'left');
+        $this->db->join('users AS u', 'mecc_acciones_detalle.relacionado_1 = u.id', 'left');
+        $this->db->join('items AS igender', 'u.gender = igender.cod AND igender.category_id = 59');
         
         $query = $this->db->get('mecc_acciones_detalle');
 

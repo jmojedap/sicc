@@ -4,10 +4,11 @@
         El enlace para ingresar ya no es válido. <br>Envía uno nuevo.
     </div>
     <form accept-charset="utf-8" method="POST" id="loginForm" @submit.prevent="handleSubmit">
+        <input type="hidden" name="template" value="redcultural">
         <fieldset v-bind:disabled="loading">
             <p>
                 Escribe tu correo electrónico y recibirás un link para acceder a
-                <span class="text-primary"><?= APP_NAME ?></span>
+                <span class="text-primary"><?= RCI_APP_NAME ?></span>
             </p>
             <div class="mb-3">
                 <input class="form-control form-control-lg" name="email" type="email" v-model="email"
@@ -15,31 +16,22 @@
             </div>
 
             <div class="mb-3">
-                <button type="submit" class="btn btn-primary btn-lg w-100 mb-2"
+                <button type="submit" class="btn btn-main btn-lg w-100 mb-2"
                     title="Enviar link o enlace para acceder a la aplicación">
                     <i class="fas fa-spin fa-spinner" v-show="loading"></i>
                     Enviar link
                 </button>
             </div>
-
-
         </fieldset>
     </form>
 
-    <p><a v-bind:href="`<?= URL_APP ?>` + link" v-show="link.length > 0">INGRESA AQUÍ</a></p>
+    <p><a v-bind:href="`<?= RCI_URL_APP  ?>` + link" v-show="link.length > 0">INGRESA AQUÍ</a></p>
 
     <div v-show="status >= 0">
         <div class="alert" v-bind:class="alertClass">
             {{ message }}
         </div>
     </div>
-
-    <p>
-        <a href="<?= URL_APP . 'accounts/login' ?>">Ingresar con contraseña</a>
-    </p>
-    <p>
-        <a href="<?= URL_APP . 'accounts/recovery' ?>">Establecer contraseña</a>
-    </p>
 </div>
 
 <script>
@@ -70,7 +62,9 @@ var loginApp = createApp({
                         this.email = ''
                     }
                 })
-                .catch(function(error) { console.log(error)})
+                .catch(function(error) {
+                    console.log(error)
+                })
         }
     },
 }).mount('#loginApp')

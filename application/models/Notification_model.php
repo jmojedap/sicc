@@ -5,9 +5,9 @@ class Notification_model extends CI_Model{
      * Array con estilos CSS para mensajes de correo electrónico
      * 2021-07-26
      */
-    function email_styles()
+    function email_styles($template = 'main')
     {
-        $email_styles = file_get_contents(URL_RESOURCES . 'css/email.json');
+        $email_styles = file_get_contents(URL_RESOURCES . "css/email/{$template}.json");
         $styles = json_decode($email_styles, true);
 
         return $styles;
@@ -64,37 +64,46 @@ class Notification_model extends CI_Model{
     /**
      * Envia un mensaje al correo electrónico del usuario con un link
      * para iniciar sesión en la aplicación
-     * 2024-07-27
+     * 2025-07-10
      */
-    function send_login_link($user_id)
+    function send_login_link($user_id, $template = 'main')
     {   
         //Asignar nueva user.activation_key 
             $activation_key = $this->Account_model->activation_key($user_id);
             $user = $this->Db_model->row_id('users', $user_id);
 
         //Enviar Email
-            $this->load->library('Mail_pml');
-            $settings['to'] = $user->email;
-            $settings['subject'] = 'Ingresa a ' . APP_NAME;
-            $settings['html_message'] = $this->login_link_message($user);
-            $data = $this->mail_pml->send($settings);
+            if ( ENV == 'production') {
+                $this->load->library('Mail_pml');
+                $settings['to'] = $user->email;
+                $settings['subject'] = 'Ingresa a ' . APP_NAME;
+                $settings['html_message'] = $this->login_link_message($user, 'html', $template);
+                $data = $this->mail_pml->send($settings);
+                if ( $data['status'] == 1 ) {
+                    $data['message'] = "El link fue enviado a el correo electrónico {$email}";
+                }
+            } else {
+                $data['status'] = 1;
+                $data['link'] =  "accounts/validate_login_link/{$activation_key}";
+                $data['message'] = 'Se simula envío - Versión local';
+            }
 
-        return $data['status'];
+        return $data;
     }
 
     /**
      * Devuelve texto de la vista que se envía por email a un usuario para
      * activación o restauración de su cuenta
-     * 2022-08-08
+     * 2025-07-10
      */
-    function login_link_message($user, $type = 'html')
+    function login_link_message($user, $type = 'html', $template = 'main')
     {
         $data['user'] = $user ;
         
         if ( $type == 'html' ) {
-            $data['styles'] = $this->email_styles();
-            $data['view_a'] = 'admin/notifications/login_link_message_v';
-            $message = $this->load->view('templates/email/main', $data, TRUE);
+            $data['styles'] = $this->email_styles($template);
+            $data['view_a'] = "admin/notifications/{$template}/login_link_message_v";
+            $message = $this->load->view("templates/email/{$template}", $data, TRUE);
         } else {
             $data['view_a'] = 'admin/notifications/login_link_message_text_v';
             $message = $this->load->view('templates/email/text', $data, TRUE);

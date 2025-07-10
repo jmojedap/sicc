@@ -8,5 +8,5 @@
         <br>
         <span><?= APP_NAME ?></span>
     </p>
-    <footer style="<?= $styles['footer'] ?>">2024 &middot; Prototipos-Sicc.com &middot; Colombia</footer>
+    <footer style="<?= $styles['footer'] ?>">2025 &middot; Prototipos-Sicc.com &middot; Colombia</footer>
 </body>

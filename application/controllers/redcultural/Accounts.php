@@ -5,7 +5,7 @@ class Accounts extends CI_Controller {
 
 // Variables generales
 //-----------------------------------------------------------------------------
-    public $views_folder = 'app/accounts/';
+    public $views_folder = 'redcultural/accounts/';
     public $url_controller = URL_APP . 'accounts/';
 
 // Constructor
@@ -29,9 +29,9 @@ class Accounts extends CI_Controller {
     {
         if ( $this->session->userdata('logged') )
         {
-            redirect('app/accounts/logged');
+            redirect('redcultural/accounts/logged');
         } else {
-            redirect('app/accounts/login');
+            redirect('redcultural/accounts/login');
         }    
     }
     
@@ -52,7 +52,7 @@ class Accounts extends CI_Controller {
                 $data['head_title'] = APP_NAME;
                 $data['view_a'] = $this->views_folder . 'login_v';
                 //$data['g_client'] = $this->Account_model->g_client(); //Para botón login con Google
-                $this->load->view('templates/easypml/start', $data);
+                $this->load->view('templates/redcultural/start', $data);
                 //$this->load->view('templates/admin_pml/start', $data);
             }
     }
@@ -63,7 +63,7 @@ class Accounts extends CI_Controller {
     function logout()
     {
         $this->Account_model->logout();
-        redirect('app/accounts/login');
+        redirect('redcultural/accounts/login_link');
     }
 
     /**
@@ -73,17 +73,17 @@ class Accounts extends CI_Controller {
      */
     function logged()
     {
-        $destination = 'app/accounts/login';
+        $destination = 'redcultural/accounts/login';
         if ( $this->session->userdata('logged') )
         {
             $arr_destination = array(
-                1 => 'admin/app/dashboard/',  //Desarrollador
-                2 => 'admin/app/dashboard/',  //Administrador
-                3 => 'admin/users/explore',   //Editor
-                6 => 'app/observatorio/inicio',   //Editor MeCC
-                8 => 'app/observatorio/inicio',   //Editor MeCC
-                11 => 'redocultural/invitados/directorio',   //Experto invitado RCI
-                22 => 'app/accounts/profile/'     //Estudiante
+                1 => 'redcultural/invitados/directorio',  //Desarrollador
+                2 => 'redcultural/invitados/directorio',  //Administrador
+                3 => 'redcultural/invitados/directorio',   //Editor
+                6 => 'redcultural/invitados/directorio',   //Editor MeCC
+                8 => 'redcultural/invitados/directorio',   //Editor MeCC
+                11 => 'redcultural/invitados/directorio',   //Experto invitado RCI
+                22 => 'redcultural/invitados/directorio'     //Estudiante
             );
                 
             $destination = $arr_destination[$this->session->userdata('role')];
@@ -108,10 +108,10 @@ class Accounts extends CI_Controller {
             {
                 redirect('app/accounts/logged');
             } else {
-                $data['head_title'] = APP_NAME;
+                $data['head_title'] = RCI_APP_NAME;
                 $data['view_a'] = $this->views_folder . 'login_link_v';
                 $data['activation_key'] = $activation_key;
-                $this->load->view('templates/easypml/start', $data);
+                $this->load->view('templates/redcultural/main', $data);
             }
     }
 
@@ -130,7 +130,7 @@ class Accounts extends CI_Controller {
             $this->Account_model->activation_key($user->id);
             $this->logged();
         } else {
-            redirect("app/accounts/login_link/{$activation_key}");
+            redirect("redcultural/accounts/login_link/{$activation_key}");
         }
     }
     
@@ -147,7 +147,7 @@ class Accounts extends CI_Controller {
         $data['view_a'] = $this->views_folder . 'signup_v';
         //$data['g_client'] = $this->Account_model->g_client(); //Para botón login con Google
         $data['recaptcha_sitekey'] = K_RCSK;    //config/constants.php
-        $this->load->view('templates/easypml/start', $data);
+        $this->load->view('templates/redcultural/start', $data);
     }
 
 // ACTIVATION
@@ -162,7 +162,7 @@ class Accounts extends CI_Controller {
         $data['activation_key'] = $activation_key;
         $data['view_a'] = $this->views_folder . 'activation_v';
 
-        $this->App_model->view('templates/easypml/start', $data);
+        $this->App_model->view('templates/redcultural/start', $data);
     }
 
 //RECUPERACIÓN DE CUENTAS
@@ -183,7 +183,7 @@ class Accounts extends CI_Controller {
             $data['head_title'] = 'Restaurar cuenta';
             $data['view_a'] = $this->views_folder . 'recovery_v';
             $data['recaptcha_sitekey'] = K_RCSK;    //config/constants.php
-            $this->load->view('templates/easypml/start', $data);
+            $this->load->view('templates/redcultural/start', $data);
         }
     }
 
@@ -218,7 +218,7 @@ class Accounts extends CI_Controller {
 
         //Cargar vista
             $data['view_a'] = $this->views_folder . 'recover_v';
-            $this->load->view('templates/easypml/start', $data);
+            $this->load->view('templates/redcultural/start', $data);
     }
 
 // ADMINISTRACIÓN DE CUENTA
@@ -233,7 +233,7 @@ class Accounts extends CI_Controller {
         $data['nav_2'] = $this->views_folder . 'menu_v';
         $data['view_a'] = $this->views_folder . 'profile_v';
         
-        $this->App_model->view('templates/easypml/minimal', $data);
+        $this->App_model->view('templates/redcultural/main', $data);
     }
 
 // ACTUALIZACIÓN DE DATOS
@@ -271,6 +271,6 @@ class Accounts extends CI_Controller {
             $data['nav_3'] = $this->views_folder . 'edit/menu_v';
             $data['view_a'] = $view_a;
         
-        $this->App_model->view('templates/easypml/minimal', $data);
+        $this->App_model->view('templates/redcultural/main', $data);
     }
 }

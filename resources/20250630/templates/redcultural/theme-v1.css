@@ -1,0 +1,132 @@
+
+
+/* Fuentes */
+/*-----------------------------------------------------------------------------*/
+@import url('https://fonts.googleapis.com/css2?family=Work+Sans:ital,wght@0,100..900;1,100..900&display=swap');
+
+
+:root{
+    --color-main-app: #FA6B2D;
+    --color-dark: #973409;
+    --color-light: #f39065;
+    --color-bg: #FFFFFF;
+    
+    --color-secondary: #22B4CD;
+    --color-secondary-light: #68d0e2;
+    --color-secondary-dark: #0188B4;
+
+    --color-nav-bg: #FFFFFF;
+    --color-nav-font: #FA6B2D;
+    --color-nav-active: #FAFAFA;
+    --color-nav-font-active: #FA6B2D; 
+
+    --font-main: 'Work Sans', sans-serif;
+
+    --color-bg-primary: #654096;
+    --color-bg-primary-alt: #6a4aa7;
+    --color-bg-secondary: #F9C412;
+    --color-bg-secondary-alt: #ffcf30;
+    --color-bg-success: #4CA048;
+    --color-bg-success-alt: #68bd64;
+    --color-bg-warning: #e6a000;
+    --color-bg-warning-alt: #fbb62d;
+    --color-bg-ligth: #ced4da;
+    --color-bg-ligth-alt: #FCFCFC;
+    --color-bg-danger: #E5233E;
+    --color-bg-danger-alt: #db394f;
+
+    --color-text-link: #117a8d;
+    --color-text-link-hover: #19B0CA;
+
+    --color-text-1: #FE7135;
+    --color-text-2: #E5233E;
+    --color-text-3: #E21782;
+    --color-text-4: #5D4294;
+    --color-text-5: #1368A1;
+    --color-text-6: #19B0CA;
+    --color-text-7: #4CA048;
+    --color-text-8: #e6a000;
+}
+
+/* Botones */
+/*-----------------------------------------------------------------------------*/
+
+.btn-primary {
+    background-color: var(--color-bg-primary);
+    border-color: var(--color-bg-primary);
+}
+.btn-primary:hover,
+.btn-primary:active,
+.btn-primary.hover {
+    background-color: var(--color-bg-primary-alt);
+    border-color: var(--color-bg-primary-alt);
+}
+
+.btn-success {
+    background-color: var(--color-bg-success);
+    border-color: var(--color-bg-success);
+}
+.btn-success:hover,
+.btn-success:active,
+.btn-success.hover {
+    background-color: var(--color-bg-success-alt);
+    border-color: var(--color-bg-success-alt);
+}
+
+.btn-warning {
+    background-color: var(--color-bg-warning);
+    border-color: var(--color-bg-warning);
+}
+.btn-warning:hover,
+.btn-warning:active,
+.btn-warning.hover {
+    background-color: var(--color-bg-warning-alt);
+    border-color: var(--color-bg-warning-alt);
+}
+
+.btn-light{
+    border-color: var(--color-bg-ligth)
+}
+
+.btn-light:hover,
+.btn-light:active,
+.btn-light.hover{
+    background-color: var(--color-bg-ligth-alt);
+    border-color: #BBB;
+}
+
+.btn-danger{
+    border-color: var(--color-bg-danger)
+}
+
+.btn-danger:hover,
+.btn-danger:active,
+.btn-danger.hover{
+    background-color: var(--color-bg-danger-alt);
+    border-color: #BBB;
+}
+
+/* Otros elementos */
+/*-----------------------------------------------------------------------------*/
+
+.progress-bar{
+    background-color: var(--color-bg-primary);
+}
+
+.bg-success {background-color: var(--color-bg-success);}
+.bg-danger {background-color: var(--color-bg-danger);}
+
+.card {
+    border: 1px solid #ebedf2;
+    border-radius: 9px;
+}
+
+.form-control {
+    border-color: #ebedf2;
+    border-radius: 4px;
+}
+
+.form-select {
+    border-color: #ebedf2;
+    border-radius: 4px;
+}
