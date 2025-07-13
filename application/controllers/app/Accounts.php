@@ -82,7 +82,7 @@ class Accounts extends CI_Controller {
                 3 => 'admin/users/explore',   //Editor
                 6 => 'app/observatorio/inicio',   //Editor MeCC
                 8 => 'app/observatorio/inicio',   //Editor MeCC
-                11 => 'redocultural/invitados/directorio',   //Experto invitado RCI
+                11 => 'redcultural/invitados/directorio',   //Experto invitado RCI
                 22 => 'app/accounts/profile/'     //Estudiante
             );
                 

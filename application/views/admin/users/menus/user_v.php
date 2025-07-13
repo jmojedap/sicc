@@ -17,6 +17,13 @@ var sections = [
         roles: [1,2,3],
     },
     {
+        id: 'users_meta_details',
+        text: 'Metadatos',
+        cf: 'users/meta_details/' + nav2RowId,
+        anchor: true,
+        roles: [1,2,3],
+    },
+    {
         id: 'users_edit',
         text: 'Editar',
         cf: 'users/edit/' + nav2RowId,

@@ -9,7 +9,7 @@
             <form id="userForm" accept-charset="utf-8" @submit.prevent="validateAndSubmit">
                 <fieldset v-bind:disabled="loading">
                     <input type="hidden" name="id" value="<?= $row->id ?>">
-                    <div class="mb-3 row">
+                    <div class="mb-2 row">
                         <label for="role" class="col-md-4 col-form-label text-end">Rol <span class="text-danger">*</span></label>
                         <div class="col-md-8">
                             <select name="role" v-model="fields.role" class="form-select" required>
@@ -18,7 +18,7 @@
                         </div>
                     </div>
 
-                    <div class="mb-3 row">
+                    <div class="mb-2 row">
                         <label for="status" class="col-md-4 col-form-label text-end">Estado <span class="text-danger">*</span></label>
                         <div class="col-md-8">
                             <select name="status" v-model="fields.status" class="form-select" required>
@@ -27,7 +27,7 @@
                         </div>
                     </div>
 
-                    <div class="mb-3 row">
+                    <div class="mb-2 row">
                         <label for="first_name" class="col-md-4 col-form-label text-end">Nombre y Apellidos</label>
                         <div class="col-md-4">
                             <input
@@ -45,7 +45,7 @@
                         </div>
                     </div>
 
-                    <div class="mb-3 row">
+                    <div class="mb-2 row">
                         <label for="display_name" class="col-md-4 col-form-label text-end">Nombre mostrar <span class="text-danger">*</span></label>
                         <div class="col-md-8">
                             <input
@@ -56,7 +56,7 @@
                         </div>
                     </div>
 
-                    <div class="mb-3 row">
+                    <div class="mb-2 row">
                         <label for="email" class="col-md-4 col-form-label text-end">Correo electrónico <span class="text-danger">*</span></label>
                             
                         <div class="col-md-8">
@@ -73,7 +73,7 @@
                         </div>
                     </div>
 
-                    <div class="mb-3 row" id="mb-3_username">
+                    <div class="mb-2 row" id="mb-2_username">
                         <label for="username" class="col-md-4 col-form-label text-end">Username <span class="text-danger">*</span></label>
                         <div class="col-md-8">
                             <div class="input-group">
@@ -99,7 +99,7 @@
                         </div>
                     </div>
 
-                    <div class="mb-3 row" id="mb-3_document_number">
+                    <div class="mb-2 row" id="mb-2_document_number">
                         <label for="document_number" class="col-md-4 col-form-label text-end">No. Documento</label>
                         <div class="col-md-4">
                             <input
@@ -121,7 +121,7 @@
                         </div>
                     </div>
 
-                    <div class="mb-3 row">
+                    <div class="mb-2 row">
                         <label for="gender" class="col-md-4 col-form-label text-end">Sexo</label>
                         <div class="col-md-8">
                             <select name="gender" v-model="fields.gender" class="form-select" required>
@@ -130,7 +130,7 @@
                         </div>
                     </div>
 
-                    <div class="mb-3 row">
+                    <div class="mb-2 row">
                         <label for="birth_date" class="col-md-4 col-form-label text-end">Fecha de nacimiento</label>
                         <div class="col-md-8">
                             <input
@@ -142,7 +142,7 @@
                     
                     <hr>
 
-                    <div class="mb-3 row">
+                    <div class="mb-2 row">
                         <label for="city_id" class="col-md-4 col-form-label text-end">Ciudad residencia</label>
                         <div class="col-md-8">
                             <select name="city_id" v-model="fields.city_id" class="form-select form-control-chosen">
@@ -151,7 +151,7 @@
                         </div>
                     </div>
 
-                    <div class="mb-3 row">
+                    <div class="mb-2 row">
                         <label for="address" class="col-md-4 col-form-label text-end">Dirección</label>
                         <div class="col-md-8">
                             <input
@@ -161,7 +161,7 @@
                         </div>
                     </div>
 
-                    <div class="mb-3 row">
+                    <div class="mb-2 row">
                         <label for="celular" class="col-md-4 col-form-label text-end">No. celular</label>
                         <div class="col-md-8">
                             <input
@@ -171,7 +171,7 @@
                         </div>
                     </div>
 
-                    <div class="mb-3 row">
+                    <div class="mb-2 row">
                         <label for="admin_notes" class="col-md-4 col-form-label text-end">Notas internas</label>
                         <div class="col-md-8">
                             <textarea
@@ -184,7 +184,7 @@
 
                     <hr>
 
-                    <div class="mb-3 row">
+                    <div class="mb-2 row">
                         <label for="team_1" class="col-md-4 col-form-label text-end">Dependencia</label>
                         <div class="col-md-8">
                             <input
@@ -196,7 +196,7 @@
                         </div>
                     </div>
 
-                    <div class="mb-3 row">
+                    <div class="mb-2 row">
                         <label for="team_2" class="col-md-4 col-form-label text-end">Equipo</label>
                         <div class="col-md-8">
                             <input
@@ -208,7 +208,7 @@
                         </div>
                     </div>
 
-                    <div class="mb-3 row">
+                    <div class="mb-2 row">
                         <label for="job_role" class="col-md-4 col-form-label text-end">Rol en equipo</label>
                         <div class="col-md-8">
                             <input
@@ -220,7 +220,7 @@
                         </div>
                     </div>
 
-                    <div class="mb-3 row">
+                    <div class="mb-2 row">
                         <div class="offset-md-4 col-md-8">
                             <button class="btn btn-primary w120p" type="submit">Guardar</button>
                         </div>

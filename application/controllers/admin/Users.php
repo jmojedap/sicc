@@ -417,50 +417,20 @@ class Users extends CI_Controller{
 //-----------------------------------------------------------------------------
 
     /**
-     * Guardar registro en tabla users_meta
+     * Vista completa de los metadatos del usuario
+     * 2025-07-12
      */
-    function save_meta($key = '')
+    function meta_details($user_id)
     {
-        $arr_row = $this->Db_model->arr_row();
+        $data = $this->User_model->basic($user_id);
 
-        //$condition = "user_id = {$arr_row['user_id']} AND type_id = {$arr_row['type_id']}";
-        $condition = "id = 0";
-        if ( $key != '' ) {
-            $condition = "user_id = {$arr_row['user_id']}
-                AND type_id = {$arr_row['type_id']}
-                AND {$key} = {$arr_row[$key]}
-                ";
-        }
+        $this->db->select('*');
+        $this->db->where('user_id', $user_id);
+        $data['metadata'] = $this->db->get('users_meta');
 
-        if ( $arr_row['id'] == 0 ) {
-            unset($arr_row['id']);
-        } else {
-            $condition = "id = {$arr_row['id']}";
-        }
-        $data = $this->User_model->save_meta($arr_row, $condition);
-        $this->output->set_content_type('application/json')->set_output(json_encode($data));
-    }
-
-    /**
-     * Eliminar metadato de usuario
-     * 2022-11-05
-     */
-    function delete_meta($user_id, $meta_id)
-    {
-        $data = $this->User_model->delete_meta($user_id, $meta_id);
-        $this->output->set_content_type('application/json')->set_output(json_encode($data));
-    }
-
-    /**
-     * Query metadatos de usuario
-     * 2022-11-05
-     */
-    function get_meta()
-    {
-        $condition = $this->input->post('condition');
-        $users_meta = $this->User_model->meta($condition);
-        $data['list'] = $users_meta->result();
-        $this->output->set_content_type('application/json')->set_output(json_encode($data));
+        $data['back_link'] = $this->url_controller . 'explore';
+        $data['view_a'] = $this->views_folder . 'meta_details_v';
+        $this->App_model->view(TPL_ADMIN_5, $data);
     }
 
     /**

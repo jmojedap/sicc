@@ -5,66 +5,123 @@ class Pcc {
     //Pcc, hace referencia al punto del hook, Post Controller Constructor
     
     /**
-     * 2021-06-12
+     * 2025-07-11
      */
     function index()
     {
         //Crea instancia para obtener acceso a las librerías de codeigniter, basado en el id
             $this->CI = &get_instance();
         
+        // Identificar módulo consultado en el request
+        $module = $this->CI->uri->segment(1);
+        // Obtener información del usuario que hace el request
+        $userdata = $this->get_userdata($module);
+
         //Identificar mfc: module/controlador/función, y allow
-            $mcf = $this->CI->uri->segment(1) . '/' . $this->CI->uri->segment(2) . '/' . $this->CI->uri->segment(3);
-            $allow_mcf = $this->allow_mcf($mcf);    //Permisos de acceso al recurso module/controlador/función
-            
-            //Verificar allow
-            if ( $allow_mcf )
-            {
-                //$this->no_leidos();     //Actualizar variable de sesión, cant mensajes no leídos
+        $mcf = $module . '/' . $this->CI->uri->segment(2) . '/' . $this->CI->uri->segment(3);
+        $allow_mcf = $this->allow_mcf($mcf, $userdata);    //Permisos de acceso al recurso module/controlador/función
+
+        $data['module'] = $module;
+        $data['userdata'] = $userdata;
+        $data['allow_mcf'] = $allow_mcf;
+        $data['mcf'] = $mcf;
+
+        //Verificar allow
+        if ( $allow_mcf == FALSE )
+        {
+            //Salida JSON
+            //No tiene autorización
+            if ( in_array($module, ['api', 'apir']) ) {
+                // Código HTTP 403 (Forbidden)
+                http_response_code(403); // o 401 si es por falta de autenticación
+
+                // Salida JSON
+                echo json_encode([
+                    'status' => false,
+                    'message' => 'Acceso denegado: no tiene permisos para ' . $mcf
+                ]);
+                exit; // Detener la ejecución
             } else {
-                //No tiene autorización
-                if ( $this->CI->uri->segment(1) == 'api' ) {
-                    redirect("app/app/denied/{$mcf}");
-                } else {
-                    redirect("app/app/denied/{$mcf}");
-                }
+                redirect("{$module}/app/denied/{$mcf}");
             }
+        }     
+    }
+
+    /**
+     * Devuelve array con información básica del usuario que hace el request
+     * 2025-07-11
+     * @return array $userdata
+     */
+    function get_userdata($module)
+    {
+        //Variables de sesión por defecto
+        $userdata = ['logged' => FALSE, 'role' => 99];
+
+        //Verificar si está ingresando internamente
+        if ( $module == 'apir' ) {
+            //Request externo, validar token
+            $payload = $this->get_payload();
+            $userdata['role'] = 98;
+            $userdata['payload'] = $payload;
+            if ( $payload ) {
+                $userdata['logged'] = TRUE;
+                $userdata['role'] = $payload->role;
+                $userdata['module'] = $module;
+            }
+        } else {
+            //Request interno, validar sesión
+            $userdata['logged'] = $this->CI->session->userdata('logged');
+            $userdata['role'] = $this->CI->session->userdata('role');
+        }
+
+        return $userdata;
     }
     
     /**
      * Control de acceso de usuarios basado en el archivo config/acl.php
      * CF > Ruta Controller/Function
-     * 2024-11-21
+     * 2025-07-11
      */
-    function allow_mcf($mcf)
+    function allow_mcf($mcf, $userdata)
     {
         //Cargando lista de control de acceso, application/config/acl.php
         $this->CI->config->load('acl', TRUE);
         $acl = $this->CI->config->item('acl');
-
-        //Variables
-        $role = $this->CI->session->userdata('role');
-        $allow_mcf = FALSE;
         
         //Verificar en funciones públicas
-        if ( in_array($mcf, $acl['public_functions']) ) $allow_mcf = TRUE;
+        if ( in_array($mcf, $acl['public_functions']) ) return TRUE;
         
         //Si inició sesión
-        if ( $this->CI->session->userdata('logged') == TRUE )
+        if ( $userdata['logged'] == TRUE )
         {
             //Es administrador, todos los permisos
-            if ( in_array($role, array(1,2)) ) $allow_mcf = TRUE;
+            if ( in_array($userdata['role'], [1,2]) ) return TRUE;
             //Funciones para todos los usuarios con sesión iniciada
-            if ( in_array($mcf, $acl['logged_functions']) ) $allow_mcf = TRUE;
+            if ( in_array($mcf, $acl['logged_functions']) ) return TRUE;
         }
 
         //Funciones para el rol actual
         if ( array_key_exists($mcf, $acl['function_roles']) )
         {
             $roles = $acl['function_roles'][$mcf];
-            if ( in_array($role, $roles) ) $allow_mcf = TRUE;
+            if ( in_array($userdata['role'], $roles) ) return TRUE;
         }
 
-        return $allow_mcf;
+        return FALSE;
+    }
+
+    function get_payload()
+    {
+        $payload = [];
+        $headers = $this->CI->input->request_headers();
+        
+        if (isset($headers['Authorization'])) {
+            $token = str_replace('Bearer ', '', $headers['Authorization']);
+            $this->CI->load->library('jwt');
+            $payload = $this->CI->jwt->validate($token);
+        }
+
+        return $payload;
     }
     
     /**
@@ -111,5 +168,4 @@ class Pcc {
 
         return $user;
     }
-    
 }

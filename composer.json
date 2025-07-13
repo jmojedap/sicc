@@ -14,7 +14,8 @@
         "php": ">=5.3.7",
         "phpoffice/phpspreadsheet": "^1.23",
         "erusev/parsedown": "^1.7",
-        "phpmailer/phpmailer": "^6.9"
+        "phpmailer/phpmailer": "^6.9",
+        "firebase/php-jwt": "^6.11"
     },
     "suggest": {
         "paragonie/random_compat": "Provides better randomness in PHP 5.x",

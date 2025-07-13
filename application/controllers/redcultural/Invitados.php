@@ -59,4 +59,19 @@ class Invitados extends CI_Controller {
 
         $this->App_model->view(RCI_TPL_APP, $data);
     }
+
+    function perfil($user_id)
+    {
+        $this->load->model('User_model');
+        $data = $this->User_model->basic($user_id);
+        $data['view_a'] = $this->views_folder . 'perfil/perfil_v';
+
+        $this->db->select('*');
+        $this->db->where('user_id', $user_id);
+        $data['metadata'] = $this->db->get('users_meta');
+
+        unset($data['nav_2']);
+        //$data['nav_2'] = '';
+        $this->App_model->view(RCI_TPL_APP, $data);
+    }
 }

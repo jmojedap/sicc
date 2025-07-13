@@ -6,7 +6,7 @@ var nav_1_elements = [
     },
     {
         text: 'Usuarios', active: false, icon: 'fa fa-user', cf: 'users/explore', anchor: false,
-        sections: ['users/explore', 'users/add', 'users/import', 'users/profile', 'users/edit', 'users/inbody', 'users/orders'],
+        sections: ['users/explore', 'users/add', 'users/import', 'users/profile', 'users/edit', 'users/details', 'users/meta_details'],
         subelements: [],
         anchor: true
     },

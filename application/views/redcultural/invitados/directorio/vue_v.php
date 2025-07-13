@@ -4,10 +4,12 @@
 var directorioApp = createApp({
     data() {
         return {
-            section: 'lista',
+            section: 'listado',
+            typeView: 'grid',
             nombreElemento: 'persona',
             nombreElementos: 'personas',
             elementos: <?= json_encode($elementos) ?>,
+            paises: paises,
             loading: false,
             q: '',
             filters: {
@@ -29,12 +31,20 @@ var directorioApp = createApp({
             return prefix + Pcrn.textToClass(inputText)
         },
         setCurrent: function(personaId){
-            this.section = 'ficha'
+            //this.section = 'perfil'
             this.currentId = personaId
-            this.currentElement = this.elementos.find(elemento => elemento['ID'] == personaId)
+            this.currentElement = this.elementos.find(elemento => elemento['id'] == personaId)
         },
         textToClass: function(text){
             return Pcrn.textToClass(text)
+        },
+        paisName: function(paisCode, field = 'name') {
+            var pais = this.paises.find(pais => pais.code == paisCode)
+            if (pais) {
+                return pais[field] || pais.name
+            } else {
+                return 'ND'
+            }
         },
     },
     computed: {

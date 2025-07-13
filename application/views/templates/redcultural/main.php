@@ -10,7 +10,7 @@
     </head>
     <body>
         <?php $this->load->view('templates/redcultural/main/navbar') ?>
-        <div class="container">
+        <div class="container-">
             <div id="page_title">
                 <?php if ( isset($page_title) ) : ?>
                     <h2 class="text-center"><?= $page_title ?></h2>

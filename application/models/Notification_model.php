@@ -80,7 +80,7 @@ class Notification_model extends CI_Model{
                 $settings['html_message'] = $this->login_link_message($user, 'html', $template);
                 $data = $this->mail_pml->send($settings);
                 if ( $data['status'] == 1 ) {
-                    $data['message'] = "El link fue enviado a el correo electrónico {$email}";
+                    $data['message'] = "El link fue enviado a el correo electrónico {$user->email}";
                 }
             } else {
                 $data['status'] = 1;
@@ -108,7 +108,6 @@ class Notification_model extends CI_Model{
             $data['view_a'] = 'admin/notifications/login_link_message_text_v';
             $message = $this->load->view('templates/email/text', $data, TRUE);
         }
-        
         
         return $message;
     }
