@@ -66,8 +66,11 @@ class Notification_model extends CI_Model{
      * para iniciar sesión en la aplicación
      * 2025-07-10
      */
-    function send_login_link($user_id, $template = 'main')
+    function send_login_link($user_id, $app_name = 'main')
     {   
+        //Identificar información de la APP
+            $app_info = $this->App_model->app_info($app_name);
+
         //Asignar nueva user.activation_key 
             $activation_key = $this->Account_model->activation_key($user_id);
             $user = $this->Db_model->row_id('users', $user_id);
@@ -75,12 +78,14 @@ class Notification_model extends CI_Model{
         //Enviar Email
             if ( ENV == 'production') {
                 $this->load->library('Mail_pml');
+                $settings['from_name'] = $app_info['email_from_name'];
                 $settings['to'] = $user->email;
-                $settings['subject'] = 'Ingresa a ' . APP_NAME;
-                $settings['html_message'] = $this->login_link_message($user, 'html', $template);
+                $settings['subject'] = 'Ingresa a ' . $app_info['title'];
+                $settings['html_message'] = $this->login_link_message($user, 'html', $app_info['email_template']);
                 $data = $this->mail_pml->send($settings);
                 if ( $data['status'] == 1 ) {
                     $data['message'] = "El link fue enviado a el correo electrónico {$user->email}";
+                    $data['app_info'] = $app_info;
                 }
             } else {
                 $data['status'] = 1;

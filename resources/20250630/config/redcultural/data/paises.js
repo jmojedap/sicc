@@ -24,3 +24,29 @@ const paises = [
   { code: "AD", name: "Andorra", icon: "andorra.png", flag: "🇦🇩" },
   { code: "GQ", name: "Guinea Ecuatorial", icon: "guineaecuatorial.png", flag: "🇬🇶" }
 ];
+
+const RciPaises = new function () {
+
+  /**
+   * Obtener un campo (por defecto: name) a partir del código ISO
+   * @param {string} code - Código ISO del país
+   * @param {string} field - Campo a retornar (name, icon, flag, etc.)
+   * @returns {string}
+   */
+  this.codeTo = function (code, field = 'name') {
+    const pais = paises.find(p => p.code === code?.toUpperCase());
+    return pais ? (pais[field] || pais.name) : 'ND';
+  };
+
+  /**
+   * Retorna la URL al ícono PNG oficial de bandera
+   * @param {string} code - Código ISO del país
+   * @returns {string}
+   */
+  this.flagIconUrl = function (code) {
+    return code
+      ? `https://flagcdn.com/w20/${code.toLowerCase()}.png`
+      : '';
+  };
+
+};

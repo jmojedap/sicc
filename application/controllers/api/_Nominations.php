@@ -48,7 +48,7 @@ class Nominations extends CI_Controller{
         $user = $this->Db_model->row('nc_users', "email = '{$email}'");
         
         if ( ! is_null($user) ) {
-            $data = $this->Nomination_model->send_login_link($user->id);
+            $data = $this->Nomination_model->send_login_link($user->id, 'nominations');
         }
 
         //Salida JSON
@@ -104,6 +104,12 @@ class Nominations extends CI_Controller{
 
         //Salida JSON
         $this->output->set_content_type('application/json')->set_output(json_encode($data));
+    }
+
+    function test()
+    {
+        $app_info = $this->App_model->app_info();
+        echo $app_info['title']; // "Red Cultural Iberoamericana"
     }
 
 

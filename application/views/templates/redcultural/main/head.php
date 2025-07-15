@@ -55,3 +55,5 @@
 <link rel="stylesheet" href="<?= URL_RESOURCES ?>templates/redcultural/theme-v1.css">
 <link rel="stylesheet" href="<?= URL_RESOURCES ?>templates/redcultural/app.css">
 <link rel="stylesheet" href="<?= URL_RESOURCES ?>templates/redcultural/mobile.css">
+
+<script src="<?= URL_RESOURCES ?>config/redcultural/data/paises.js"></script>

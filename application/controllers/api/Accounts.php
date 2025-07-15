@@ -119,9 +119,9 @@ class Accounts extends CI_Controller {
     function get_login_link()
     {
         $email = $this->input->post('email');
-        $template = 'main';
-        if ( $this->input->post('template') ) {
-            $template = $this->input->post('template');
+        $app_name  = 'main';
+        if ( $this->input->post('app_name') ) {
+            $app_name = $this->input->post('app_name');
         }
 
         //Respuesta por defecto
@@ -137,8 +137,10 @@ class Accounts extends CI_Controller {
         
         if ( ! is_null($user) ) {
             $this->load->model('Notification_model');
-            $data = $this->Notification_model->send_login_link($user->id, $template);
+            $data = $this->Notification_model->send_login_link($user->id, $app_name);
         }
+
+        $data['app_name'] = $app_name;
 
         //Salida JSON
         $this->output->set_content_type('application/json')->set_output(json_encode($data));

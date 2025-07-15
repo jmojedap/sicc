@@ -147,25 +147,32 @@ class Nomination_model extends CI_Model{
      * para iniciar sesión en la aplicación
      * 2024-07-27
      */
-    function send_login_link($user_id)
+    function send_login_link($user_id, $app_name = 'nominations')
     {   
+        $this->load->model('Notification_model');
+        //Identificar información de la APP
+            $app_info = $this->App_model->app_info($app_name);
+
         //Asignar nueva user.activation_key 
             $activation_key = $this->activation_key($user_id);
             $user = $this->Db_model->row_id('nc_users', $user_id);
 
-        if ( ENV == 'production') {
-            //Enviar Email
-            $this->load->library('Mail_pml');
-            $settings['to'] = $user->email;
-            $settings['subject'] = 'Ingresa a ' . APP_NAME;
-            $settings['html_message'] = $this->login_link_message($user);
-            $data = $this->mail_pml->send($settings);
-        } else {
-            $data['status'] = 1;
-            $data['link'] =  URL_APP . "nominations/validate_login_link/{$activation_key}";
-            $data['message'] = 'Mensaje no enviado - Versión local';
-            $data['activation_key'] = $activation_key;
-        }
+        //Enviar Email
+            if ( ENV == 'production') {
+                $this->load->library('Mail_pml');
+                $settings['from_name'] = $app_info['email_from_name'];
+                $settings['to'] = $user->email;
+                $settings['subject'] = 'Ingresa a ' . $app_info['title'];
+                $settings['html_message'] = $this->Notification_model->login_link_message($user, 'html', $app_info['email_template']);
+                $data = $this->mail_pml->send($settings);
+                if ( $data['status'] == 1 ) {
+                    $data['message'] = "El link fue enviado a el correo electrónico {$user->email}";
+                }
+            } else {
+                $data['status'] = 1;
+                $data['link'] =  "accounts/validate_login_link/{$activation_key}";
+                $data['message'] = 'Se simula envío - Versión local';
+            }
 
         return $data;
     }
@@ -190,12 +197,13 @@ class Nomination_model extends CI_Model{
      * activación o restauración de su cuenta
      * 2025-07-05
      */
-    function login_link_message($user, $type = 'html')
+    function z_login_link_message($user, $type = 'html', $template = 'main')
     {
+        $this->load->model('Notification_model');
         $data['user'] = $user ;
         
         if ( $type == 'html' ) {
-            $data['styles'] = $this->email_styles();
+            $data['styles'] = $this->Notification_model->email_styles($template);
             $data['view_a'] = 'admin/notifications/login_link_message_v';
             $message = $this->load->view('templates/email/main', $data, TRUE);
         } else {

@@ -328,4 +328,32 @@ class Users extends CI_Controller{
             $this->output->set_content_type('application/json')->set_output(json_encode($data));
         }
     }
+
+// SEGUIDORES
+//-----------------------------------------------------------------------------
+
+    /**
+     * Alternar seguir o dejar de seguir un usuario por parte del usuario en sesión
+     * 2025-07-13
+     */
+    function alt_follow($user_id)
+    {
+        $data = $this->User_model->alt_follow($user_id);
+        //Salida JSON
+        $this->output->set_content_type('application/json')->set_output(json_encode($data));
+    }
+
+    /**
+     * AJAX JSON
+     * Listado de usuarios seguidos por usuario en sesión
+     * 2020-07-15
+     */
+    function following($user_id)
+    {
+        $users = $this->User_model->following($user_id);
+        $data['list'] = $users->result();
+        //Salida JSON
+        $this->output->set_content_type('application/json')->set_output(json_encode($data));
+    }
+
 }

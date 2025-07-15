@@ -4,7 +4,7 @@
         El enlace para ingresar ya no es válido. <br>Envía uno nuevo.
     </div>
     <form accept-charset="utf-8" method="POST" id="loginForm" @submit.prevent="handleSubmit">
-        <input type="hidden" name="template" value="redcultural">
+        <input type="hidden" name="app_name" value="redcultural">
         <fieldset v-bind:disabled="loading">
             <p>
                 Escribe tu correo electrónico y recibirás un link para acceder a
@@ -53,18 +53,16 @@ var loginApp = createApp({
             var formValues = new FormData(document.getElementById('loginForm'))
             axios.post(URL_API + 'accounts/get_login_link', formValues)
                 .then(response => {
-                    this.loading = false
                     this.status = response.data.status
                     this.message = response.data.message;
-                    this.link = response.data.link
+                    this.link = response.data.link || ''
                     if (this.status == 1) {
                         this.alertClass = 'alert-info'
                         this.email = ''
                     }
+                    this.loading = false
                 })
-                .catch(function(error) {
-                    console.log(error)
-                })
+                .catch(function(error) { console.log(error) })
         }
     },
 }).mount('#loginApp')

@@ -70,8 +70,26 @@ class Invitados extends CI_Controller {
         $this->db->where('user_id', $user_id);
         $data['metadata'] = $this->db->get('users_meta');
 
+        $data['following_status'] = $this->Rci_model->following_status($user_id);
+
         unset($data['nav_2']);
         //$data['nav_2'] = '';
         $this->App_model->view(RCI_TPL_APP, $data);
+    }
+
+    function me_interesa()
+    {
+        $user_id = $this->session->userdata('user_id');
+        $this->load->model('User_model');
+        $data = $this->User_model->basic($user_id);
+
+        //$data['nav_2'] = $this->views_folder . 'me_interesa/menu_v';
+        unset($data['nav_2']);
+        $data['view_a'] = $this->views_folder . 'me_interesa/me_interesa_v';
+        $data['following'] = $this->User_model->following($user_id);
+        $data['followers'] = $this->User_model->followers($user_id);
+
+        $this->App_model->view(RCI_TPL_APP, $data);
+
     }
 }

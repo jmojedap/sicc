@@ -13,6 +13,18 @@ class App_model extends CI_Model{
     
 //SYSTEM
 //---------------------------------------------------------------------------------------------------------
+
+    /**
+     * Devuelve array con configuración de la app
+     * 2025-07-15
+     */
+    function app_info($app_name = 'main')
+    {
+        $this->config->load('apps_info');
+        $apps = $this->config->item('apps');
+        $app_info = $apps[$app_name];
+        return $app_info;
+    }
     
     /**
      * Carga la view solicitada, si por get se solicita una view específica

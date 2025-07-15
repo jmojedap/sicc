@@ -791,4 +791,84 @@ class User_model extends CI_Model{
 
         return $arrSelect[$meta_type];
     }
+
+// GESTIÓN DE SEGUIDORES
+//-----------------------------------------------------------------------------
+
+    /**
+     * Proceso alternado, seguir o dejar de seguir un usuario de la plataforma
+     * 2025-07-13
+     */
+    function alt_follow($user_id)
+    {
+        //Condición
+        $condition = "user_id = {$user_id} AND type_id = 1011 AND related_1 = {$this->session->userdata('user_id')}";
+        $row_meta = $this->Db_model->row('users_meta', $condition);
+
+        $data = array('status' => 0);
+
+        if ( is_null($row_meta) )
+        {
+            //No existe, crear (Empezar a seguir)
+            $arr_row['user_id'] = $user_id;
+            $arr_row['type_id'] = 1011; //Tipo metadato ID :: Seguidor
+            $arr_row['type'] = 'seguidor'; //Tipo metadato :: Seguidor
+            $arr_row['status'] = 0; //Sin aceptar aún
+            $arr_row['related_1'] = $this->session->userdata('user_id');
+            $arr_row['text_1'] = $this->session->userdata('display_name');
+            $arr_row['updater_id'] = $this->session->userdata('user_id');
+            $arr_row['creator_id'] = $this->session->userdata('user_id');
+
+            $this->db->insert('users_meta', $arr_row);  //Guardar en tabla users_meta
+            $meta_id = $this->db->insert_id();
+            
+            $data['saved_id'] = $meta_id;
+            $data['status'] = 1;
+
+            //$this->load->model('Notification_model');
+            //$this->Notification_model->email_new_follower($user_id, $meta_id);  //Enviar email de notificación
+            //$this->Notification_model->save_new_follower_alert($user_id, $meta_id);   //Guardar alerta notificacion en events
+        } else {
+            //Existe, eliminar (Dejar de seguir)
+            $this->db->where('id', $row_meta->id);
+            $this->db->delete('users_meta');
+            
+            $data['qty_deleted'] = $this->db->affected_rows();
+            $data['status'] = 2;
+        }
+
+        return $data;
+    }
+
+    /**
+     * Usuarios seguidos por user_id
+     * 2020-07-15
+     */
+    function following($user_id)
+    {
+        $this->db->select('users.id, username, display_name, about, users.text_1 AS pais_origen, users_meta.id AS meta_id, users_meta.status');
+        $this->db->join('users_meta', 'users.id = users_meta.user_id');
+        $this->db->where('users_meta.related_1', $user_id);
+        $this->db->where('users_meta.type_id', 1011);    //Follower
+        $this->db->order_by('users_meta.created_at', 'DESC');
+        $users = $this->db->get('users');
+
+        return $users;
+    }
+
+    /**
+     * Usuarios que siguen a por user_id
+     * 2025-07-14
+     */
+    function followers($user_id)
+    {
+        $this->db->select('users.id, username, display_name, about, users.text_1 AS pais_origen, users_meta.id AS meta_id, users_meta.status');
+        $this->db->join('users_meta', 'users.id = users_meta.related_1');
+        $this->db->where('users_meta.user_id', $user_id);
+        $this->db->where('users_meta.type_id', 1011);    //Follower
+        $this->db->order_by('users_meta.created_at', 'DESC');
+        $users = $this->db->get('users');
+
+        return $users;
+    }
 }

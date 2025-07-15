@@ -5,13 +5,13 @@ var sections = [
         id: 'accounts_profile',
         text: 'Perfil',
         cf: 'accounts/profile',
-        roles: [1,2,3,6,8,21,31]
+        roles: [1,2,3,6,8,21,11,31]
     },
     {
         id: 'accounts_edit',
         text: 'Editar',
         cf: 'accounts/edit/basic',
-        roles: [1,2,3,6,8,21,31]
+        roles: [1,2,3,6,8,21,11,31]
     },
 ];
 

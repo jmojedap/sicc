@@ -64,7 +64,7 @@ var loginApp = createApp({
                     this.loading = false
                     this.status = response.data.status
                     this.message = response.data.message;
-                    this.link = response.data.link
+                    this.link = response.data.link || '';
                     if (this.status == 1) {
                         this.alertClass = 'alert-info'
                         this.email = ''

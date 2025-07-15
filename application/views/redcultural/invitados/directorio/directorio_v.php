@@ -1,5 +1,4 @@
 <script src="<?= URL_RESOURCES ?>js/pml_searcher.js"></script>
-<script src="<?= URL_RESOURCES ?>config/redcultural/data/paises.js"></script>
 <!-- <link rel="stylesheet" href="<?= URL_RESOURCES ?>css/sicc/observatorio-investigaciones.css"> -->
 
 <?php $this->load->view('redcultural/invitados/directorio/style_v') ?>
