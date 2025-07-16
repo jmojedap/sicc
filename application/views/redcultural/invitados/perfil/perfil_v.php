@@ -33,18 +33,21 @@
             </div>
 
         </div>
+
+        <div class="mt-4 text-center">
+            <!-- <h5>Pregunta para el evento</h5> -->
+            <blockquote class="blockquote" title="Pregunta que propone para el encuentro">
+                <p class="mb-0 color-text-1"><strong>{{ meta('pregunta') }}</strong></p>
+            </blockquote>
+        </div>
+
         <p class="mt-3">{{ user.about }}</p>
 
         <div class="mb-3 text-center">
             <strong>Temas de interés:</strong> {{ user.text_3 }}
         </div>
 
-        <div class="mt-4 text-center">
-            <h5>Pregunta para el evento</h5>
-            <blockquote class="blockquote">
-                <p class="mb-0">{{ meta('pregunta') }}</p>
-            </blockquote>
-        </div>
+        
 
         <div class="row">
             <div class="col-md-4">

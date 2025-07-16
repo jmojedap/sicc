@@ -38,14 +38,12 @@ var directorioApp = createApp({
         textToClass: function(text){
             return Pcrn.textToClass(text)
         },
-        paisName: function(paisCode, field = 'name') {
-            var pais = this.paises.find(pais => pais.code == paisCode)
-            if (pais) {
-                return pais[field] || pais.name
-            } else {
-                return 'ND'
-            }
+        paisTo: function(countryCode, field = 'name') {
+            return RciPaises.codeTo(countryCode, field);
         },
+        paisFlag: function(countryCode) {
+            return RciPaises.flagIconUrl(countryCode);
+        }
     },
     computed: {
         elementosFiltrados: function() {

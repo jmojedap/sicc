@@ -19,7 +19,7 @@ var sections = [
     {
         id: 'users_meta_details',
         text: 'Metadatos',
-        cf: 'users/meta_details/' + nav2RowId,
+        cf: 'users/meta_details/lista/' + nav2RowId,
         anchor: true,
         roles: [1,2,3],
     },

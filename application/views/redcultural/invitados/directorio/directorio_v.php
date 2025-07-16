@@ -43,9 +43,9 @@
                                 <div class="col-md-6">
                                     <h3 class="title">{{ currentElement['nombre_completo'] }}</h3>
                                     <p class="small">
-                                        <img v-bind:src="`https://flagcdn.com/w20/${currentElement['pais_origen'].toLowerCase()}.png`"
+                                        <img v-bind:src="paisFlag(currentElement['pais_origen'])"
                                             :alt="currentElement['pais_origen']" width="" height="auto">
-                                        {{ paisName(currentElement['pais_origen']) }}
+                                        {{ paisTo(currentElement['pais_origen']) }}
                                     </p>
                                     <p class="">
                                         {{ currentElement['perfil'] }}
@@ -82,8 +82,13 @@
                             class="card-img-top object-fit-cover" :alt="elemento.display_name"
                             v-bind:onerror="`this.src='<?= URL_CONTENT ?>redcultural/images/default/user.png'`">
                         <div class="card-body text-center">
-                            <h5 class="card-title">{{ elemento.nombre_completo }}</h5>
-                            <p class="text-muted small mb-0">{{ elemento.lema }}</p>
+                            <h5 class="card-title">
+                                <img v-bind:src="paisFlag(elemento['pais_origen'])" :alt="elemento['pais_origen']" :title="elemento['pais_origen']" width="" height="auto">
+                                {{ elemento.nombre_completo }}
+                            </h5>
+                            <p class="text-muted small mb-0 fst-italic">
+                                "{{ elemento.lema }}"
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -108,6 +113,12 @@
                     </h5>
                     <p>{{ elemento['lema'] }}</p>
                     {{ elemento['perfil'] }}
+                    <?php if ( in_array($this->session->userdata('role'), [1]) ) : ?>
+                        <br>
+                        <a class="btn btn-light btn-sm" v-bind:href="`<?= base_url("admin/users/edit/") ?>` + elemento['id']" target="_blank">
+                            Editar
+                        </a>
+                    <?php endif; ?>
 
                     <br>
                 </div>

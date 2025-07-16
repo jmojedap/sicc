@@ -42,6 +42,15 @@ class Pcc {
                 ]);
                 exit; // Detener la ejecución
             } else {
+                //http_response_code(403); // o 401 si es por falta de autenticación
+                //echo $mcf;
+
+                // Salida JSON
+                /*echo json_encode([
+                    'status' => false,
+                    'message' => 'Acceso denegado: no tiene permisos para ' . $mcf
+                ]);*/
+                //exit;
                 redirect("{$module}/app/denied/{$mcf}");
             }
         }     

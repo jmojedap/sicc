@@ -13,6 +13,14 @@ var nav_1_elements = [
                 sections: ['invitados/directorio'],
                 anchor: true
             },
+            {
+                text: 'Me interesan',
+                active: false,
+                icon: '',
+                cf: 'invitados/me_interesa/',
+                sections: ['invitados/me_interesa'],
+                anchor: true
+            },
         ],
         sections: [],
         anchor: true

@@ -420,7 +420,7 @@ class Users extends CI_Controller{
      * Vista completa de los metadatos del usuario
      * 2025-07-12
      */
-    function meta_details($user_id)
+    function meta_details_ant($user_id)
     {
         $data = $this->User_model->basic($user_id);
 
@@ -463,5 +463,35 @@ class Users extends CI_Controller{
             //Salida JSON
             $this->output->set_content_type('application/json')->set_output(json_encode($data));
         }
+    }
+
+    /**
+     * CRUD del listado de metadatos del usuario
+     * 2025-07-16
+     */
+    function meta_details()
+    {
+        $user_id = $this->uri->segment(5);
+        $data = $this->User_model->basic($user_id);
+        $this->load->library('grocery_CRUD');
+
+        try{
+			$crud = new grocery_CRUD();
+
+			$crud->set_table('users_meta');
+			$crud->set_subject('metadata');
+			$crud->required_fields('user_id','type_id');
+            $crud->where('user_id', $user_id);
+
+			$gc_output = $crud->render();
+            $data['view_a'] = 'common/grocery_crud_v';
+            $data['back_link'] = $this->url_controller . 'explore';
+
+            $output = array_merge($data,(array)$gc_output);
+            $this->App_model->view(TPL_ADMIN_5, $output);
+
+		}catch(Exception $e){
+			show_error($e->getMessage().' --- '.$e->getTraceAsString());
+		}
     }
 }

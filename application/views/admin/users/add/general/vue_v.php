@@ -47,7 +47,7 @@ var addUserApp = createApp({
     methods: {
         handleSubmit: function () {
             var payLoad = new FormData(document.getElementById('addUserForm'))
-            axios.post(URL_APP + 'users/validate/', payLoad)
+            axios.post(URL_API + 'users/validate/', payLoad)
             .then(response => {
                 if ( response.data.status == 1 ) {
                     this.submitForm()
@@ -59,7 +59,7 @@ var addUserApp = createApp({
         submitForm: function() {
             this.loading = true
             var payLoad = new FormData(document.getElementById('addUserForm'))
-            axios.post(URL_APP + 'users/save/', payLoad)
+            axios.post(URL_API + 'users/save/', payLoad)
             .then(response => {
                 if ( response.data.saved_id > 0 )
                 {
@@ -88,7 +88,7 @@ var addUserApp = createApp({
             var payLoad = new FormData()
             payLoad.append('email', this.fields.email)
             
-            axios.post(URL_APP + 'users/username/', payLoad)
+            axios.post(URL_API + 'users/username/', payLoad)
             .then(response => {
                 this.fields.username = response.data
             })
@@ -96,7 +96,7 @@ var addUserApp = createApp({
         },
         validateForm: function() {
             var payLoad = new FormData(document.getElementById('addUserForm'))
-            axios.post(URL_APP + 'users/validate/', payLoad)
+            axios.post(URL_API + 'users/validate/', payLoad)
             .then(response => {
                 this.validation = response.data.validation
             })

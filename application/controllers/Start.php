@@ -13,6 +13,7 @@ class Start extends CI_Controller{
 
     function index()
     {
-        redirect('app/observatorio/inicio/');
+        //redirect('app/observatorio/inicio/');
+        redirect('app/accounts/login_link');
     }
 }

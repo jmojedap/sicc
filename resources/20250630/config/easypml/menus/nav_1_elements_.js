@@ -55,14 +55,6 @@ var nav_1_elements = [
                 sections: ['acciones/registro_usuario'],
                 anchor: true
             },
-            {
-                text: 'Diccionarios de datos',
-                active: false,
-                icon: '',
-                cf: 'acciones/diccionario_de_datos',
-                sections: ['acciones/diccionario_de_datos'],
-                anchor: true
-            },
         ],
         sections:[],
         anchor: true
