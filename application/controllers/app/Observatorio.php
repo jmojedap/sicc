@@ -61,7 +61,7 @@ class Observatorio extends CI_Controller{
     /**
      * Vista del Plan Anual de Investigaciones
      */
-    function pai($year = 2023)
+    function pai($year = 2024)
     {
         //Datos básicos de la exploración
         $data['head_title'] = 'Plan Anual de Investigaciones ' . $year;

@@ -36,7 +36,7 @@ class Nomination_model extends CI_Model{
     function select($format = 'general')
     {
         $arr_select['general'] = 'id,  
-            display_name, first_name, last_name, email, organization';
+            display_name, first_name, last_name, email, organization, survey_status';
 
 
         return $arr_select[$format];
@@ -193,27 +193,151 @@ class Nomination_model extends CI_Model{
     }
 
     /**
-     * Devuelve texto de la vista que se envía por email a un usuario para
-     * activación o restauración de su cuenta
-     * 2025-07-05
+     * EN CONSTRUCCIÓN, POSIBLEMENTE NO SE USE
      */
-    function z_login_link_message($user, $type = 'html', $template = 'main')
+    function save_responses($input_data)
     {
-        $this->load->model('Notification_model');
-        $data['user'] = $user ;
-        
-        if ( $type == 'html' ) {
-            $data['styles'] = $this->Notification_model->email_styles($template);
-            $data['view_a'] = 'admin/notifications/login_link_message_v';
-            $message = $this->load->view('templates/email/main', $data, TRUE);
-        } else {
-            $data['view_a'] = 'admin/notifications/login_link_message_text_v';
-            $message = $this->load->view('templates/email/text', $data, TRUE);
-        }
-        
-        
-        return $message;
+        $data = array('status' => 0, 'message' => 'Las respuestas no se guardaron');
+        $data['user_id'] = $input_data['user_id'];
+        $data['message'] = 'Se guardó la respuesta para el usuario ' . $input_data['user_id'];
+
+        //Actualizar estado de respuesta del usuario
+        $aRow['survey_status'] = 1; //Se respondió la encuesta
+        $data['saved_id'] = $this->Db_model->save('nc_users', "id = {$input_data['user_id']}", $aRow);
+    
+        /*if (  )
+        {
+            $data = array('status' => 1, 'message' => 'texto_exito');
+        }*/
+    
+        return $data;
     }
 
+    /**
+     * 2025-07-23
+     * @return array $user :: Datos del usuario en sesión con token jwt
+     */
+    function user_info()
+    {
+        $headers = $this->input->request_headers();
+        $user = NULL; //Valor por defecto
+        
+        if (isset($headers['Authorization'])) {
+            $token = str_replace('Bearer ', '', $headers['Authorization']);
+            $this->load->library('jwt');
+            $payload = $this->jwt->validate($token);
+            $email = $payload->email;
+            
+            $user = $this->Db_model->row('nc_users', "email = '{$email}'");
+        }
 
+        return $user;
+    }
+
+    /**
+     * Devuelve array con registro base para guardar datos en la tabla nc_users_meta
+     * 2025-07-23
+     */
+    function arr_row_meta($user, $updater_id)
+    {
+        $aRow['user_id'] = $user->id;
+        $aRow['updater_id'] = $updater_id;
+        $aRow['creator_id'] = $updater_id;
+        $aRow['updated_at'] = date('Y-m-d H:i:s');
+        $aRow['created_at'] = date('Y-m-d H:i:s');
+
+        return $aRow;
+    }
+
+    /**
+     * Guarda el detalle de la nominación en la tabla nc_users_meta
+     * 2025-07-24
+     */
+    function nominate($nomination)
+    {
+        $data = ['status' => 0, 'message' => 'No se guardó la nominación'];
+        $nominator = $this->user_info();
+        if (!$nominator) {
+            $data['message'] = 'Usuario no identificado';
+            return $data;
+        }
+
+        //Nominado y nominador deben ser de la misma organización
+        $nominated_condition = "email = '{$nomination['nominated_email']}' AND organization = '{$nominator->organization}'";
+        $nominated = $this->Db_model->row('nc_users', $nominated_condition);
+        if (!$nominated) {
+            $data['message'] = 'El usuario nominado no existe o no pertenece a la misma organización';
+            return $data;
+        }
+
+        //Identificar cualidades
+        $qualities = $nomination['qualities'];
+        if ( !is_array($qualities) || count($qualities) == 0 ) {
+            $data['message'] = 'No se especificaron cualidades para la nominación';
+            return $data;
+        }
+
+        //Primero se eliminan nominaciones previas
+        $this->delete_nomination($nominator->id, $nominated->id);
+        //Guardar cualidades de la nominación
+        $saved = $this->save_nomination_qualities($nominator, $nominated, $qualities);
+        
+        //Si se guardó al menos una nominación
+        if (count($saved) > 0) {
+            $data['status'] = 1;
+            $data['message'] = 'Nominación guardada con ' . count($saved) . ' cualidades';
+            $data['saved'] = $saved;
+        }
+
+        return $data;
+    }
+
+    /**
+     * Guarda cada una de las las cualidades de la nominación en la tabla nc_users_meta
+     * 2025-07-24
+     */
+    function save_nomination_qualities($nominator, $nominated, $qualities)
+    {
+        $saved = [];
+
+        //Preparar registro para la tabla nc_users_meta
+        $aRow = $this->arr_row_meta($nominator, $nominator->id);
+        $aRow['type_id'] = 20;  //nominación
+        $aRow['type'] = 'nominacion';  //nominación
+        $aRow['related_1'] = $nominated->id;  //ID del nominado
+        $aRow['text_1'] = $nominated->email;     //Nombre de la persona nominada
+
+        //Recorrer las cualidades, se crea un registro por cada cualidad
+        foreach ($qualities as $quality) {
+            $aRow["text_2"] = $quality;
+
+            //Condición para guardar y no repetir nominaciones de un mismo nominado por el mismo nominador
+            $condition = "user_id = {$nominator->id} AND type_id = 20 AND related_1 = {$nominated->id}
+                AND text_2 = '{$quality}'";
+            $saved_id = $this->Db_model->save('nc_users_meta', $condition, $aRow); 
+            $saved[$saved_id] = $quality;
+        }
+
+        return $saved;
+    }
+
+    /**
+     * Elimina los registros de cualidades de la tabla nc_users_meta, basándose
+     * en el ID del nominador y del nominado
+     * 2025-07-24
+     */
+    function delete_nomination($nominator_id, $nominated_id)
+    {
+        $data = ['status' => 0, 'message' => 'No se eliminó la nominación'];
+        $nominator = $this->user_info();
+
+        //Buscar nominación
+        $condition = "user_id = {$nominator->id} AND type_id = 20 AND related_1 = {$nominated_id}";
+        $this->db->where($condition);
+        $this->db->delete('nc_users_meta');
+        
+        $qty_deleted = $this->db->affected_rows();
+
+        return $qty_deleted;
+    }
 }

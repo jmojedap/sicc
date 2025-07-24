@@ -155,9 +155,84 @@ class Nominations extends CI_Controller{
         $this->output->set_content_type('application/json')->set_output(json_encode($data));
     }
 
+    /**
+     * Devuelve los datos del usuario que tiene sesión activa con JWT access token
+     * 2025-07-23
+     */
+    function get_user_info()
+    {
+        $data['user'] = $this->Nomination_model->user_info();
+        //Salida JSON
+        $this->output->set_content_type('application/json')->set_output(json_encode($data));
+    }
 
 
+    /**
+     * Guarda las respuestas a la encuesta inicia en la tabla nc_users_meta
+     * 2025-07-23
+     */
+    function save_responses()
+    {
+        $user = $this->Nomination_model->user_info();
+        $data = ['status' => 0, 'message' => 'No se guardaron las respuestas'];
+
+        //Si se identifica al usuario
+        if ( $user ) {
     
+            // Leer el raw input y decodificar JSON
+            $json = file_get_contents('php://input');
+            $respuestas = json_decode($json, true);
 
+            if (!is_array($respuestas)) {
+                return $this->output->set_status_header(400)->set_output(json_encode(['error' => 'Formato inválido']));
+            }
 
+            $aRow = $this->Nomination_model->arr_row_meta($user, $user->id);
+            $aRow['type_id'] = 10;  //respuesta-encuesta
+            $aRow['type'] = 'respuesta-encuesta';  //respuesta-encuesta
+
+            $saved = [];    //IDs de respuestas guardadas
+            foreach ($respuestas as $r) {
+                // validar campos mínimos
+                if (isset($r['pregunta_id'], $r['respuesta'])) {
+                    $aRow['related_1'] = $r['pregunta_id'];
+                    $aRow['text_1'] = $r['pregunta'];
+                    $aRow['text_2'] = $r['respuesta'];
+
+                    //Condición para guardar y no repetir respuestas de una misma pregunta para el mismo usuario
+                    $condition = "user_id = {$user->id} AND type_id = 10 AND related_1 = {$r['pregunta_id']}";
+                    $saved[] = $this->Db_model->save('nc_users_meta', $condition, $aRow);
+                }
+            }
+            
+            //Si se guardaron respuestas
+            if ( count($saved) > 0 ) {
+                $data['status'] = 1;
+                $data['message'] =  'Respuestas guardadas: ' . count($saved);
+                $data['saved'] = $saved;
+
+                //Marcar que el usuario ya respondió la encuesta
+                $aUser['survey_status'] = 1;
+                $this->Db_model->save('nc_users', "id = {$user->id}", $aUser);
+            }
+        }
+
+        $this->output->set_content_type('application/json')->set_output(json_encode($data));
+    }
+
+    /**
+     * Nominación de un usuario
+     * 2025-07-23
+     * Recibe un JSON con los datos de la nominación y lo guarda en la tabla
+     * nc_users_meta
+     */
+    function nominate()
+    {
+        // Leer el raw input y decodificar JSON
+            $json = file_get_contents('php://input');
+            $nomination = json_decode($json, true);
+
+        $data = $this->Nomination_model->nominate($nomination);
+        $this->output->set_content_type('application/json')->set_output(json_encode($data));
+    }
 }

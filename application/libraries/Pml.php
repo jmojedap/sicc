@@ -32,10 +32,10 @@ class Pml {
      * Convierte el conjunto de valores de un $field de un $query en un string
      * separado ($separator) por un caracter
      * 
-     * @param type $query
-     * @param type $field
-     * @param type $separator
-     * @return type
+     * @param object $query
+     * @param string $field
+     * @param string $separator
+     * @return string
      */
     function query_to_str($query, $field, $separator = ',')
     {
