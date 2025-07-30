@@ -26,7 +26,7 @@
                         <div v-if="user.pais_origen" class="mt-1">
                             <img :src="paisFlag(user.pais_origen)" :alt="user.pais_origen" width="20" class="me-1"
                                 :title="user.pais_origen">
-                            <span class="text-muted small">{{ paisTo(user.pais_origen) }}</span>
+                            <span class="text-muted_ small">{{ paisTo(user.pais_origen) }}</span>
                         </div>
                     </div>
                 </div>
@@ -60,7 +60,7 @@
                         <div v-if="user.pais_origen" class="mt-1">
                             <img :src="paisFlag(user.pais_origen)" :alt="user.pais_origen" width="20" class="me-1"
                                 :title="user.pais_origen">
-                            <span class="text-muted small">{{ paisTo(user.pais_origen) }}</span>
+                            <span class="text-muted_ small">{{ paisTo(user.pais_origen) }}</span>
                         </div>
                     </div>
                 </div>

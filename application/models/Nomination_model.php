@@ -38,6 +38,10 @@ class Nomination_model extends CI_Model{
         $arr_select['general'] = 'id,  
             display_name, first_name, last_name, email, organization, survey_status';
 
+        $arr_select['nominations'] = 'nc_users_meta.id AS nomination_id,
+            user_id AS nominator_id, nc_users.display_name AS nominator_name, nc_users.email AS nominator_email,
+            nc_users_meta.related_1 AS nominated_id, nominated.display_name AS nominated_name,
+            nc_users_meta.text_1 AS nominated_email, text_2 AS quality';
 
         return $arr_select[$format];
     }
@@ -235,6 +239,30 @@ class Nomination_model extends CI_Model{
     }
 
     /**
+     * Actualizar los datos de perfil del usuario en sesión
+     * 2025-07-28
+     */
+    function update_profile($arr_row)
+    {
+        $data['saved_id'] = 0;
+        $user = $this->user_info();
+
+        if ( !$user ) {
+            $data['message'] = 'El usuario no ha sido identificado';
+            return $data;
+        }
+        
+        unset($arr_row['id']);   //No se puede modificar el id del usuario
+        unset($arr_row['email']);   //No se puede modificar el email
+        unset($arr_row['organization']);   //No se puede modificar el email
+
+        $data['saved_id'] = $this->Db_model->save('nc_users', "id = {$user->id}", $arr_row);
+        $data['message'] = 'Datos de usuario actualizados';
+
+        return $data;
+    }
+
+    /**
      * Devuelve array con registro base para guardar datos en la tabla nc_users_meta
      * 2025-07-23
      */
@@ -339,5 +367,39 @@ class Nomination_model extends CI_Model{
         $qty_deleted = $this->db->affected_rows();
 
         return $qty_deleted;
+    }
+
+
+    /**
+     * Listado de nominaciones, con filtros y paginación
+     * 2025-07-30
+     * @param array $filters :: Filtros de búsqueda
+     * @param int $numPage :: Número de página
+     * @param int $perPage :: Número de resultados por página
+     * @return CI_DB_result :: Resultado de la consulta
+     */
+    function nominations($filters = [], $numPage = 1, $perPage = 1000)
+    {
+        $select = $this->select('nominations');
+        $this->db->select($select);
+        $this->db->from('nc_users_meta');
+        $this->db->join('nc_users', 'nc_users.id = nc_users_meta.user_id', 'left');
+        $this->db->join('nc_users AS nominated', 'nominated.id = nc_users_meta.related_1', 'left');
+        $this->db->where('type_id', 20);
+
+        $conditions = [];
+        if ( $filters['org'] != '' ) { $conditions[] = "nc_users.organization = '{$filters['org']}'"; }
+        $condition = implode(' AND ', $conditions);
+
+        // Aplicar filtros
+        if ($condition != '') {
+            $this->db->where($condition);
+        }
+
+        // Paginación
+        $this->db->limit($perPage, ($numPage - 1) * $perPage);
+        $query = $this->db->get();
+
+        return $query;
     }
 }

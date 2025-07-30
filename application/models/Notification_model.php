@@ -117,6 +117,61 @@ class Notification_model extends CI_Model{
         return $message;
     }
 
+// LOGIN CODE
+//-----------------------------------------------------------------------------
+
+    /**
+     * Envia un mensaje al correo electrónico del usuario con un código de acceso
+     * para iniciar sesión en la aplicación
+     * 2025-07-10
+     */
+    function send_login_code($user_id, $app_name = 'main')
+    {   
+        //Identificar información de la APP
+            $app_info = $this->App_model->app_info($app_name);
+
+        //Asignar nueva user.activation_key 
+            $activation_key = $this->Account_model->activation_key($user_id, 'code');
+            $user = $this->Db_model->row_id('users', $user_id);
+
+        //Enviar Email
+            if ( ENV == 'production') {
+                $this->load->library('Mail_pml');
+                $settings['from_name'] = $app_info['email_from_name'];
+                $settings['to'] = $user->email;
+                $settings['subject'] = 'Ingresa a ' . $app_info['title'];
+                $settings['html_message'] = $this->login_code_message($user, $app_info['email_template']);
+                $data = $this->mail_pml->send($settings);
+                if ( $data['status'] == 1 ) {
+                    $data['message'] = "El código fue enviado a el correo electrónico {$user->email}";
+                    $data['app_info'] = $app_info;
+                }
+            } else {
+                //Solo para versión de desarrollo
+                $data['status'] = 1;
+                $data['access_code'] = $activation_key;
+                $data['message'] = 'Se simula envío - Versión local';
+            }
+
+        return $data;
+    }
+
+    /**
+     * Devuelve texto de la vista que se envía por email a un usuario para
+     * activación o restauración de su cuenta
+     * 2025-07-10
+     */
+    function login_code_message($user, $template = 'main')
+    {
+        $data['user'] = $user ;
+        
+        $data['styles'] = $this->email_styles($template);
+        $data['view_a'] = "admin/notifications/{$template}/login_code_message_v";
+        $message = $this->load->view("templates/email/{$template}", $data, TRUE);
+        
+        return $message;
+    }
+
     function select($format = 'general')
     {
         $arr_select['general'] = 'id, title, content, status, created_at, related_3 AS alert_type, element_id, related_1, related_2';

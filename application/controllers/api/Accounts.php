@@ -146,6 +146,74 @@ class Accounts extends CI_Controller {
         $this->output->set_content_type('application/json')->set_output(json_encode($data));
         
     }
+
+    /**
+     * AJAX JSON
+     * Enviar por correo electrónico un código para iniciar sesión en la
+     * aplicación
+     * 2025-07-30
+     */
+    function get_login_code()
+    {
+        $email = $this->input->post('email');
+        $app_name  = 'main';
+        if ( $this->input->post('app_name') ) {
+            $app_name = $this->input->post('app_name');
+        }
+
+        //Respuesta por defecto
+        $data = [
+            'status' => 0,
+            'message' => "No existe ningún usuario con el correo '{$email}'",
+            'access_code' => ''
+        ];
+
+        //Identificar usuario
+        $email = $this->input->post('email');
+        $user = $this->Db_model->row('users', "email = '{$email}'");
+        
+        if ( ! is_null($user) ) {
+            $this->load->model('Notification_model');
+            $data = $this->Notification_model->send_login_code($user->id, $app_name);
+        }
+
+        $data['app_name'] = $app_name;
+
+        //Salida JSON
+        $this->output->set_content_type('application/json')->set_output(json_encode($data));
+        
+    }
+
+    /**
+     * Recibe datos POST de accounts/login_code
+     * 2025-07-29
+     */
+    function validate_login_code()
+    {
+        $data = ['status' => 0, 'message' => 'El código no es válido'];
+
+        //Setting variables
+            $userlogin = $this->input->post('username');
+            $activation_key = $this->input->post('access_code');
+
+        //Identificar usuario
+            $condition = "email = '{$userlogin}' AND activation_key = '{$activation_key}'";
+            $user = $this->Db_model->row('users', $condition);
+
+            if ( $user ) {
+                $user_status = $this->Account_model->user_status($userlogin);
+                if ( $user_status['status'] > 0 ) {
+                    $this->Account_model->create_session($userlogin, TRUE);
+                    $data['status'] = 1;
+                    $data['message'] = 'Código válido para el usuario';
+                    //Se restaura la clave de activación
+                    $this->Account_model->activation_key($user->id);
+                }
+            }
+            
+        //Salida
+            $this->output->set_content_type('application/json')->set_output(json_encode($data));      
+    }
     
 //REGISTRO DE USUARIOS
 //---------------------------------------------------------------------------------------------------

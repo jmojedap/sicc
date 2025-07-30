@@ -90,6 +90,10 @@ class Invitados extends CI_Controller {
         $data['followers'] = $this->User_model->followers($user_id);
 
         $this->App_model->view(RCI_TPL_APP, $data);
+    }
 
+    function server_info()
+    {
+        phpinfo();
     }
 }

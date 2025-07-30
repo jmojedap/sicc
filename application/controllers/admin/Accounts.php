@@ -254,6 +254,10 @@ class Accounts extends CI_Controller {
             $this->Account_model->activation_key($param_1);
             $user = $this->Db_model->row_id('users', $param_1);
             echo $this->Notification_model->login_link_message($user, 'html', 'redcultural');
+        } elseif ( $type == 'login_code' ) {
+            $this->Account_model->activation_key($param_1);
+            $user = $this->Db_model->row_id('users', $param_1);
+            echo $this->Notification_model->login_code_message($user, 'redcultural');
         }
     }
 

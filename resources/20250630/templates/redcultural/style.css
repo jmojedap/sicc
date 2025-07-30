@@ -8,7 +8,6 @@ body{
     font-size: 1em;
     padding-top: 64px;
     padding-bottom: 40px;
-    background-color: var(--color-bg);
 }
 
 .no_padding{
@@ -57,7 +56,9 @@ body{
 
 .navbar-nav .nav-link {
     color: var(--color-nav-font);
+    border-bottom: 2px solid transparent;
 }
+
 .navbar-nav .nav-link.active {
     color: var(--color-nav-font-active);
     border-bottom: 2px solid var(--color-main-app);
@@ -139,6 +140,7 @@ h1,h2,h3,h4,h5,h6{
     color: #333;
 }
 
+.color-text-1 { color: var(--color-text-0); }
 .color-text-1 { color: var(--color-text-1); }
 .color-text-2 { color: var(--color-text-2); }
 .color-text-3 { color: var(--color-text-3); }
@@ -147,6 +149,7 @@ h1,h2,h3,h4,h5,h6{
 .color-text-6 { color: var(--color-text-6); }
 .color-text-7 { color: var(--color-text-7); }
 .color-text-8 { color: var(--color-text-8); }
+.color-text-9 { color: var(--color-text-9); }
 
 .title {
     color: var(--color-main-app);

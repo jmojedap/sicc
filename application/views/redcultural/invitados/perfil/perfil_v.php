@@ -12,21 +12,21 @@
                     v-bind:onerror="`this.src='<?= URL_CONTENT ?>redcultural/images/default/user.png'`">
             </div>
             <div class="col-md-9">
-                <h2 class="card-title">
+                <h2 class="card-title color-text-0">
                     {{ user.display_name }}
                     <span class="ms-2">
                         <img v-bind:src="`https://flagcdn.com/w20/` + user.text_1.toLowerCase() + `.png`"
                                         :alt="user.text_1" width="" height="auto" :title="user.text_1">
                     </span>
                 </h2>
-                <p class="text-muted mb-1">{{ user.job_role }}</p>
-                <p><small class="text-muted ">{{ user.team_1 }}</small></p>
+                <p class="mb-1">{{ user.job_role }}</p>
+                <p><small class="">{{ user.team_1 }}</small></p>
                 <p class="fst-italic">"{{ user.text_2 }}"</p>
                 <button class="btn btn-light w150p" v-show="followingStatus != 1" v-on:click="altFollow">
                     <i class="far fa-circle"></i>
                     Me interesa
                 </button>
-                <button class="btn btn-main w150p" v-show="followingStatus == 1" v-on:click="altFollow">
+                <button class="btn btn-warning w150p" v-show="followingStatus == 1" v-on:click="altFollow">
                     <i class="fas fa-check-circle"></i>
                     Te interesa
                 </button>
@@ -37,7 +37,7 @@
         <div class="mt-4 text-center">
             <!-- <h5>Pregunta para el evento</h5> -->
             <blockquote class="blockquote" title="Pregunta que propone para el encuentro">
-                <p class="mb-0 color-text-1"><strong>{{ meta('pregunta') }}</strong></p>
+                <p class="mb-0 color-text-9"><strong>{{ meta('pregunta') }}</strong></p>
             </blockquote>
         </div>
 
@@ -64,12 +64,21 @@
 
             <div class="col-md-8">
                 <h5>Mis recomendados</h5>
-                <ul class="list-group">
-                    <li class="list-group-item" v-if="meta('libro_autor')">📘 {{ meta('libro_autor') }}</li>
-                    <li class="list-group-item" v-if="meta('cancion')">🎵 {{ meta('cancion') }}</li>
-                    <li class="list-group-item" v-if="meta('pelicula')">🎬 {{ meta('pelicula') }}</li>
-                    <li class="list-group-item" v-if="meta('obra_artistica')">🖼️ {{ meta('obra_artistica') }}</li>
-                    <li class="list-group-item" v-if="meta('recomendado')">👤 Recomendado: {{ meta('recomendado') }}
+                <ul class="list-group_">
+                    <li class="list-group-item" v-if="meta('libro_autor')">
+                        <i class="fas fa-arrow-right color-text-1"></i> Libro: {{ meta('libro_autor') }}
+                    </li>
+                    <li class="list-group-item" v-if="meta('cancion')">
+                        <i class="fas fa-arrow-right color-text-1"></i> Canción: {{ meta('cancion') }}
+                    </li>
+                    <li class="list-group-item" v-if="meta('pelicula')">
+                        <i class="fas fa-arrow-right color-text-1"></i> Película: {{ meta('pelicula') }}
+                    </li>
+                    <li class="list-group-item" v-if="meta('obra_artistica')">
+                        <i class="fas fa-arrow-right color-text-1"></i> Obra artística: {{ meta('obra_artistica') }}
+                    </li>
+                    <li class="list-group-item" v-if="meta('recomendado')">
+                        <i class="fas fa-arrow-right color-text-1"></i> Seguir a: {{ meta('recomendado') }}
                     </li>
                 </ul>
             </div>
@@ -103,8 +112,5 @@ var pefilApp = createApp({
             .catch(function(error) { console.log(error) })
         },
     },
-    mounted() {
-        //this.getList()
-    }
 }).mount('#pefilApp')
 </script>

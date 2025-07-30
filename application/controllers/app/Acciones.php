@@ -421,7 +421,7 @@ function mapa()
     /**
      * HTML VIEW
      * Vista y formulario para registro de asistentes itinerantes a una acción
-     * 2023-06-15
+     * 2025-07-29
      */
     function asistentes_itinerantes($accion_id)
     {
@@ -430,6 +430,7 @@ function mapa()
         $data['arrGrupoPoblacion'] = $this->Item_model->arr_options('category_id = 251 AND cod IN (1005,1520,1550,1560)');
         $data['arrIdentidadGenero'] = $this->Item_model->arr_options('category_id = 111');
         $data['arrTipoDocumento'] = $this->Item_model->arr_options('category_id = 53');
+        $data['arrLocalidad'] = $this->Item_model->arr_options('category_id = 121');
         
         $data['head_title'] .= ' - Asistentes';
         $data['page_title'] = "Acción {$accion_id}: {$data['row']->nombre_accion}";

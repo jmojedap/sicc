@@ -76,7 +76,7 @@
         <div class="container-fluid" v-show="typeView == 'grid'">
             <div class="row justify-content-center g-3">
                 <div v-for="(elemento, i) in elementosFiltrados" :key="i" class="col-md-3 col-sm-6 col-lg-2">
-                    <div class="card h-100 shadow-sm border-0 pointer" v-on:click="setCurrent(elemento['id'])"
+                    <div class="card h-100 border-0 pointer" v-on:click="setCurrent(elemento['id'])"
                         data-bs-toggle="modal" data-bs-target="#profileModal">
                         <img :src="`<?= URL_CONTENT ?>redcultural/images/profiles/` + elemento['username'] + `.jpg`"
                             class="card-img-top object-fit-cover" :alt="elemento.display_name"

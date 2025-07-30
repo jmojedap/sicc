@@ -10,6 +10,7 @@
                     <thead>
                         <th>Identidad género</th>
                         <th>Grupo social</th>
+                        <th>Localidad</th>
                         <th>Nombres y apellidos</th>
                         <th width="200px">Tipo Doc.</th>
                         <th>Núm. Documento</th>
@@ -27,6 +28,12 @@
                             <td>
                                 <select name="relacionado_1" v-model="fields.relacionado_1" class="form-select form-control" required>
                                     <option v-for="optionGrupoPoblacion in arrGrupoPoblacion" v-bind:value="optionGrupoPoblacion.cod">{{ optionGrupoPoblacion.name }}</option>
+                                </select>
+                            </td>
+                            <td>
+                                <select name="texto_1" v-model="fields.texto_1" class="form-select form-control" required>
+                                    <option value="ND/NA">ND/NA</option>
+                                    <option v-for="optionLocalidad in arrLocalidad" v-bind:value="optionLocalidad.name">{{ optionLocalidad.name }}</option>
                                 </select>
                             </td>
                             <td>
@@ -55,6 +62,7 @@
                         <tr v-for="(detalle, key) in detalles">
                             <td>{{ identidadGeneroName(detalle.relacionado_2) }}</td>
                             <td>{{ grupoPoblacionName(detalle.relacionado_1) }}</td>
+                            <td>{{ detalle.texto_1 }}</td>
                             <td>{{ detalle.nombre }}</td>
                             <td>{{ tipoDocumentoName(detalle.categoria_1) }}</td>
                             <td>{{ detalle.cod_detalle }}</td>

@@ -95,7 +95,7 @@
                         Usuario
                     </a>
                     <li>
-                        <a class="submenu-link" href="<?= URL_APP ?>accounts/login_link" role="button">
+                        <a class="submenu-link" href="<?= URL_APP ?>accounts/login_code" role="button">
                             Ingresar
                         </a>
                     </li>                     

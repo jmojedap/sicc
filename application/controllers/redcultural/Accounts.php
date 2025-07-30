@@ -31,7 +31,7 @@ class Accounts extends CI_Controller {
         {
             redirect('redcultural/accounts/logged');
         } else {
-            redirect('redcultural/accounts/login');
+            redirect('redcultural/accounts/login_code');
         }    
     }
     
@@ -63,17 +63,17 @@ class Accounts extends CI_Controller {
     function logout()
     {
         $this->Account_model->logout();
-        redirect('redcultural/accounts/login_link');
+        redirect('redcultural/accounts/login_code');
     }
 
     /**
      * Destinos a los que se redirige después de validar el login de usuario
      * según el rol de usuario (índice del array)
-     * 2021-06-08
+     * 2025-07-30
      */
     function logged()
     {
-        $destination = 'redcultural/accounts/login';
+        $destination = 'redcultural/accounts/login_code';
         if ( $this->session->userdata('logged') )
         {
             $arr_destination = array(
@@ -111,6 +111,25 @@ class Accounts extends CI_Controller {
                 $data['head_title'] = RCI_APP_NAME;
                 $data['view_a'] = $this->views_folder . 'login_link_v';
                 $data['activation_key'] = $activation_key;
+                $this->load->view('templates/redcultural/main', $data);
+            }
+    }
+
+    /**
+     * Form login de users se ingresa con nombre de user y 
+     * contraseña. Los datos se envían vía ajax a accounts/validate_login
+     * $activation_key, existe cuando es redireccionado por no superar validación
+     * 2022-08-08
+     */
+    function login_code()
+    {        
+        //Verificar si está logueado
+            if ( $this->session->userdata('logged') )
+            {
+                redirect('redcultural/accounts/logged');
+            } else {
+                $data['head_title'] = RCI_APP_NAME;
+                $data['view_a'] = $this->views_folder . 'login_code_v';
                 $this->load->view('templates/redcultural/main', $data);
             }
     }

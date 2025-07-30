@@ -157,11 +157,21 @@ class Nominations extends CI_Controller{
 
     /**
      * Devuelve los datos del usuario que tiene sesión activa con JWT access token
-     * 2025-07-23
+     * 2025-07-28
      */
     function get_user_info()
     {
-        $data['user'] = $this->Nomination_model->user_info();
+        $user = $this->Nomination_model->user_info();
+        unset($user->activation_key);
+        $data['user'] = $user;
+        //Salida JSON
+        $this->output->set_content_type('application/json')->set_output(json_encode($data));
+    }
+
+    function update_profile()
+    {
+        $arr_row = $this->input->post();
+        $data = $this->Nomination_model->update_profile($arr_row);
         //Salida JSON
         $this->output->set_content_type('application/json')->set_output(json_encode($data));
     }
@@ -233,6 +243,20 @@ class Nominations extends CI_Controller{
             $nomination = json_decode($json, true);
 
         $data = $this->Nomination_model->nominate($nomination);
+        $this->output->set_content_type('application/json')->set_output(json_encode($data));
+    }
+
+    /**
+     * Listado de nominaciones
+     * 2025-07-23
+     * Devuelve un listado de nominaciones según los filtros de búsqueda
+     */
+    function get_nominations($numPage = 1, $perPage = 1000)
+    {
+        $this->load->model('Search_model');
+        $filters = $this->Search_model->filters();
+        $nominations = $this->Nomination_model->nominations($filters, $numPage, $perPage);
+        $data['nominations'] = $nominations->result();
         $this->output->set_content_type('application/json')->set_output(json_encode($data));
     }
 }

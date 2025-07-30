@@ -522,6 +522,7 @@ class Accion_model extends CI_Model{
     {
         $select = 'mecc_acciones_detalle.id, accion_id, nombre_accion, mecc_acciones.fecha,
             mecc_acciones_detalle.cod_detalle AS num_documento, nombre, items_1.item_name AS identidad_genero,
+            mecc_acciones_detalle.texto_1 AS localidad,
             items_2.item_name AS grupo_poblacion, cantidad AS edad, mecc_acciones_detalle.descripcion AS telefono';
 
         $this->db->select($select);

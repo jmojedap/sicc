@@ -204,10 +204,13 @@ class Account_model extends CI_Model{
      * Establece un código de activación o restauración de contraseña (users.activation_key)
      * 2020-07-20
      */
-    function activation_key($user_id)
+    function activation_key($user_id, $format = 'key')
     {
         $this->load->helper('string');
         $arr_row['activation_key'] = strtolower(random_string('alpha', 32));
+        if ( $format == 'code' ) {
+            $arr_row['activation_key'] = strtoupper(random_string('alnum', 8));
+        }
         
         $this->db->where('id', $user_id);
         $this->db->update('users', $arr_row);
@@ -313,7 +316,7 @@ class Account_model extends CI_Model{
      * Array con: valor del campo users.estado, y un mensaje explicando 
      * el estado
      * 
-     * @param type $userlogin
+     * @param string $userlogin
      * @return string
      */
     function user_status($userlogin)

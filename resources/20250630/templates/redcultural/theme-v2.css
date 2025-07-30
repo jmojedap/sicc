@@ -8,36 +8,36 @@
 
 :root{
     --color-main-app: #966EF0;
-    --color-dark: #7255b8;
-    --color-light: #a685f1;
-    --color-bg: #FFFFFF;
+    --color-dark: #7d5dc7;
+    --color-light: #af95ec;
+    --color-bg: #966EF0;
     
-    --color-secondary: #FEDF42;
-    --color-secondary-light: #f7de61;
-    --color-secondary-dark: #d4ba38;
+    --color-secondary: #FFE042;
+    --color-secondary-light: #f5e48d;
+    --color-secondary-dark: #ccb335;
 
-    --color-nav-bg: #FFFFFF;
-    --color-nav-font: #966EF0;
-    --color-nav-active: #FCFCFC;
-    --color-nav-font-active: #966EF0; 
+    --color-nav-bg: #1A1A1A;
+    --color-nav-font: #FFF;
+    --color-nav-active: #2a2730;
+    --color-nav-font-active: #FFF; 
 
     --font-main: 'Lexend', sans-serif;
 
     --color-bg-primary: #654096;
-    --color-bg-primary-alt: #6a4aa7;
+    --color-bg-primary-alt: #7d5dc7;
     --color-bg-secondary: #F9C412;
     --color-bg-secondary-alt: #ffcf30;
     --color-bg-success: #4CA048;
     --color-bg-success-alt: #68bd64;
-    --color-bg-warning: #F9C412;
-    --color-bg-warning-alt: rgb(248, 190, 74);
-    --color-bg-ligth: #ced4da;
-    --color-bg-ligth-alt: #FCFCFC;
+    --color-bg-warning: #FFE042;
+    --color-bg-warning-alt: #eed455;
+    --color-bg-ligth: #7d5dc7;
+    --color-bg-ligth-alt: #6e52af;
     --color-bg-danger: #E5233E;
     --color-bg-danger-alt: #db394f;
 
-    --color-text-link: #654096;
-    --color-text-link-hover: #a685f1;
+    --color-text-link: #FFE042;
+    --color-text-link-hover: #f5e48d;
 
     --color-text-0: #FFFFFF;
     --color-text-1: #7d5dc7;
@@ -49,6 +49,23 @@
     --color-text-7: #E5233E;
     --color-text-8: #E21782;
     --color-text-9: #000;
+}
+
+body{
+    background-image: url('bg-lines.svg');
+    background-repeat: repeat-y;  /* Repite solo verticalmente */
+    background-size: 100% auto;   /* Ancho al 100%, altura proporcional */
+    background-position: top center; /* Emieza desde arriba */
+}
+
+.bg-dark{
+    background-color: #966EF0 !important;
+    /*background-color: #111 !important;*/
+}
+
+.card{
+    /* background-color: #966EF0; */
+    background-color: transparent;
 }
 
 /* Botones */
@@ -92,14 +109,17 @@
 }
 
 .btn-light{
-    border-color: var(--color-bg-ligth)
+    color: #FFF;
+    border-color: var(--color-dark);
+    background-color: var(--color-bg-ligth);
 }
 
 .btn-light:hover,
 .btn-light:active,
 .btn-light.hover{
+    color: #FFF;
     background-color: var(--color-bg-ligth-alt);
-    border-color: #BBB;
+    border-color: var(--color-dark);
 }
 
 .btn-danger{
@@ -125,7 +145,12 @@
 
 .card {
     border: 1px solid #ebedf2;
-    border-radius: 9px;
+    border-radius: 0px;
+}
+
+.card-img, .card-img-top {
+    border-top-left-radius: 0px;
+    border-top-right-radius: 0px;
 }
 
 .form-control {

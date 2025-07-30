@@ -3,6 +3,7 @@
         <i class="fa fa-info-circle"></i><br>
         El enlace para ingresar ya no es válido. <br>Envía uno nuevo.
     </div>
+    <a href="<?= RCI_URL_APP ?>"><img class="mw360p my-5" src="<?= RCI_URL_BRAND ?>logo-start.png" alt="Logo aplicación"></a>
     <form accept-charset="utf-8" method="POST" id="loginForm" @submit.prevent="handleSubmit">
         <input type="hidden" name="app_name" value="redcultural">
         <fieldset v-bind:disabled="loading">

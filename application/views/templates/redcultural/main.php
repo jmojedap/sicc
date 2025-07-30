@@ -8,7 +8,7 @@
     <head>
         <?php $this->load->view('templates/redcultural/main/head') ?>
     </head>
-    <body>
+    <body class="">
         <?php $this->load->view('templates/redcultural/main/navbar') ?>
         <div class="container-">
             <div id="page_title">

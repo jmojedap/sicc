@@ -19,6 +19,7 @@ var asistentesItinerantesApp = createApp({
             arrGrupoPoblacion: <?= json_encode($arrGrupoPoblacion) ?>,
             arrIdentidadGenero: <?= json_encode($arrIdentidadGenero) ?>,
             arrTipoDocumento: <?= json_encode($arrTipoDocumento) ?>,
+            arrLocalidad: <?= json_encode($arrLocalidad) ?>,
             detalles: [],
         }
     },
