@@ -161,6 +161,9 @@ h1,h2,h3,h4,h5,h6{
 
 /* BACKGROUNDS */
 /*-----------------------------------------------------------------------------*/
+.bg-main {
+    background: var(--color-main-app) !important;
+}
 .bg-primary {
     background: var(--color-bg-primary) !important;
 }

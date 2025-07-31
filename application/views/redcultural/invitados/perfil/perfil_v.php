@@ -22,14 +22,24 @@
                 <p class="mb-1">{{ user.job_role }}</p>
                 <p><small class="">{{ user.team_1 }}</small></p>
                 <p class="fst-italic">"{{ user.text_2 }}"</p>
-                <button class="btn btn-light w150p" v-show="followingStatus != 1" v-on:click="altFollow">
-                    <i class="far fa-circle"></i>
-                    Me interesa
-                </button>
-                <button class="btn btn-warning w150p" v-show="followingStatus == 1" v-on:click="altFollow">
-                    <i class="fas fa-check-circle"></i>
-                    Te interesa
-                </button>
+
+                <?php if ( $this->session->userdata('logged') ) : ?>
+                    <div v-if="user.id != appUid">
+                        <button class="btn btn-light w150p" v-show="followingStatus != 1" v-on:click="altFollow">
+                            <i class="far fa-circle"></i>
+                            Me interesa
+                        </button>
+                        <button class="btn btn-warning w150p" v-show="followingStatus == 1" v-on:click="altFollow">
+                            <i class="fas fa-check-circle"></i>
+                            Te interesa
+                        </button>
+                    </div>
+                <?php else: ?>
+                    <a class="btn btn-light w150p" href="<?= RCI_URL_APP ?>accounts/login_code">
+                        <i class="far fa-circle"></i>
+                        Me interesa
+                    </a>
+                <?php endif; ?>
             </div>
 
         </div>
@@ -90,6 +100,7 @@
 var pefilApp = createApp({
     data() {
         return {
+            appUid: APP_UID,
             loading: false,
             fields: {},
             user: <?= json_encode($row) ?>,

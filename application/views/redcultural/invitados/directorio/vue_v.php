@@ -48,11 +48,9 @@ var directorioApp = createApp({
     computed: {
         elementosFiltrados: function() {
             var listaFiltrada = this.elementos
-            /*if ( this.filters.status != '' ) {
-                listaFiltrada = listaFiltrada.filter(elemento => elemento['Estado'] == this.filters.status)
-            }*/
             if (this.q.length > 0) {
-                var fieldsToSearch = ['nombre_completo','perfil','email', 'intereses'
+                var fieldsToSearch = ['nombre_completo','perfil','email', 'intereses',
+                    'pais_origen', 'institucion_red', 'rol_actividad'
                 ]
                 listaFiltrada = PmlSearcher.getFilteredResults(this.q, listaFiltrada, fieldsToSearch)
             }

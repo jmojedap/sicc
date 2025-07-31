@@ -1,7 +1,7 @@
 <style>
 
 .perfil {
-    border-radius: .5em;
+    border-radius: 0em;
     max-width: 920px;
     margin: 0 auto;
     color: #333;
@@ -9,7 +9,6 @@
 }
 
 .perfil-body {
-    /*background-color: #172C51;*/
     background-color: #FCFCFC;
     padding: 1em 1em;
     min-height: 400px;

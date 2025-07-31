@@ -20,11 +20,11 @@
 
         <p class="text-center"><strong class="color-text-1">
                 {{ elementosFiltrados.length }}</strong> resultados &middot;
-            <button class="btn btn-light btn-sm me-1" v-on:click="typeView = 'list'">
-                <i class="fas fa-table-list"></i>
-            </button>
-            <button class="btn btn-light btn-sm" v-on:click="typeView = 'grid'">
+            <button class="btn btn-sm" v-bind:class="{'btn-light': typeView == 'grid' }" v-on:click="typeView = 'grid'" title="Ver como cuadrícula">
                 <i class="fas fa-grip-horizontal"></i>
+            </button>
+            <button class="btn btn-sm me-1" v-bind:class="{'btn-light': typeView == 'list' }" v-on:click="typeView = 'list'" title="Ver como lista">
+                <i class="fas fa-table-list"></i>
             </button>
         </p>
 
@@ -32,7 +32,7 @@
         <div class="modal fade" id="profileModal" tabindex="-1" aria-labelledby="profileModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered modal-lg">
                 <div class="modal-content">
-                    <div class="perfil mb-2">
+                    <div class="perfil">
                         <div class="perfil-body">
                             <div class="row">
                                 <div class="col-md-6">
@@ -58,10 +58,6 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="perfil-footer">
-                            <img class="w30p" src="<?= URL_RESOURCES ?>brands/redcultural/logo-navbar.png"
-                                alt="Acción Cultural Iberoamericana">
                         </div>
                     </div>
                 </div>
@@ -98,7 +94,7 @@
         <div v-show="typeView == 'list'" class="center_box_920">
             <div class="row mb-2 pb-2" v-for="(elemento, i) in elementosFiltrados">
                 <div class="col-md-4 text-end">
-                    <a v-on:click="setCurrent(elemento['id'])" class="pointer">
+                    <a v-bind:href="`<?= RCI_URL_APP ?>invitados/perfil/` + elemento['id'] + `/` + elemento['username']" class="pointer">
                         <img v-bind:src="`<?= URL_CONTENT ?>redcultural/images/profiles/` + elemento['username'] + `.jpg`"
                             class="w-100 rounded shadow mb-2" v-bind:alt="`Imagen de ` + elemento['nombre_completo']"
                             v-bind:onerror="`this.src='<?= URL_CONTENT ?>redcultural/images/default/user.png'`">
@@ -108,10 +104,11 @@
                     <h5 class="card-title text-main">
                         <a v-bind:href="`<?= RCI_URL_APP ?>invitados/perfil/` + elemento['id'] + `/` + elemento['username']"
                             v-on:click="setCurrent(elemento['id'])" v-bind:title="elemento['username']">
+                            <img v-bind:src="paisFlag(elemento['pais_origen'])" :alt="elemento['pais_origen']" :title="elemento['pais_origen']" width="" height="auto">
                             {{ elemento['nombre_completo'] }}
                         </a>
                     </h5>
-                    <p>{{ elemento['lema'] }}</p>
+                    <p>{{ elemento['rol_actividad'] }}</p>
                     {{ elemento['perfil'] }}
                     <?php if ( in_array($this->session->userdata('role'), [1]) ) : ?>
                         <br>
