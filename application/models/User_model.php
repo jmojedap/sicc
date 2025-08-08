@@ -90,7 +90,7 @@ class User_model extends CI_Model{
             address AS direccion, phone_number AS celular,
             users.created_at AS creado, users.updated_at AS actualizado, admin_notes AS observaciones';
         $arr_select['red_cultural'] = 'users.id, username, display_name AS nombre_completo,
-            email, text_1 AS pais_origen, team_1 AS institucion_red, text_2 AS lema, text_3 AS intereses,
+            email, text_1 AS pais_origen, city_name AS ciudad, team_1 AS institucion_red, text_2 AS lema, text_3 AS intereses,
             job_role AS rol_actividad,
             gender AS sexo, integer_1 AS puntaje,
             about AS perfil,
@@ -136,28 +136,41 @@ class User_model extends CI_Model{
      */
     function search_condition($filters)
     {
-        $condition = NULL;
+        $conditions = [];
 
-        $condition .= $this->role_filter() . ' AND ';
+        // Filtro por rol
+        $conditions[] = $this->role_filter();
 
-        //q words condition
+        // Búsqueda de palabras clave
         $q_search_fields = [
             'first_name', 'last_name', 'display_name', 'email', 'document_number',
             'team_1', 'team_2', 'job_role', 'admin_notes'
         ];
         $words_condition = $this->Search_model->words_condition($filters['q'], $q_search_fields);
-        if ( $words_condition )
-        {
-            $condition .= $words_condition . ' AND ';
+        if (!empty($words_condition)) {
+            $conditions[] = $words_condition;
         }
-        
-        //Otros filtros
-        if ( $filters['role'] != '' ) { $condition .= "role = {$filters['role']} AND "; }
-        if ( $filters['fe1'] != '' ) { $condition .= "document_number LIKE '%{$filters['fe1']}%' AND "; }
-        
-        //Quitar cadena final de ' AND '
-        if ( strlen($condition) > 0 ) { $condition = substr($condition, 0, -5);}
-        
+
+        // Otros filtros
+        if (!empty($filters['role'])) {
+            $conditions[] = "role = {$filters['role']}";
+        }
+
+        if (!empty($filters['fe1'])) {
+            // Escapar la cadena si es necesario para evitar SQL Injection
+            $fe1 = $this->db->escape_like_str($filters['fe1']);
+            $conditions[] = "document_number LIKE '%{$fe1}%'";
+        }
+
+        if (!empty($filters['tags'])) {
+            // Escapar la cadena si es necesario para evitar SQL Injection
+            $tags = $this->db->escape_like_str($filters['tags']);
+            $conditions[] = "tags LIKE '%{$tags}%'";
+        }
+
+        // Unir condiciones con AND
+        $condition = implode(' AND ', $conditions);
+
         return $condition;
     }
 

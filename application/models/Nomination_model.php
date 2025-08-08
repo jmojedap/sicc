@@ -160,6 +160,18 @@ class Nomination_model extends CI_Model{
         //Asignar nueva user.activation_key 
             $activation_key = $this->activation_key($user_id);
             $user = $this->Db_model->row_id('nc_users', $user_id);
+            
+        //Generar Login Link
+            $base_url = 'https://www.ejemplo.com/accounts/validate_login_link/';
+            $user->login_link = "{$base_url}?login_key={$user->activation_key}";
+
+        //Generar imagen QR para login
+            $qr_creation = $this->create_access_qr_image($user->login_link);
+            $url_access_qr_image = '';
+            if ( $qr_creation['status'] == 1 ) {
+                $url_access_qr_image = $qr_creation['url'];
+                $user->url_access_qr_image = $url_access_qr_image;
+            }
 
         //Enviar Email
             if ( ENV == 'production') {
@@ -175,6 +187,8 @@ class Nomination_model extends CI_Model{
             } else {
                 $data['status'] = 1;
                 $data['link'] =  "accounts/validate_login_link/{$activation_key}";
+                $data['activation_key'] = $activation_key;
+                $data['url_access_qr_image'] = $url_access_qr_image;
                 $data['message'] = 'Se simula envío - Versión local';
             }
 
@@ -194,6 +208,24 @@ class Nomination_model extends CI_Model{
         $this->db->update('nc_users', $arr_row);
 
         return $arr_row['activation_key'];
+    }
+
+    function create_access_qr_image($url)
+    {
+        $data['status'] = 0;
+        $data['url'] = '';
+        $this->load->library('Qr_generator');
+
+        try {
+            $folder = 'nominations/qr_access_codes/' . date('Y/m');
+            $qr_url = $this->qr_generator->generate_url_qr($url, $folder);
+            $data['url'] = $qr_url;
+            $data['status'] = 1;
+        } catch (Exception $e) {
+            $data['error'] = $e->getMessage();
+        }
+
+        return $data;
     }
 
     /**

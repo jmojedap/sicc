@@ -48,6 +48,7 @@ class Invitados extends CI_Controller {
         $filters['role'] = 11;
         $filters['o'] = 'integer_1';
         $filters['ot'] = 'DESC';
+        $filters['tags'] = 'invitadosFormulario';
         $numPage = 1;
         $perPage = 300;
         $dataSearch = $this->User_model->get($filters, $numPage, $perPage);
@@ -92,8 +93,98 @@ class Invitados extends CI_Controller {
         $this->App_model->view(RCI_TPL_APP, $data);
     }
 
-    function server_info()
+    // IMPORTACIÓN DE USUARIOS
+//-----------------------------------------------------------------------------
+
+    /**
+     * Mostrar formulario de importación de usuarios
+     * con archivo Excel. El resultado del formulario se envía a 
+     * 'users/import_e'
+     */
+    function import($table = 'users')
     {
-        phpinfo();
+        //Iniciales
+            $data['help_note'] = 'Se importarán invitados a la herramienta.';
+            $data['help_tips'] = [];
+        
+        //Variables específicas
+            $data['destination_form'] = "redcultural/invitados/import_e";
+            $data['template_file_name'] = 'f01_usuarios.xlsx';
+            $data['sheet_name'] = 'rows';
+            $data['url_file'] = URL_RESOURCES . 'import_templates/' . $data['template_file_name'];
+
+        //Importar metadatos
+            if ( $table == 'meta' ) {
+                $data['help_note'] = 'Se importarán metadatos de los invitados';
+                $data['sheet_name'] = 'users_meta';
+                $data['destination_form'] = "redcultural/invitados/import_meta_e";
+            }
+            
+        //Variables generales
+            $data['head_title'] = 'Importar datos de invitados';
+            $data['view_a'] = 'common/import_v';
+            //$data['nav_2'] = $this->views_folder . 'menus/explore_v';
+        
+        $this->App_model->view(RCI_TPL_APP, $data);
+    }
+
+    /**
+     * Ejecuta (e) la importación de invitados con archivo Excel
+     * 2025-08-07
+     */
+    function import_e()
+    {
+        //Proceso
+        $this->load->library('excel');            
+        $imported_data = $this->excel->arr_sheet_default($this->input->post('sheet_name'));
+        
+        if ( $imported_data['status'] == 1 )
+        {
+            $data = $this->Rci_model->import($imported_data['arr_sheet']);
+        }
+
+        //Cargue de variables
+            $data['status'] = $imported_data['status'];
+            $data['message'] = $imported_data['message'];
+            $data['arr_sheet'] = $imported_data['arr_sheet'];
+            $data['sheet_name'] = $this->input->post('sheet_name');
+            $data['back_destination'] = "invitados/import/";
+        
+        //Cargar vista
+            $data['head_title'] = 'Usuarios';
+            $data['view_a'] = 'common/bs5/import_result_v';
+            //$data['nav_2'] = $this->views_folder . 'menus/explore_v';
+
+        $this->App_model->view(RCI_TPL_APP, $data);
+    }
+
+    /**
+     * Ejecuta (e) la importación de metadatos invitados con archivo Excel
+     * 2025-08-07
+     */
+    function import_meta_e()
+    {
+        //Proceso
+        $this->load->library('excel');            
+        $imported_data = $this->excel->arr_sheet_default($this->input->post('sheet_name'));
+        
+        if ( $imported_data['status'] == 1 )
+        {
+            $data = $this->Rci_model->import_users_meta($imported_data['arr_sheet']);
+        }
+
+        //Cargue de variables
+            $data['status'] = $imported_data['status'];
+            $data['message'] = $imported_data['message'];
+            $data['arr_sheet'] = $imported_data['arr_sheet'];
+            $data['sheet_name'] = $this->input->post('sheet_name');
+            $data['back_destination'] = "invitados/import/meta";
+        
+        //Cargar vista
+            $data['head_title'] = 'Invitados';
+            $data['view_a'] = 'common/bs5/import_result_v';
+            //$data['nav_2'] = $this->views_folder . 'menus/explore_v';
+
+        $this->App_model->view(RCI_TPL_APP, $data);
     }
 }

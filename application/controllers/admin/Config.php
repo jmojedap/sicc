@@ -230,4 +230,14 @@ class Config extends CI_Controller {
         //Salida JSON
         $this->output->set_content_type('application/json')->set_output(json_encode($data));
     }
+
+    function test_qr_generator()
+    {
+        $this->load->model('Nomination_model');
+        $data = $this->Nomination_model->create_access_qr_image('https://www.youtube.com/watch?v=nv_2rz5BFDA');
+
+        //Salida JSON
+        $this->output->set_content_type('application/json')->set_output(json_encode($data));
+
+    }
 }

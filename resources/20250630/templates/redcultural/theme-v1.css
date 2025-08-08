@@ -92,14 +92,14 @@
 }
 
 .btn-light{
-    border-color: var(--color-bg-ligth)
+    border-color: #F1ECFD;
 }
 
 .btn-light:hover,
 .btn-light:active,
 .btn-light.hover{
     background-color: var(--color-bg-ligth-alt);
-    border-color: #BBB;
+    border-color: #BFA8F7;
 }
 
 .btn-danger{
@@ -116,6 +116,13 @@
 /* Otros elementos */
 /*-----------------------------------------------------------------------------*/
 
+body {
+    background-image: url('../../brands/redcultural/fondo-07.png');
+    background-repeat: repeat-y; /* Repetir solo en vertical */
+    background-size: 100% auto;  /* Ocupa todo el ancho, ajusta alto proporcionalmente */
+    background-position: top center; /* Centra horizontalmente */
+}
+
 .progress-bar{
     background-color: var(--color-bg-primary);
 }
@@ -125,7 +132,7 @@
 
 .card {
     border: 1px solid #ebedf2;
-    border-radius: 9px;
+    border-radius: 0px;
 }
 
 .form-control {
@@ -146,6 +153,10 @@
 }
 .nav-pills .nav-link{
     border-radius: 0px;
+}
+
+.card {
+    background-color: rgb(255,255,255, 0.5);
 }
 
 .card-img, .card-img-top {

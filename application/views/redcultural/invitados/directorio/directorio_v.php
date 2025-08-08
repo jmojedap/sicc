@@ -38,7 +38,7 @@
                                 <div class="col-md-6">
                                     <img :src="`<?= URL_CONTENT ?>redcultural/images/profiles/` + currentElement['username'] + `.jpg`"
                                         class="card-img-top object-fit-cover" :alt="currentElement.display_name"
-                                        v-bind:onerror="`this.src='<?= URL_CONTENT ?>redcultural/images/default/user.png'`">
+                                        v-bind:onerror="`this.src='<?= URL_IMG ?>redcultural/user.png'`">
                                 </div>
                                 <div class="col-md-6">
                                     <h3 class="title">{{ currentElement['nombre_completo'] }}</h3>
@@ -47,8 +47,8 @@
                                             :alt="currentElement['pais_origen']" width="" height="auto">
                                         {{ paisTo(currentElement['pais_origen']) }}
                                     </p>
-                                    <p class="">
-                                        {{ currentElement['perfil'] }}
+                                    <p>
+                                        {{ currentElement['perfil'].slice(0, 380) }} <span v-if="currentElement['perfil'].length > 380">...</span>
                                     </p>
                                     <div>
                                         <a v-bind:href="`<?= RCI_URL_APP ?>invitados/perfil/` + currentElement['id'] + `/` + currentElement['username']"
@@ -76,14 +76,15 @@
                         data-bs-toggle="modal" data-bs-target="#profileModal">
                         <img :src="`<?= URL_CONTENT ?>redcultural/images/profiles/` + elemento['username'] + `.jpg`"
                             class="card-img-top object-fit-cover" :alt="elemento.display_name"
-                            v-bind:onerror="`this.src='<?= URL_CONTENT ?>redcultural/images/default/user.png'`">
+                            v-bind:onerror="`this.src='<?= URL_IMG ?>redcultural/user.png'`">
                         <div class="card-body text-center">
                             <h5 class="card-title">
                                 <img v-bind:src="paisFlag(elemento['pais_origen'])" :alt="elemento['pais_origen']" :title="elemento['pais_origen']" width="" height="auto">
                                 {{ elemento.nombre_completo }}
                             </h5>
-                            <p class="text-muted small mb-0 fst-italic">
-                                "{{ elemento.lema }}"
+                            <b>{{ elemento.ciudad }}</b>
+                            <p class="text-muted small mb-0">
+                                {{ elemento.rol_actividad }}
                             </p>
                         </div>
                     </div>
@@ -91,13 +92,13 @@
             </div>
         </div>
 
-        <div v-show="typeView == 'list'" class="center_box_920">
+        <div v-show="typeView == 'list'" class="center_box_920 p-2">
             <div class="row mb-2 pb-2" v-for="(elemento, i) in elementosFiltrados">
                 <div class="col-md-4 text-end">
                     <a v-bind:href="`<?= RCI_URL_APP ?>invitados/perfil/` + elemento['id'] + `/` + elemento['username']" class="pointer">
                         <img v-bind:src="`<?= URL_CONTENT ?>redcultural/images/profiles/` + elemento['username'] + `.jpg`"
                             class="w-100 rounded shadow mb-2" v-bind:alt="`Imagen de ` + elemento['nombre_completo']"
-                            v-bind:onerror="`this.src='<?= URL_CONTENT ?>redcultural/images/default/user.png'`">
+                            v-bind:onerror="`this.src='<?= URL_IMG ?>redcultural/user.png'`">
                     </a>
                 </div>
                 <div class="col-md-8">
@@ -109,7 +110,9 @@
                         </a>
                     </h5>
                     <p>{{ elemento['rol_actividad'] }}</p>
-                    {{ elemento['perfil'] }}
+                    <p>
+                        {{ elemento['perfil'].slice(0, 380) }} <span v-if="elemento['perfil'].length > 380">...</span>
+                    </p>
                     <?php if ( in_array($this->session->userdata('role'), [1]) ) : ?>
                         <br>
                         <a class="btn btn-light btn-sm" v-bind:href="`<?= base_url("admin/users/edit/") ?>` + elemento['id']" target="_blank">
