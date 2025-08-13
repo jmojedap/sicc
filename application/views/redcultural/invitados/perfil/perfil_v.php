@@ -7,94 +7,95 @@
 }
 
 .resaltar-2 {
-    background-color: #FFDE46;
+    background-color: #FDE041;
     color: #000;
     text-transform: uppercase;
     padding: 0rem 0.5rem;
     font-weight: bold;
 }
+
+.icon-recomendado{
+    font-size: 1.8em;
+}
 </style>
 
-<div id="pefilApp" class="center_box_750 my-4">
-    <div class="px-3">
-        <div class="mb-3">
-            <a href="<?= RCI_URL_APP ?>invitados/directorio" class="btn btn-light btn-sm">
-                <i class="fas fa-arrow-left"></i> Directorio
-            </a>
-        </div>
-        <div class="row">
-            <div class="col-md-3">
-                <img v-bind:src="`<?= URL_CONTENT ?>redcultural/images/profiles/` + user['username'] + `.jpg`"
-                    class="rounded-circle" v-bind:alt="`Imagen de ` + user.display_name" width="100%"
-                    v-bind:onerror="`this.src='<?= URL_CONTENT ?>redcultural/images/default/user.png'`">
-            </div>
-            <div class="col-md-9">
-                <h2 class="card-title color-text-0">
-                    <span class="resaltar-1">{{ user.display_name }}</span>
+<div id="pefilApp" class="container my-4">
+    <div class="mb-3">
+        <a href="<?= RCI_URL_APP ?>invitados/directorio" class="btn btn-light btn-sm">
+            <i class="fas fa-arrow-left"></i> Directorio
+        </a>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="row">
+                <div class="col-md-4">
+                    <img v-bind:src="`<?= URL_CONTENT ?>redcultural/images/profiles/` + user['username'] + `.jpg`"
+                        class="rounded-circle" v-bind:alt="`Imagen de ` + user.display_name" width="100%"
+                        v-bind:onerror="`this.src='<?= URL_CONTENT ?>redcultural/images/default/user.png'`">
+                </div>
+                <div class="col-md-8">
+                    <h2 class="card-title color-text-0">
+                        <span class="resaltar-2">{{ user.display_name }}</span>
+                    </h2>
+                    <p class="mb-1">{{ user.job_role }} <br>
+                        <span class="me-2">
+                            <img v-bind:src="`https://flagcdn.com/w20/` + user.text_1.toLowerCase() + `.png`"
+                                :alt="user.text_1" width="" height="auto" :title="user.text_1">
+                        </span>
+                        {{ user.city_name }}
+                    </p>
+                    <p><small class="">{{ user.team_1 }}</small></p>
+                    <p class="fst-italic" v-show="user.text_2.length > 2">"{{ user.text_2 }}"</p>
 
-
-                </h2>
-                <p class="mb-1">{{ user.job_role }} <br> 
-                    <span class="me-2">
-                        <img v-bind:src="`https://flagcdn.com/w20/` + user.text_1.toLowerCase() + `.png`"
-                        :alt="user.text_1" width="" height="auto" :title="user.text_1">
-                    </span>
-                    {{ user.city_name }} 
-                </p>
-                <p><small class="">{{ user.team_1 }}</small></p>
-                <p class="fst-italic" v-show="user.text_2.length > 2">"{{ user.text_2 }}"</p>
-
-                <?php if ( $this->session->userdata('logged') ) : ?>
-                <div v-if="user.id != appUid">
-                    <button class="btn btn-light w150p" v-show="followingStatus != 1" v-on:click="altFollow">
+                    <?php if ( $this->session->userdata('logged') ) : ?>
+                    <div v-if="user.id != appUid">
+                        <button class="btn btn-light w150p" v-show="followingStatus != 1" v-on:click="altFollow">
+                            <i class="far fa-circle"></i>
+                            Me interesa
+                        </button>
+                        <button class="btn btn-warning w150p" v-show="followingStatus == 1" v-on:click="altFollow">
+                            <i class="fas fa-check-circle"></i>
+                            Te interesa
+                        </button>
+                    </div>
+                    <?php else: ?>
+                    <a class="btn btn-light w150p" href="<?= RCI_URL_APP ?>accounts/login_code">
                         <i class="far fa-circle"></i>
                         Me interesa
-                    </button>
-                    <button class="btn btn-warning w150p" v-show="followingStatus == 1" v-on:click="altFollow">
-                        <i class="fas fa-check-circle"></i>
-                        Te interesa
-                    </button>
+                    </a>
+                    <?php endif; ?>
                 </div>
-                <?php else: ?>
-                <a class="btn btn-light w150p" href="<?= RCI_URL_APP ?>accounts/login_code">
-                    <i class="far fa-circle"></i>
-                    Me interesa
-                </a>
-                <?php endif; ?>
+
             </div>
 
+            <div class="mt-4 text-center">
+                <!-- <h5>Pregunta para el evento</h5> -->
+                <blockquote class="blockquote" title="Pregunta que propone para el encuentro">
+                    <p class="mb-0 color-text-9"><strong>{{ meta('pregunta') }}</strong></p>
+                </blockquote>
+            </div>
+
+            <p class="mt-3">{{ user.about }}</p>
+
+            <table class="table table-borderless">
+                <tbody>
+                    <tr>
+                        <td class="color-text-1 text-end_">Temas de interés</td>
+                        <td>{{ user.text_3 }}</td>
+                    </tr>
+                    <tr v-if="meta('obra_representativa')">
+                        <td class="color-text-1 text-end_">Obra representativa</td>
+                        <td>{{ meta('obra_representativa') }}</td>
+                    </tr>
+
+                </tbody>
+            </table>
         </div>
-
-        <div class="mt-4 text-center">
-            <!-- <h5>Pregunta para el evento</h5> -->
-            <blockquote class="blockquote" title="Pregunta que propone para el encuentro">
-                <p class="mb-0 color-text-9"><strong>{{ meta('pregunta') }}</strong></p>
-            </blockquote>
-        </div>
-
-        <p class="mt-3">{{ user.about }}</p>
-
-        <table class="table table-borderless">
-            <tbody>
-                <tr>
-                    <td class="color-text-1 text-end">Temas de interés</td>
-                    <td>{{ user.text_3 }}</td>
-                </tr>
-                <tr v-if="meta('obra_representativa')">
-                    <td class="color-text-1 text-end">Obra representativa</td>
-                    <td>{{ meta('obra_representativa') }}</td>
-                </tr>
-
-            </tbody>
-        </table>
-
-
-
-        <div class="row">
-            <div class="col-md-4 my-3">
-                <h4 class="resaltar-2">
-                    Redes
-                </h4>
+        <div class="col-md-6">
+            <h4>
+                <span class="resaltar-1">Redes sociales</span>
+            </h4>
+            <div class="col-md-5 my-3">
                 <div class="d-flex mt-3">
                     <a v-for="meta in metadata.filter(m => m.type.startsWith('url_'))" :href="urlSocial(meta)"
                         target="_blank" class="link-primary text-decoration-none" v-show="meta.text_1.length">
@@ -104,42 +105,56 @@
                 </div>
             </div>
 
-            <div class="col-md-8 my-3">
-                <h4>
-                    <span class="resaltar-2">Mis recomendados</span>
-                </h4>
-                <table class="table table-sm">
-                    <tbody>
-                        <tr v-if="meta('libro_autor')">
-                            <td><i class="fas fa-arrow-right color-text-1"></i></td>
-                            <td class="color-text-1"><b>Libro</b></td>
-                            <td>{{ meta('libro_autor') }}</td>
-                        </tr>
-                        <tr v-if="meta('cancion')">
-                            <td><i class="fas fa-arrow-right color-text-1"></i></td>
-                            <td class="color-text-1"><b>Canción</b></td>
-                            <td>{{ meta('cancion') }}</td>
-                        </tr>
-                        <tr v-if="meta('pelicula')">
-                            <td><i class="fas fa-arrow-right color-text-1"></i></td>
-                            <td class="color-text-1"><b>Película</b></td>
-                            <td>{{ meta('pelicula') }}</td>
-                        </tr>
-                        <tr v-if="meta('obra_artistica')">
-                            <td><i class="fas fa-arrow-right color-text-1"></i></td>
-                            <td class="color-text-1"><b>Obra artística</b></td>
-                            <td>{{ meta('obra_artistica') }}</td>
-                        </tr>
-                        <tr v-if="meta('recomendado')">
-                            <td><i class="fas fa-arrow-right color-text-1"></i></td>
-                            <td class="color-text-1"><b>Seguir a</b></td>
-                            <td>{{ meta('recomendado') }}</td>
-                        </tr>
-                    </tbody>
+            <h4>
+                <span class="resaltar-1">Mis recomendados</span>
+            </h4>
+            <table class="table table-sm" style="background-color: white;">
+                <tbody>
+                    <tr v-if="meta('libro_autor')">
+                        <td style="width: 40px;">
+                            <i class="bi bi-book color-text-1 icon-recomendado" title="Libro"></i>
+                        </td>
+                        <td class="text-muted align-middle">Libro</td>
+                        <td class="align-middle">
+                            {{ meta('libro_autor') }}
+                        </td>
+                    </tr>
+                    <tr v-if="meta('cancion')">
+                        <td>
+                            <i class="bi bi-music-note-beamed color-text-1 icon-recomendado" title="Canción"></i>
+                        </td>
+                        <td class="text-muted align-middle">Canción</td>
+                        <td class="align-middle">{{ meta('cancion') }}</td>
+                    </tr>
+                    <tr v-if="meta('pelicula')">
+                        <td>
+                            <i class="bi bi-film color-text-1 icon-recomendado" title="Película"></i>
+                        </td>
+                        <td class="text-muted align-middle">Película</td>
+                        <td class="align-middle">{{ meta('pelicula') }}</td>
+                    </tr>
+                    <tr v-if="meta('obra_artistica')">
+                        <td><i class="bi bi-palette color-text-1 icon-recomendado" title="Obra artística"></i></td>
+                        <td class="text-muted align-middle">Obra artística</td>
+                        <td class="align-middle">{{ meta('obra_artistica') }}</td>
+                    </tr>
+                    <tr v-if="meta('recomendado')">
+                        <td><i class="bi bi-person-heart color-text-1 icon-recomendado" title="Obra artística"></i></td>
+                        <td class="text-muted align-middle">A quién seguir</td>
+                        <td class="align-middle">{{ meta('recomendado') }}</td>
+                    </tr>
+                </tbody>
 
-                </table>
-            </div>
+            </table>
+            
         </div>
+    </div>
+    <div class="px-3">
+
+
+
+
+
     </div>
 </div>
 
