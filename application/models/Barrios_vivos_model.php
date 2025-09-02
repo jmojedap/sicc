@@ -116,7 +116,7 @@ class Barrios_vivos_model extends CI_Model{
 
         //q words condition
         $arrWords = ['bv_laboratorios.id', 'nombre_laboratorio', 'descripcion', 
-            'direccion_lider', 'duplas','gerente', 'tags', 'palabras_clave'];
+            'direccion_lider', 'duplas','gerente', 'bv_laboratorios.tags', 'palabras_clave'];
         $words_condition = $this->Search_model->words_condition($filters['q'], $arrWords);
         if ( $words_condition )
         {
@@ -166,6 +166,29 @@ class Barrios_vivos_model extends CI_Model{
 
         //Get
         $query = $this->db->get('bv_laboratorios', 10000);  //Hasta 10.000 registros
+
+        return $query;
+    }
+
+    /**
+     * Query para exportar
+     * 2022-08-17
+     */
+    function query_export_actividades($filters)
+    {
+        //Select
+        $select = $this->select_details('actividades');
+        if ( $filters['sf'] != '' ) { $select = $this->select($filters['sf']); }
+        $this->db->select($select);
+        $this->db->join('users', 'bv_laboratorios_detalles.updater_id = users.id', 'left'); //Unir con tabla de usuarios
+        $this->db->join('bv_laboratorios', 'bv_laboratorios_detalles.laboratorio_id = bv_laboratorios.id', 'left'); //Unir con tabla de laboratorios
+
+        //Condición Where
+        //$search_condition = $this->search_condition($filters);
+        //if ( $search_condition ) { $this->db->where($search_condition);}
+
+        //Get
+        $query = $this->db->get('bv_laboratorios_detalles', 10000);  //Hasta 10.000 registros
 
         return $query;
     }
@@ -427,6 +450,7 @@ class Barrios_vivos_model extends CI_Model{
             bv_laboratorios_detalles.url_1, bv_laboratorios_detalles.url_2, bv_laboratorios_detalles.url_3, bv_laboratorios_detalles.url_4,
             bv_laboratorios_detalles.num_radicacion, bv_laboratorios_detalles.notas,
             bv_laboratorios_detalles.updated_at, bv_laboratorios_detalles.created_at,
+            bv_laboratorios.id AS laboratorio_id, 
             bv_laboratorios.nombre_laboratorio AS laboratorio_nombre, 
             bv_laboratorios.nombre_corto AS lab_nombre_corto, bv_laboratorios.estado_registro AS lab_estado_registro,
             bv_laboratorios.vigencia AS lab_vigencia,
@@ -483,6 +507,8 @@ class Barrios_vivos_model extends CI_Model{
         $this->db->join('users', 'bv_laboratorios_detalles.updater_id = users.id', 'left'); //Unir con tabla de usuarios
         $this->db->join('bv_laboratorios', 'bv_laboratorios_detalles.laboratorio_id = bv_laboratorios.id', 'left'); //Unir con tabla de laboratorios
         $details = $this->db->get('bv_laboratorios_detalles');
+
+        //echo $this->db->last_query();
 
         return $details;
     }

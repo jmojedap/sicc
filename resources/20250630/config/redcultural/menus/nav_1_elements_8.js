@@ -25,4 +25,13 @@ var nav_1_elements = [
         sections: [],
         anchor: true
     },
+    {
+        text: 'Descubre',
+        active: false,
+        icon: '',
+        cf: 'invitados/descubre',
+        subelements: [],
+        sections: ['invitados/descubre'],
+        anchor: true
+    },
 ];

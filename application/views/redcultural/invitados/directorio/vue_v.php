@@ -15,6 +15,13 @@ var directorioApp = createApp({
             filters: {
                 status: '' 
             },
+            visibleInfo: 'perfil',
+            visibleInfoOptions:[
+                { value: 'perfil', text: 'Perfil', enabled: true },
+                { value: 'redes', text: 'Redes Sociales', enabled: false },
+                { value: 'experiencia', text: 'Experiencia', enabled: false },
+                { value: 'intereses', text: 'Intereses', enabled: true }
+            ],
             currentElement: <?= json_encode($elementos[0]) ?>,
             currentId: -1,
         }
@@ -43,6 +50,9 @@ var directorioApp = createApp({
         },
         paisFlag: function(countryCode) {
             return RciPaises.flagIconUrl(countryCode);
+        },
+        setVisibleInfo: function(infoType) {
+            this.visibleInfo = infoType;
         }
     },
     computed: {

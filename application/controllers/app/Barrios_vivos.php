@@ -134,6 +134,26 @@ class Barrios_vivos extends CI_Controller {
         $this->App_model->view(TPL_FRONT, $data);
     }
 
+// EXPORTAR DATOS DE ACCIONES
+//-----------------------------------------------------------------------------
+
+    /**
+     * Vista con listado de opciones para exportar datos a archivos de Excel
+     * 2025-08-28
+     */
+    function exportar_datos()
+    {
+        $data['head_title'] = 'Exportar datos';
+        $data['view_a'] = 'app/common/exportar_datos_v';
+        $data['nav_2'] = 'app/barrios_vivos/menus/explorar_v';
+
+        $data['group'] = 'barrios-vivos';
+        $recursos_text = file_get_contents(PATH_CONTENT . 'datos/links_exportar.json');
+        $data['recursos'] = json_decode($recursos_text, true);
+
+        $this->App_model->view(TPL_FRONT, $data);
+    }
+
 // VISTA DE ACTIVIDADES
 //-----------------------------------------------------------------------------
 
@@ -219,7 +239,7 @@ class Barrios_vivos extends CI_Controller {
         //$data = $this->Barrios_vivos_model->explore_actividades();
         $data['head_title'] = 'Calendario Barrios Vivos';
         //$data['view_a'] = $this->views_folder . 'cronograma/cronograma_v';
-        $data['view_a'] = $this->views_folder . 'cronograma/calendario_v';
+        $data['view_a'] = $this->views_folder . 'calendario/calendario_v';
         $data['nav_2'] = $this->views_folder . 'menus/explorar_v';
 
         $data['events'] = $this->Barrios_vivos_model->events();
@@ -243,5 +263,38 @@ class Barrios_vivos extends CI_Controller {
         $data['arrFase'] = $this->Item_model->arr_options('category_id = 433');
 
         $this->App_model->view(TPL_FRONT, $data);
+    }
+
+    /**
+     * Exportar resultados de búsqueda
+     * 2021-09-27
+     */
+    function export_actividades()
+    {
+        set_time_limit(120);    //120 segundos, 2 minutos para el proceso
+
+        //Identificar filtros y búsqueda
+        $this->load->model('Search_model');
+        $filters = $this->Search_model->filters();
+
+        $data['query'] = $this->Barrios_vivos_model->query_export_actividades($filters);
+
+        if ( $data['query']->num_rows() > 0 ) {
+            //Preparar datos
+                $data['sheet_name'] = 'bv_actividades';
+
+            //Objeto para generar archivo excel
+                $this->load->library('Excel');
+                $file_data['obj_writer'] = $this->excel->file_query($data);
+
+            //Nombre de archivo
+                $file_data['file_name'] = date('Ymd_His') . '_' . $data['sheet_name'];
+
+            $this->load->view('common/download_excel_file_v', $file_data);
+        } else {
+            $data = array('message' => 'No se encontraron actividades para exportar');
+            //Salida JSON
+            $this->output->set_content_type('application/json')->set_output(json_encode($data));
+        }
     }
 }

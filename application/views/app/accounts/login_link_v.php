@@ -60,17 +60,17 @@ var loginApp = createApp({
             this.loading = true
             var formValues = new FormData(document.getElementById('loginForm'))
             axios.post(URL_API + 'accounts/get_login_link', formValues)
-                .then(response => {
-                    this.loading = false
-                    this.status = response.data.status
-                    this.message = response.data.message;
-                    this.link = response.data.link || '';
-                    if (this.status == 1) {
-                        this.alertClass = 'alert-info'
-                        this.email = ''
-                    }
-                })
-                .catch(function(error) { console.log(error)})
+            .then(response => {
+                this.loading = false
+                this.status = response.data.status
+                this.message = response.data.message;
+                this.link = response.data.link || '';
+                if (this.status == 1) {
+                    this.alertClass = 'alert-info'
+                    this.email = ''
+                }
+            })
+            .catch(function(error) { console.log(error)})
         }
     },
 }).mount('#loginApp')

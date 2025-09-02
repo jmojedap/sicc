@@ -81,8 +81,13 @@ class Rci_model extends CI_Model{
 
                 $arr_row['updated_at'] = date('Y-m-d H:i:s');
                 $arr_row['password'] = $this->Account_model->crypt_pw(random_string('alnum', 12));
-                $arr_row['creator_id'] = $this->session->userdata('user_id');
-                $arr_row['updater_id'] = $this->session->userdata('user_id');
+
+                $arr_row['updater_id'] = $row_data[17];
+                $arr_row['creator_id'] = $row_data[19];
+                if ( $this->session->userdata('logged') ) {
+                    $arr_row['creator_id'] = $this->session->userdata('user_id');
+                    $arr_row['updater_id'] = $this->session->userdata('user_id');
+                }
 
                 //Guardar en tabla user
                 $condition = "email = '{$arr_row['email']}'";
@@ -147,8 +152,13 @@ class Rci_model extends CI_Model{
                 
                 $arr_row['updated_at'] = date('Y-m-d H:i:s');
                 $arr_row['created_at'] = date('Y-m-d H:i:s');
-                $arr_row['creator_id'] = $this->session->userdata('user_id');
-                $arr_row['updater_id'] = $this->session->userdata('user_id');
+
+                $arr_row['updater_id'] = $row_data[4];
+                $arr_row['creator_id'] = $row_data[6];
+                if ( $this->session->userdata('logged') ) {
+                    $arr_row['creator_id'] = $this->session->userdata('user_id');
+                    $arr_row['updater_id'] = $this->session->userdata('user_id');
+                }
 
                 //Guardar en tabla user
                 $condition = "user_id = '{$arr_row['user_id']}' AND type_id = {$arr_row['type_id']}";
@@ -162,5 +172,17 @@ class Rci_model extends CI_Model{
         return $data;
     }
 
+    /**
+     * Cantidad de tokens utilizados en la generación de contenidos AI
+     * 2025-09-02
+     */
+    function used_tokens($condition):int
+    {        
+        $this->db->select('SUM(integer_3) AS sum_used_token');
+        $this->db->where($condition);
+        $query = $this->db->get('posts');
+        $used_tokens = $query->row(0)->sum_used_token ?? 0;
 
+        return $used_tokens;
+    }
 }

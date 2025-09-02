@@ -11,7 +11,7 @@
         <div class="d-flex mb-3 justify-content-between" v-for="user in following" :key="user.id">
             <div class="d-flex">
                 <div>
-                    <a v-bind:href="`<?= RCI_URL_APP ?>invitados/perfil/` + user.id + `/` + user.username">
+                    <a v-bind:href="`<?= RCI_URL_APP ?>invitados/abrir_perfil/` + user.id + `/` + user.username">
                         <img v-bind:src="`<?= URL_CONTENT ?>redcultural/images/profiles/` + user['username'] + `.jpg`"
                             alt="Foto de perfil" class="rounded-circle me-3"
                             style="width: 64px; height: 64px; object-fit: cover"
@@ -20,7 +20,7 @@
                 </div>
                 <div class="d-flex">
                     <div class="flex-grow-1">
-                        <a :href="`<?= RCI_URL_APP ?>invitados/perfil/` + user.id + `/` + user.username">
+                        <a :href="`<?= RCI_URL_APP ?>invitados/abrir_perfil/` + user.id + `/` + user.username">
                             <h5 class="mb-0">{{ user.display_name }}</h5>
                         </a>
                         <div v-if="user.pais_origen" class="mt-1">
@@ -45,7 +45,7 @@
         <div class="d-flex mb-3 justify-content-between" v-for="user in followers" :key="user.id">
             <div class="d-flex">
                 <div>
-                    <a v-bind:href="`<?= RCI_URL_APP ?>invitados/perfil/` + user.id + `/` + user.username">
+                    <a v-bind:href="`<?= RCI_URL_APP ?>invitados/abrir_perfil/` + user.id + `/` + user.username">
                         <img v-bind:src="`<?= URL_CONTENT ?>redcultural/images/profiles/` + user['username'] + `.jpg`"
                             alt="Foto de perfil" class="rounded-circle me-3"
                             style="width: 64px; height: 64px; object-fit: cover"
@@ -54,7 +54,7 @@
                 </div>
                 <div class="d-flex">
                     <div class="flex-grow-1">
-                        <a :href="`<?= RCI_URL_APP ?>invitados/perfil/` + user.id + `/` + user.username">
+                        <a :href="`<?= RCI_URL_APP ?>invitados/abrir_perfil/` + user.id + `/` + user.username">
                             <h5 class="mb-0">{{ user.display_name }}</h5>
                         </a>
                         <div v-if="user.pais_origen" class="mt-1">
@@ -76,7 +76,7 @@
         <div class="d-flex mb-3 justify-content-between" v-for="user in matches" :key="user.id">
             <div class="d-flex">
                 <div>
-                    <a v-bind:href="`<?= RCI_URL_APP ?>invitados/perfil/` + user.id + `/` + user.username">
+                    <a v-bind:href="`<?= RCI_URL_APP ?>invitados/abrir_perfil/` + user.id + `/` + user.username">
                         <img v-bind:src="`<?= URL_CONTENT ?>redcultural/images/profiles/` + user['username'] + `.jpg`"
                             alt="Foto de perfil" class="rounded-circle me-3"
                             style="width: 64px; height: 64px; object-fit: cover"
@@ -85,7 +85,7 @@
                 </div>
                 <div class="d-flex">
                     <div class="flex-grow-1">
-                        <a :href="`<?= RCI_URL_APP ?>invitados/perfil/` + user.id + `/` + user.username">
+                        <a :href="`<?= RCI_URL_APP ?>invitados/abrir_perfil/` + user.id + `/` + user.username">
                             <h5 class="mb-0">{{ user.display_name }}</h5>
                         </a>
                         <div v-if="user.pais_origen" class="mt-1">

@@ -23,6 +23,13 @@
             anchor: true
         },
         {
+            text: 'Exportar',
+            id: 'barrios_vivos_exportar_datos',
+            cf: 'barrios_vivos/exportar_datos',
+            roles: [1,2,3,6,8],
+            anchor: true
+        },
+        {
             text: 'Tutoriales',
             id: 'barrios_vivos_tutoriales',
             cf: 'barrios_vivos/tutoriales',

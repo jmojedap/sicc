@@ -265,10 +265,17 @@ function mapa()
 // EXPORTAR DATOS DE ACCIONES
 //-----------------------------------------------------------------------------
 
+    /**
+     * Vista con listado de opciones para exportar datos a archivos de Excel
+     * 2025-08-28
+     */
     function exportar_datos()
     {
         $data['head_title'] = 'Exportar datos';
-        $data['view_a'] = $this->views_folder . 'exportar_datos_v';
+        $data['group'] = 'mecc';
+        $recursos_text = file_get_contents(PATH_CONTENT . 'datos/links_exportar.json');
+        $data['recursos'] = json_decode($recursos_text, true);
+        $data['view_a'] = 'app/common/exportar_datos_v';
         $data['nav_2'] = 'app/acciones/explorar/menu_v';
         $this->App_model->view(TPL_FRONT, $data);
     }

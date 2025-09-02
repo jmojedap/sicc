@@ -82,6 +82,9 @@ class Notification_model extends CI_Model{
                 $settings['to'] = $user->email;
                 $settings['subject'] = 'Ingresa a ' . $app_info['title'];
                 $settings['html_message'] = $this->login_link_message($user, 'html', $app_info['email_template']);
+                $settings['notifier_email'] = $app_info['notifier_email'];
+                $settings['notifier_pw'] = $app_info['notifier_pw'];
+
                 $data = $this->mail_pml->send($settings);
                 if ( $data['status'] == 1 ) {
                     $data['message'] = "El link fue enviado a el correo electrónico {$user->email}";
@@ -141,6 +144,9 @@ class Notification_model extends CI_Model{
                 $settings['to'] = $user->email;
                 $settings['subject'] = 'Ingresa a ' . $app_info['title'];
                 $settings['html_message'] = $this->login_code_message($user, $app_info['email_template']);
+                $settings['notifier_email'] = $app_info['notifier_email'];
+                $settings['notifier_pw'] = $app_info['notifier_pw'];
+
                 $data = $this->mail_pml->send($settings);
                 if ( $data['status'] == 1 ) {
                     $data['message'] = "El código fue enviado a el correo electrónico {$user->email}";

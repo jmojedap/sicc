@@ -2,7 +2,7 @@
 
 .perfil {
     border-radius: 0em;
-    max-width: 920px;
+    /*max-width: 920px;*/
     margin: 0 auto;
     color: #333;
     border: 0px

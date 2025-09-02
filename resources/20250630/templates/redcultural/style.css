@@ -371,3 +371,7 @@ select.search-filter {
 select.search-filter.selected{
     background-color: #c2e7ff;
 }
+
+.progress {
+    border-radius: 0px;
+}

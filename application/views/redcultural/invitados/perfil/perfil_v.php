@@ -17,6 +17,10 @@
 .icon-recomendado{
     font-size: 1.8em;
 }
+
+td.profile-info {
+    background-color: rgba(255, 255, 255, 0.5);
+}
 </style>
 
 <div id="pefilApp" class="container my-4">
@@ -68,24 +72,29 @@
 
             </div>
 
-            <div class="mt-4 text-center">
-                <!-- <h5>Pregunta para el evento</h5> -->
-                <blockquote class="blockquote" title="Pregunta que propone para el encuentro">
-                    <p class="mb-0 color-text-9"><strong>{{ meta('pregunta') }}</strong></p>
-                </blockquote>
-            </div>
-
             <p class="mt-3">{{ user.about }}</p>
 
             <table class="table table-borderless">
                 <tbody>
                     <tr>
                         <td class="color-text-1 text-end_">Temas de interés</td>
-                        <td>{{ user.text_3 }}</td>
+                        <td class="profile-info">{{ user.text_3 }}</td>
                     </tr>
                     <tr v-if="meta('obra_representativa')">
                         <td class="color-text-1 text-end_">Obra representativa</td>
-                        <td>{{ meta('obra_representativa') }}</td>
+                        <td class="profile-info">{{ meta('obra_representativa') }}</td>
+                    </tr>
+                    <tr v-if="meta('redes_culturales')">
+                        <td class="color-text-1 text-end_">Redes culturales</td>
+                        <td class="profile-info">{{ meta('redes_culturales') }}</td>
+                    </tr>
+                    <tr v-if="meta('proyecto_cultural_recomendado')">
+                        <td class="color-text-1 text-end_">Proyecto cultural recomendado</td>
+                        <td class="profile-info">{{ meta('proyecto_cultural_recomendado') }}</td>
+                    </tr>
+                    <tr v-if="meta('centro_cultural_recomendado')">
+                        <td class="color-text-1 text-end_">Centro cultural recomendado</td>
+                        <td class="profile-info">{{ meta('centro_cultural_recomendado') }}</td>
                     </tr>
 
                 </tbody>
@@ -146,6 +155,29 @@
                 </tbody>
 
             </table>
+
+            <h4>
+                <span class="resaltar-1">Mis preguntas</span>
+            </h4>
+
+            <div class="mt-4">
+                <h5>
+                    <span class="resaltar-2" style="font-size: 0.8em;">Pregunta frente a los retos de la cultura en Iberoamérica</span>
+                </h5>
+                <p class="text-center text-italic" title="Pregunta que propone para el encuentro">
+                    <p class="mb-0 color-text-9">{{ meta('pregunta_retos') }}</p>
+                </p>
+            </div>
+            <div class="mt-4">
+                <h5>
+                    <span style="font-size: 0.8em;" class="resaltar-2">
+                        Pregunta propuesta para guiar las conversaciones del Encuentro
+                    </span>
+                </h5>
+                <p class="" title="Pregunta que propone para el encuentro">
+                    <p class="mb-0 color-text-9">{{ meta('pregunta_conversaciones') }}</p>
+                </p>
+            </div>
             
         </div>
     </div>
@@ -158,77 +190,4 @@
     </div>
 </div>
 
-<script>
-var pefilApp = createApp({
-    data() {
-        return {
-            appUid: APP_UID,
-            loading: false,
-            fields: {},
-            user: <?= json_encode($row) ?>,
-            metadata: <?= json_encode($metadata->result()) ?>,
-            followingStatus: <?= json_encode($following_status) ?>,
-        }
-    },
-    methods: {
-        meta(tipo) {
-            const entry = this.metadata.find(m => m.type === tipo);
-            return entry ? entry.text_1 : null;
-        },
-        altFollow: function() {
-            this.loading = true;
-            axios.get(URL_API + 'users/alt_follow/' + this.user.id)
-                .then(response => {
-                    //this.loading = false;
-                    this.followingStatus = response.data.status;
-                })
-                .catch(function(error) {
-                    console.log(error)
-                })
-        },
-        urlSocial: function(meta) {
-            if (meta.type == 'url_instagram') {
-                return 'https://www.instagram.com/' + meta.text_1
-            }
-            if (meta.type == 'url_x') {
-                return 'https://www.x.com/' + meta.text_1
-            }
-            if (meta.type == 'url_facebook') {
-                return 'https://www.facebook.com/search/top?q=' + this.slugText(this.user.display_name)
-            }
-            if (meta.type == 'url_youtube') {
-                return 'https://www.youtube.com/user/' + meta.text_1
-            }
-            if (meta.type == 'url_linkedin') {
-                return meta.text_1
-            }
-            if (meta.type == 'url_web') {
-                return meta.text_1
-            }
-
-            return 'https://www.google.com/search?q=' + this.slugText(this.user.display_name)
-        },
-        slugText: function(texto) {
-            // 1. Convertir a minúsculas
-            let resultado = texto.toLowerCase();
-
-            // 2. Separar palabras
-            const palabras = resultado.trim().split(/\s+/); // separa por uno o más espacios
-
-            // 3. Aplicar la transformación: primera palabra con +, las siguientes con -
-            if (palabras.length === 0) return "";
-
-            resultado = palabras[0]; // primera palabra (sin prefijo)
-            for (let i = 1; i < palabras.length; i++) {
-                if (i === 1) {
-                    resultado += "+" + palabras[i];
-                } else {
-                    resultado += "-" + palabras[i];
-                }
-            }
-
-            return resultado;
-        },
-    },
-}).mount('#pefilApp')
-</script>
+<?php $this->load->view('redcultural/invitados/perfil/vue_v') ?>

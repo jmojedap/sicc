@@ -12,25 +12,18 @@ var nav_1_elements = [
                 cf: 'invitados/directorio/',
                 sections: ['invitados/directorio'],
                 anchor: true
-            },
-            {
-                text: 'Importar',
-                active: false,
-                icon: '',
-                cf: 'invitados/import/',
-                sections: ['invitados/import'],
-                anchor: true
-            },
-            {
-                text: 'Importar metadatos',
-                active: false,
-                icon: '',
-                cf: 'invitados/import/meta',
-                sections: ['invitados/import/meta'],
-                anchor: true
-            },
+            }
         ],
         sections: [],
+        anchor: true
+    },
+    {
+        text: 'Descubre',
+        active: false,
+        icon: '',
+        cf: 'invitados/descubre',
+        subelements: [],
+        sections: ['invitados/descubre'],
         anchor: true
     },
 ];

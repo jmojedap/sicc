@@ -30,28 +30,6 @@
                 </div>
 
                 <div class="mb-3 row">
-                    <label for="document_number" class="col-md-4 col-form-label text-end">No. Documento</label>
-                    <div class="col-md-4">
-                        <input
-                            name="document_number" class="form-control"
-                            v-bind:class="{ 'is-invalid': validation.document_number_unique == 0, 'is-valid': validation.document_number_unique == 1 }"
-                            placeholder="Número de documento"
-                            title="Solo números, sin puntos, debe tener al menos 5 dígitos"
-                            pattern=".{5,}[0-9]" v-model="fields.document_number"
-                            v-on:change="validateForm"
-                            >
-                        <span class="invalid-feedback">
-                            El número de documento escrito ya fue registrado para otro usuario
-                        </span>
-                    </div>
-                    <div class="col-md-4">
-                        <select name="document_type" v-model="fields.document_type" class="form-select" required>
-                            <option v-for="(option_document_type, key_document_type) in options_document_type" v-bind:value="key_document_type">{{ option_document_type }}</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="mb-3 row">
                     <label for="birth_date" class="col-md-4 col-form-label text-end">Fecha de nacimiento</label>
                     <div class="col-md-8">
                         <input name="birth_date" class="form-control" type="date" v-model="fields.birth_date">
@@ -67,25 +45,7 @@
                     </div>
                 </div>
 
-                <div class="mb-3 row">
-                    <label for="team_1" class="col-md-4 col-form-label text-end">Dependencia</label>
-                    <div class="col-md-8">
-                        <select name="team_1" v-model="fields.team_1" class="form-select form-control">
-                            <option value="">[ NS/NA ]</option>
-                            <option v-for="optionTeam1 in arrTeam1" v-bind:value="optionTeam1.name">{{ optionTeam1.name }}</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="mb-3 row">
-                    <label for="team_2" class="col-md-4 col-form-label text-end">Equipo</label>
-                    <div class="col-md-8">
-                        <select name="team_2" v-model="fields.team_2" class="form-select form-control">
-                            <option value="">[ NS/NA ]</option>
-                            <option v-for="optionTeam2 in arrTeam2" v-bind:value="optionTeam2.name">{{ optionTeam2.name }}</option>
-                        </select>
-                    </div>
-                </div>
+                
 
                 <div class="mb-3 row">
                     <div class="offset-md-4 col-md-8">
@@ -103,14 +63,9 @@
 var fields = {
     display_name: '<?= $row->display_name ?>',
     email: '<?= $row->email ?>',
-    document_number: '<?= $row->document_number ?>',
-    document_type: '0<?= $row->document_type ?>',
-    city_id: '0<?= $row->city_id ?>',
     birth_date: '<?= $row->birth_date ?>',
     gender: '0<?= $row->gender ?>',
     phone_number: '<?= $row->phone_number ?>',
-    team_1: '<?= $row->team_1 ?>',
-    team_2: '<?= $row->team_2 ?>',
 };
 
 // VueApp
@@ -124,14 +79,8 @@ var editApp = createApp({
             validated: -1,
             validation: {
                 email_unique: -1,
-                document_number_unique: -1
             },
-            options_city_id: <?= json_encode($options_city_id) ?>,
-            options_document_type: <?= json_encode($options_document_type) ?>,
             options_gender: <?= json_encode($options_gender) ?>,
-            options_privacy: <?= json_encode($options_privacy) ?>,
-            arrTeam1: <?= json_encode($arrTeam1) ?>,
-            arrTeam2: <?= json_encode($arrTeam2) ?>,
         }
     },
     methods: {

@@ -7,6 +7,9 @@
 <html lang="es">
     <head>
         <?php $this->load->view('templates/redcultural/main/head') ?>
+        <?php if ( ENV == 'production' ) : ?>
+            <?php $this->load->view('common/google_analytics_v.php') ?>
+        <?php endif; ?>
     </head>
     <body class="">
         <?php $this->load->view('templates/redcultural/main/navbar') ?>

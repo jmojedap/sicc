@@ -38,7 +38,7 @@ class Invitados extends CI_Controller {
      */
     function directorio()
     {
-        $data['head_title'] = 'Encuentro Ciudades';
+        $data['head_title'] = 'Encuentro Ciudades y Culturas en Iberoamérica :: Conversaciones desde Bogotá';
         $data['view_a'] = $this->views_folder . 'directorio/directorio_v';
 
         $this->load->model('User_model');
@@ -61,6 +61,42 @@ class Invitados extends CI_Controller {
         $this->App_model->view(RCI_TPL_APP, $data);
     }
 
+    /**
+     * Redirige a la página de perfil del usuario
+     * y registra el evento de visita
+     * 2025-08-24
+     */
+    function abrir_perfil($user_id)
+    {
+        // Identificar usuario visitado
+        $user = $this->Db_model->row_id('users', $user_id);
+
+        // Identificar al visitante
+        $visitor = ['id' => 0, 'name' => 'Visitante anónimo', 'role' => '99'];
+        if ( $this->session->userdata('logged') ) {
+            $visitor['id'] = $this->session->userdata('user_id');
+            $visitor['name'] = $this->session->userdata('display_name');
+            $visitor['role'] = $this->session->userdata('role');
+        }
+        
+        $this->load->model('Event_model');
+        $arr_row = $this->Event_model->basic_row();
+
+        $arr_row['title'] = 'Visita a ' . $user->display_name;
+        $arr_row['type_id'] = 52;   //Visita al perfil
+        $arr_row['element_id'] = $user->id;
+        $arr_row['related_1'] = $visitor['role'];
+        $arr_row['content'] = $visitor['name'] . ' visitó el perfil de ' . $user->display_name;
+
+        $this->Event_model->save($arr_row, 'id = 0'); //Condición para que siempre se inserte
+
+        redirect($this->url_controller . 'perfil/' . $user_id);
+    }
+
+    /**
+     * Vista del perfil del invitado
+     * 2025-08-24
+     */
     function perfil($user_id)
     {
         $this->load->model('User_model');
@@ -74,7 +110,6 @@ class Invitados extends CI_Controller {
         $data['following_status'] = $this->Rci_model->following_status($user_id);
 
         unset($data['nav_2']);
-        //$data['nav_2'] = '';
         $this->App_model->view(RCI_TPL_APP, $data);
     }
 
@@ -89,6 +124,43 @@ class Invitados extends CI_Controller {
         $data['view_a'] = $this->views_folder . 'me_interesa/me_interesa_v';
         $data['following'] = $this->User_model->following($user_id);
         $data['followers'] = $this->User_model->followers($user_id);
+
+        $this->App_model->view(RCI_TPL_APP, $data);
+    }
+
+// AI HERRAMIENTAS
+//-----------------------------------------------------------------------------
+
+    /**
+     * Vista de chat, generar con IA información sobre los invitados
+     * 2025-08-28
+     */
+    function descubre()
+    {
+        $data['head_title'] = 'Descubre a los Invitados';
+        $data['view_a'] = $this->views_folder . 'descubre/descubre_v';
+        $data['max_tokens'] = 20000;
+
+        $this->load->model('Search_model');
+        $filters = $this->Search_model->filters();
+
+        // Contenidos generados previamente
+        $this->load->model('Post_model');
+        $filters['sf'] = '401_ai_generados';
+        $filters['type'] = '401';
+        $filters['status'] = 1; //Publicado
+        $data['contenidos'] = $this->Post_model->get($filters, 1, 50);
+
+        //Lapso de creación en las ultimas 24 horas
+        $usage_condition = "creator_id = {$this->session->userdata('user_id')}";
+        if ( $this->session->userdata('role') > 3 ) {
+            $usage_condition .= " AND created_at >= NOW() - INTERVAL 24 HOUR";
+        }
+
+        $data['tokens'] = [
+            'max' => 350000,
+            'usage' => $this->Rci_model->used_tokens($usage_condition)
+        ];
 
         $this->App_model->view(RCI_TPL_APP, $data);
     }

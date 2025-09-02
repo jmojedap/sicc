@@ -79,6 +79,9 @@ class Post_model extends CI_Model{
         $arr_select['132_elementos_datos'] = 'id, post_name AS title, slug AS name, excerpt AS description, 
             text_1 AS sistema';
         $arr_select['138_links'] = 'id, post_name AS nombre, excerpt AS descripcion, text_1 AS link';
+        $arr_select['401_ai_generados'] = 'id, post_name AS titulo, excerpt AS solicitud, content AS contenido,
+            text_1 AS username, text_2 AS user_display_name,
+            created_at, updated_at, creator_id, updater_id';
 
         return $arr_select[$format];
     }
