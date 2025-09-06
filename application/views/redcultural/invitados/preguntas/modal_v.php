@@ -20,8 +20,8 @@
                             <div class="d-flex flex-column">
                                 <div class="d-flex justify-content-between mb-3">
                                     <a v-bind:href="`<?= RCI_URL_APP ?>invitados/abrir_perfil/` + currentElement['id'] + `/` + currentElement['username']"
-                                        class="btn btn-main text-white me-2">
-                                        Conoce más de
+                                        class="btn btn-main w120p text-white me-2">
+                                        Abrir
                                     </a>
                                     <button v-on:click="nextRandomProfile" title="Descubre un perfil aleatorio"
                                         class="btn btn-light w120p">

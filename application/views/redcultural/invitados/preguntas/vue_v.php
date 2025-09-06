@@ -1,11 +1,11 @@
 <script>
 // VueApp
 //-----------------------------------------------------------------------------
-var directorioApp = createApp({
+var preguntasApp = createApp({
     data() {
         return {
             section: 'listado',
-            typeView: 'grid',
+            typeView: 'table',
             nombreElemento: 'persona',
             nombreElementos: 'personas',
             elementos: <?= json_encode($elementos) ?>,
@@ -70,6 +70,14 @@ var directorioApp = createApp({
             const randomIndex = Math.floor(Math.random() * this.elementos.length);
             var nextElement = this.elementos[randomIndex];
             this.setCurrent(nextElement['id']);
+        },
+        //Buscar un valor de un campo del directorio a partir de un username
+        directorioValue: function(username, field, defaultValue = '') {
+            const profile = this.directorio.find(profile => profile['username'] === username);
+            if (profile && profile.hasOwnProperty(field)) {
+                return profile[field];
+            }
+            return defaultValue;
         }
     },
     computed: {
@@ -99,5 +107,5 @@ var directorioApp = createApp({
         // Importante: limpiar el listener si desmontas el componente
         window.removeEventListener("keydown", this.keyHandler);
     }
-}).mount('#directorioApp');
+}).mount('#preguntasApp');
 </script>

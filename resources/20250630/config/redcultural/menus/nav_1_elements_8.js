@@ -6,7 +6,7 @@ var nav_1_elements = [
         cf: '',
         subelements: [
             {
-                text: 'Explorar',
+                text: 'Directorio',
                 active: false,
                 icon: '',
                 cf: 'invitados/directorio/',
@@ -21,8 +21,25 @@ var nav_1_elements = [
                 sections: ['invitados/me_interesa'],
                 anchor: true
             },
+            {
+                text: 'Más visitados',
+                active: false,
+                icon: '',
+                cf: 'invitados/visitas/',
+                sections: ['invitados/visitas'],
+                anchor: true
+            }
         ],
         sections: [],
+        anchor: true
+    },
+    {
+        text: 'Preguntas',
+        active: false,
+        icon: '',
+        cf: 'invitados/preguntas',
+        subelements: [],
+        sections: ['invitados/preguntas'],
         anchor: true
     },
     {

@@ -87,7 +87,7 @@ class Notification_model extends CI_Model{
 
                 $data = $this->mail_pml->send($settings);
                 if ( $data['status'] == 1 ) {
-                    $data['message'] = "El link fue enviado a el correo electrónico {$user->email}";
+                    $data['message'] = "El link fue enviado al correo electrónico {$user->email}";
                     $data['app_info'] = $app_info;
                 }
             } else {

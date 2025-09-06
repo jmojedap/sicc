@@ -101,6 +101,22 @@ class Rci_model extends CI_Model{
         return $data;
     }
 
+    function visitas()
+    {
+        $this->db->select('events.text_1 AS username, users.display_name, users.id AS user_id, COUNT(events.id) AS qty_events');
+        $this->db->where('events.type_id', 52);    //Visita pefil
+        $this->db->where('events.related_1 > 2');    //Que no sea de usuarios internos
+        $this->db->group_by('events.text_1');
+        $this->db->join('users', 'users.id = events.element_id');
+        $this->db->order_by('COUNT(events.id)', 'desc');
+        
+        $visitas = $this->db->get('events');
+
+        //$this->output->enable_profiler(TRUE);
+    
+        return $visitas;
+    }
+
 // IMPORTAR METADATOS DE INVITADOS
 //-----------------------------------------------------------------------------
 

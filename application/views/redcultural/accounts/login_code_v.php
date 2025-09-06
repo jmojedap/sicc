@@ -26,7 +26,7 @@
         <input type="hidden" name="username" v-model="email">
         <fieldset v-bind:disabled="loading">
             <p>
-                Pega o escribe aquí el código de 12 letras que recibiste en tu correo electrónico para acceder a
+                Pega o escribe aquí el código de 8 letras que recibiste en tu correo electrónico para acceder a
                 <span class="text-primary"><?= RCI_APP_NAME ?></span>
             </p>
             <div class="mb-3">

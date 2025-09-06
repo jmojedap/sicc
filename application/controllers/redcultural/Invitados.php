@@ -56,6 +56,9 @@ class Invitados extends CI_Controller {
         $data['elementos'] = $dataSearch['list'];
         //$data['back_link'] = $this->url_controller . 'explorar';
 
+        $directorio_file = PATH_CONTENT . 'redcultural/data/ecci_invitados_directorio.json';
+        $data['directorio'] = json_decode(file_get_contents($directorio_file), true);
+
         //$data['arrFase'] = $this->Item_model->arr_options('category_id = 433');
 
         $this->App_model->view(RCI_TPL_APP, $data);
@@ -83,6 +86,7 @@ class Invitados extends CI_Controller {
         $arr_row = $this->Event_model->basic_row();
 
         $arr_row['title'] = 'Visita a ' . $user->display_name;
+        $arr_row['text_1'] = $user->username;
         $arr_row['type_id'] = 52;   //Visita al perfil
         $arr_row['element_id'] = $user->id;
         $arr_row['related_1'] = $visitor['role'];
@@ -90,7 +94,7 @@ class Invitados extends CI_Controller {
 
         $this->Event_model->save($arr_row, 'id = 0'); //Condición para que siempre se inserte
 
-        redirect($this->url_controller . 'perfil/' . $user_id);
+        redirect($this->url_controller . 'perfil/' . $user_id . '/' . $user->username);
     }
 
     /**
@@ -124,6 +128,18 @@ class Invitados extends CI_Controller {
         $data['view_a'] = $this->views_folder . 'me_interesa/me_interesa_v';
         $data['following'] = $this->User_model->following($user_id);
         $data['followers'] = $this->User_model->followers($user_id);
+
+        $this->App_model->view(RCI_TPL_APP, $data);
+    }
+
+    /**
+     * Perfiles de invitados más visitados
+     */
+    function visitas()
+    {
+        $data['head_title'] = 'Más visitados';
+        $data['view_a'] = $this->views_folder . 'visitas_v';
+        $data['visitas'] = $this->Rci_model->visitas();
 
         $this->App_model->view(RCI_TPL_APP, $data);
     }
@@ -163,6 +179,33 @@ class Invitados extends CI_Controller {
         ];
 
         $this->App_model->view(RCI_TPL_APP, $data);
+    }
+
+    function preguntas()
+    {
+        $data['head_title'] = 'Preguntas propuestas';
+        $data['view_a'] = $this->views_folder . 'preguntas/preguntas_v';
+
+        $this->load->model('User_model');
+        $this->load->model('Search_model');
+        $filters = $this->Search_model->filters();
+        $filters['sf'] = 'red_cultural';
+        $filters['role'] = 11;
+        $filters['o'] = 'integer_1';
+        $filters['ot'] = 'DESC';
+        $filters['tags'] = 'invitadosFormulario';
+        $numPage = 1;
+        $perPage = 300;
+        $dataSearch = $this->User_model->get($filters, $numPage, $perPage);
+
+        $data['elementos'] = $dataSearch['list'];
+        //$data['back_link'] = $this->url_controller . 'explorar';
+
+        $directorio_file = PATH_CONTENT . 'redcultural/data/ecci_invitados_directorio.json';
+        $data['directorio'] = json_decode(file_get_contents($directorio_file), true);
+
+        $this->App_model->view(RCI_TPL_APP, $data);
+
     }
 
     // IMPORTACIÓN DE USUARIOS

@@ -1,9 +1,8 @@
 <script src="<?= URL_RESOURCES ?>js/pml_searcher.js"></script>
-<!-- <link rel="stylesheet" href="<?= URL_RESOURCES ?>css/sicc/observatorio-investigaciones.css"> -->
 
 <?php $this->load->view('redcultural/invitados/style_v') ?>
 
-<div id="directorioApp">
+<div id="preguntasApp">
     <div class="text-center" v-show="loading">
         <div class="spinner-border text-secondary" role="status">
             <span class="visually-hidden">Loading...</span>
@@ -19,18 +18,18 @@
         </div>
 
         <p class="text-center"><strong class="color-text-1">
-                {{ elementosFiltrados.length }}</strong> resultados &middot;
-            <button class="btn btn-sm" v-bind:class="{'btn-light': typeView == 'grid' }" v-on:click="typeView = 'grid'"
+                {{ elementosFiltrados.length }}</strong> resultados
+            <button class="btn btn-sm d-none" v-bind:class="{'btn-light': typeView == 'grid' }" v-on:click="typeView = 'grid'"
                 title="Ver como cuadrícula">
                 <i class="fas fa-grip-horizontal"></i>
             </button>
-            <button class="btn btn-sm me-1" v-bind:class="{'btn-light': typeView == 'list' }"
+            <button class="btn btn-sm me-1 d-none" v-bind:class="{'btn-light': typeView == 'list' }"
                 v-on:click="typeView = 'list'" title="Ver como lista">
                 <i class="fas fa-table-list"></i>
             </button>
         </p>
 
-        <?php $this->load->view('redcultural/invitados/directorio/modal_v') ?>
+        <?php $this->load->view('redcultural/invitados/preguntas/modal_v') ?>
 
     </div>
     <!-- LISTA DE INVITADOS -->
@@ -77,7 +76,7 @@
                     <a v-bind:href="`<?= RCI_URL_APP ?>invitados/abrir_perfil/` + elemento['id'] + `/` + elemento['username']"
                         class="pointer">
                         <img v-bind:src="`<?= URL_CONTENT ?>redcultural/images/profiles/` + elemento['username'] + `.jpg`"
-                            class="w-100 rounded shadow mb-2" v-bind:alt="`Imagen de ` + elemento['nombre_completo']" loading="lazy"
+                            class="w50p rounded rounded-circle shadow mb-2" v-bind:alt="`Imagen de ` + elemento['nombre_completo']" loading="lazy"
                             v-bind:onerror="`this.src='<?= URL_IMG ?>redcultural/user.png'`">
                     </a>
                 </div>
@@ -109,8 +108,46 @@
                 </div>
             </div>
         </div>
+
+        <div v-show="typeView == 'table'" class="container-fluid">
+            <table class="table bg-white">
+                <thead>
+                    <th class="text-white">i</th>
+                    <th>Nombre</th>
+                    <th>Username</th>
+                    <th>Rol/Actividad</th>
+                    <th>País</th>
+                    <th>Ciudad</th>
+                    <th>
+                        ¿Qué pregunta te surge frente a los retos de la cultura en Iberoamérica?
+                    </th>
+                    <th>
+                        ¿Qué pregunta te gustaría que guiara las conversaciones del Encuentro?
+                    </th>
+                </thead>
+                <tbody>
+                    <tr v-for="(elemento, key) in elementosFiltrados">
+                        <td>
+                            <a v-bind:href="`<?= RCI_URL_APP ?>invitados/perfil/` + elemento['id'] + `/` + elemento['username']"
+                                class="pointer">
+                                <img v-bind:src="`<?= URL_CONTENT ?>redcultural/images/profiles/` + elemento['username'] + `.jpg`"
+                                    class="w30p rounded rounded-circle shadow mb-2" v-bind:alt="`Imagen de ` + elemento['nombre_completo']" loading="lazy"
+                                    v-bind:onerror="`this.src='<?= URL_IMG ?>redcultural/user.png'`">
+                            </a>
+                        </td>
+                        <td>{{ elemento['nombre_completo'] }}</td>
+                        <td>{{ elemento['username'] }}</td>
+                        <td>{{ elemento['rol_actividad'] }}</td>
+                        <td>{{ paisTo(elemento['pais_origen']) }}</td>
+                        <td>{{ elemento['ciudad'] }}</td>
+                        <td>{{ directorioValue(elemento['username'], 'pregunta_retos') }}</td>
+                        <td>{{ directorioValue(elemento['username'], 'pregunta_conversaciones') }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 
 </div>
 
-<?php $this->load->view('redcultural/invitados/directorio/vue_v') ?>
+<?php $this->load->view('redcultural/invitados/preguntas/vue_v') ?>

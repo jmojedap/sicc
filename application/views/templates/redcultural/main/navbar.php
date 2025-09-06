@@ -52,7 +52,7 @@
                         </li>
                     <?php else: ?>
                         <li class="nav-item">
-                            <a class="nav-link" href="<?= RCI_URL_APP ?>accounts/login_code" role="button">
+                            <a class="nav-link" href="<?= RCI_URL_APP ?>accounts/login_link" role="button">
                                 Ingresar
                             </a>
                         </li>

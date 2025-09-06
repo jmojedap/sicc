@@ -1,27 +1,4 @@
-<style>
-.resaltar-1 {
-    background-color: #966DF2;
-    color: #FFF;
-    padding: 0rem 0.5rem;
-    font-weight: bold;
-}
-
-.resaltar-2 {
-    background-color: #FDE041;
-    color: #000;
-    text-transform: uppercase;
-    padding: 0rem 0.5rem;
-    font-weight: bold;
-}
-
-.icon-recomendado{
-    font-size: 1.8em;
-}
-
-td.profile-info {
-    background-color: rgba(255, 255, 255, 0.5);
-}
-</style>
+<?php $this->load->view('redcultural/invitados/style_v') ?>
 
 <div id="pefilApp" class="container my-4">
     <div class="mb-3">
