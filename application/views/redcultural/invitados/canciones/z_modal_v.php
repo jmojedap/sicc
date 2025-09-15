@@ -19,32 +19,10 @@
                         <div class="col-md-6">
                             <div class="d-flex flex-column">
                                 <div class="d-flex justify-content-between mb-3">
-                                    <div>
-                                        <a v-bind:href="`<?= RCI_URL_APP ?>invitados/abrir_perfil/` + currentElement['id'] + `/` + currentElement['username']"
-                                            class="btn btn-main text-white me-2">
-                                            Ver perfil completo
-                                        </a>
-                                        
-                                        <?php if ( $this->session->userdata('logged') ) : ?>
-                                            <button class="btn btn-warning w150p" v-show="!inFollowed && !loadingFollowing" v-on:click="altFollow">
-                                                <i class="far fa-circle"></i>
-                                                Me interesa
-                                            </button>
-                                            <button class="btn btn-primary w150p" v-show="inFollowed && !loadingFollowing" v-on:click="altFollow">
-                                                <i class="fas fa-check-circle"></i>
-                                                Te interesa
-                                            </button>
-                                            <button class="btn btn-light w150p" v-show="loadingFollowing">
-                                                <i class="fas fa-spin fa-spinner"></i>
-                                            </button>
-                                        <?php else: ?>
-                                            <a class="btn btn-warning w150p" href="<?= RCI_URL_APP ?>accounts/login_link">
-                                                <i class="far fa-circle"></i>
-                                                Me interesa
-                                            </a>
-                                        <?php endif; ?>
-
-                                    </div>
+                                    <a v-bind:href="`<?= RCI_URL_APP ?>invitados/abrir_perfil/` + currentElement['id'] + `/` + currentElement['username']"
+                                        class="btn btn-main w120p text-white me-2">
+                                        Abrir
+                                    </a>
                                     <button v-on:click="nextRandomProfile" title="Descubre un perfil aleatorio"
                                         class="btn btn-light w120p">
                                         Aleatorio <i class="fas fa-arrow-right"></i>

@@ -41,7 +41,14 @@ var visitasApp = createApp({
         }
     },
     methods: {
-        
+        ago: function(date){
+            if (!date) return ''
+            return moment(date, 'YYYY-MM-DD HH:mm:ss').fromNow()            
+        },
+        dateFormat: function(date){
+            if (!date) return ''
+            return moment(date).format('D MMM YYYY')
+        },
     },
     mounted(){
         //this.getList()

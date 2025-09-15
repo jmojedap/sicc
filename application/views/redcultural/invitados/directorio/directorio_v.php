@@ -12,7 +12,7 @@
 
     <div class="center_box_920" v-show="!loading">
         <div class="search-container">
-            <input class="search-input mb-2" type="text" v-model="q" placeholder="Buscar" autofocus>
+            <input class="search-input mb-2" type="text" v-model="q" placeholder="Buscar entre las personas invitadas" autofocus>
             <button class="search-button" v-show="this.q.length > 0" v-on:click="clearSearch()">
                 <i class="fas fa-times"></i>
             </button>

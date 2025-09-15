@@ -25,12 +25,29 @@ var nav_1_elements = [
                 text: 'Más visitados',
                 active: false,
                 icon: '',
-                cf: 'invitados/visitas/',
-                sections: ['invitados/visitas'],
+                cf: 'monitoreo/visitas/',
+                sections: ['monitoreo/visitas'],
+                anchor: true
+            },
+            {
+                text: 'Intereses',
+                active: false,
+                icon: '',
+                cf: 'monitoreo/intereses/',
+                sections: ['monitoreo/intereses'],
                 anchor: true
             }
         ],
         sections: [],
+        anchor: true
+    },
+    {
+        text: 'Canciones',
+        active: false,
+        icon: '',
+        cf: 'invitados/canciones',
+        subelements: [],
+        sections: ['invitados/canciones'],
         anchor: true
     },
     {

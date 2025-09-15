@@ -123,15 +123,16 @@ class Accounts extends CI_Controller {
      */
     function login_code()
     {        
+        $this->login_link();
         //Verificar si está logueado
-            if ( $this->session->userdata('logged') )
+            /*if ( $this->session->userdata('logged') )
             {
                 redirect('redcultural/accounts/logged');
             } else {
                 $data['head_title'] = RCI_APP_NAME;
                 $data['view_a'] = $this->views_folder . 'login_code_v';
                 $this->load->view('templates/redcultural/main', $data);
-            }
+            }*/
     }
 
     /**

@@ -9,6 +9,7 @@ class Rci_model extends CI_Model{
     {
         $this->db->select('*');
         $this->db->where('user_id', $user_id);
+        $this->db->where('type_id', 1011);
         $this->db->where('related_1', $this->session->userdata('user_id'));
         $row_meta = $this->db->get('users_meta');
 
@@ -17,6 +18,19 @@ class Rci_model extends CI_Model{
         }
 
         return 0;
+    }
+
+    function followed($user_id)
+    {
+        $this->db->select('user_id, users.username');
+        $this->db->where('users_meta.related_1', $user_id);   //Seguidor
+        $this->db->where('users_meta.type_id', 1011);
+        $this->db->join('users', 'users.id = users_meta.user_id', 'left');
+        
+        $followed = $this->db->get('users_meta');
+        
+        return $followed;
+    
     }
 
 // IMPORTAR INVITADOS
@@ -115,6 +129,38 @@ class Rci_model extends CI_Model{
         //$this->output->enable_profiler(TRUE);
     
         return $visitas;
+    }
+
+    /**
+     * Listado de registro de seguimientos entre usuarios
+     */
+    function intereses()
+    {
+        $this->db->select('u.display_name, u.username, u.text_1 AS pais, u.job_role AS actitidad_rol, users_meta.text_1 AS seguidor,
+            s.username AS seguidor_username, users_meta.related_1 as seguidor_id, users_meta.created_at');
+        $this->db->where('users_meta.type_id', 1011);    //Seguidor
+        $this->db->where('u.role > 2');    //Que no sea de usuarios administradores
+        $this->db->join('users u', 'u.id = users_meta.user_id');
+        $this->db->join('users s', 's.id = users_meta.related_1');
+        $this->db->order_by('users_meta.created_at', 'desc');
+        
+        $intereses = $this->db->get('users_meta');
+    
+        return $intereses;
+    }
+
+    function contenidos_ia()
+    {
+        $this->db->select('posts.*, users.display_name, users.id AS user_id');
+        $this->db->where('posts.type_id', 401);    //Generado IA Descrubre
+        $this->db->join('users', 'users.id = posts.creator_id');
+        $this->db->order_by('posts.id', 'desc');
+        
+        $contenidos = $this->db->get('posts');
+
+        //$this->output->enable_profiler(TRUE);
+    
+        return $contenidos;
     }
 
 // IMPORTAR METADATOS DE INVITADOS

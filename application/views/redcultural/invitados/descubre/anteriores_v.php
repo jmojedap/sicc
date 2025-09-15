@@ -1,6 +1,6 @@
 <div class="row">
     <div class="col-md-4">
-        <p>Descubre y pregunta aquí más información sobre las personas invitadas al Encuentro</p>
+        <p>Descubre y pregunta aquí más información sobre las personas invitadas al Encuentro, podrás hacer varias consultas al día.</p>
         <p>Explora contenidos generados con preguntas de otros usuarios <i class="fas fa-arrow-right"></i></p>
         <table class="bg-white table table-sm">
             <tbody>
@@ -20,7 +20,7 @@
                         </a>
                     </td>
                     <td width="10px" class="text-center align-middle">
-                        <button class="btn" v-show="contenido.creator_id == <?= $this->session->userdata('user_id') ?>"
+                        <button class="btn" v-show="contenido.creator_id == <?= $session_user_id ?>"
                             v-on:click="setCurrentContenido(contenido.id)"
                             data-bs-toggle="modal" data-bs-target="#deleteModal"
                         >

@@ -54,12 +54,11 @@ class Invitados extends CI_Controller {
         $dataSearch = $this->User_model->get($filters, $numPage, $perPage);
 
         $data['elementos'] = $dataSearch['list'];
-        //$data['back_link'] = $this->url_controller . 'explorar';
+        $user_id = $this->session->userdata('user_id') ?? 0;
+        $data['followed'] = $this->Rci_model->followed($user_id);
 
         $directorio_file = PATH_CONTENT . 'redcultural/data/ecci_invitados_directorio.json';
         $data['directorio'] = json_decode(file_get_contents($directorio_file), true);
-
-        //$data['arrFase'] = $this->Item_model->arr_options('category_id = 433');
 
         $this->App_model->view(RCI_TPL_APP, $data);
     }
@@ -173,6 +172,16 @@ class Invitados extends CI_Controller {
             $usage_condition .= " AND created_at >= NOW() - INTERVAL 24 HOUR";
         }
 
+        $data['session_user_id'] = 0;
+        $data['user_country'] = 'Colombia';
+
+        if ( $this->session->userdata('logged') ) {
+            $data['session_user_id'] = $this->session->userdata('user_id');
+            $user_row = $this->Db_model->row('users', "id = {$data['session_user_id']}");
+            if ( $user_row->role != 11 ) $data['user_country'] == $user_row->text_2;
+        }
+
+
         $data['tokens'] = [
             'max' => 350000,
             'usage' => $this->Rci_model->used_tokens($usage_condition)
@@ -185,6 +194,33 @@ class Invitados extends CI_Controller {
     {
         $data['head_title'] = 'Preguntas propuestas';
         $data['view_a'] = $this->views_folder . 'preguntas/preguntas_v';
+
+        $this->load->model('User_model');
+        $this->load->model('Search_model');
+        $filters = $this->Search_model->filters();
+        $filters['sf'] = 'red_cultural';
+        $filters['role'] = 11;
+        $filters['o'] = 'integer_1';
+        $filters['ot'] = 'DESC';
+        $filters['tags'] = 'invitadosFormulario';
+        $numPage = 1;
+        $perPage = 300;
+        $dataSearch = $this->User_model->get($filters, $numPage, $perPage);
+
+        $data['elementos'] = $dataSearch['list'];
+        //$data['back_link'] = $this->url_controller . 'explorar';
+
+        $directorio_file = PATH_CONTENT . 'redcultural/data/ecci_invitados_directorio.json';
+        $data['directorio'] = json_decode(file_get_contents($directorio_file), true);
+
+        $this->App_model->view(RCI_TPL_APP, $data);
+
+    }
+
+    function canciones()
+    {
+        $data['head_title'] = 'Canciones del Encuentro';
+        $data['view_a'] = $this->views_folder . 'canciones/canciones_v';
 
         $this->load->model('User_model');
         $this->load->model('Search_model');

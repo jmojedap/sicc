@@ -193,4 +193,82 @@ class Red_cultural extends CI_Controller {
         //Salida JSON
         $this->output->set_content_type('application/json')->set_output(json_encode($data));
     }
+
+    /**
+     * Estado de seguimiento por parte del usuario actual
+     */
+    function following_status($user_id)
+    {
+        $data['following_status'] = $this->Rci_model->following_status($user_id);
+        $this->output->set_content_type('application/json')->set_output(json_encode($data));
+    }
+
+    function guardar_agenda()
+    {
+        $data = ['error' => '','recaptcha_valid' => FALSE, 'qty_saved' => 0];
+
+        $this->load->model('Validation_model');
+        $recaptcha = $this->Validation_model->recaptcha(); //Validación Google ReCaptcha V3
+
+        //Identificar usuario
+        $user = $this->Db_model->row('users', "email = '{$this->input->post('email')}'");
+
+        if ( $recaptcha == 1 ) {
+            $data['recaptcha_valid'] = TRUE;
+            $this->load->model('User_model');
+    
+            $email = $this->input->post('email');
+            $user = $this->Db_model->row('users', "email = '$email'");
+
+            $arr_base['user_id'] = 0;
+            $arr_base['title'] = $this->input->post('display_name');
+            $arr_base['description'] = $email;
+            $arr_base['creator_id'] = 1;
+            $arr_base['updater_id'] = 1;
+
+            if ( ! is_null($user) ) {
+                $arr_base['user_id'] = $user->id;
+                $arr_base['title'] = $user->display_name;
+                $arr_base['creator_id'] = $user->id;
+                $arr_base['updater_id'] = $user->id;
+            }
+    
+            //Viernes tarde
+            $arr_viernes_tarde = $arr_base;
+            $arr_viernes_tarde['type_id'] = '100061';
+            $arr_viernes_tarde['type'] = 'agenda-viernes-tarde';
+            $arr_viernes_tarde['text_1'] = $this->input->post('viernes_tarde');
+            $arr_viernes_tarde['text_2'] = $this->input->post('viernes_tarde_opcion_2');
+    
+            $result['viernes_tarde'] = $this->User_model->save_meta($arr_viernes_tarde, "description = '{$arr_base['description']}' AND type_id = 100061");
+            if ( $result['viernes_tarde'] ) { $data['qty_saved']++; }
+
+            //Sábado
+            $arr_sabado = $arr_base;
+            $arr_sabado['type_id'] = '100063';
+            $arr_sabado['type'] = 'agenda-sabado-manana';
+            $arr_sabado['text_1'] = $this->input->post('sabado_manana_opcion_1');
+            $arr_sabado['text_2'] = $this->input->post('sabado_manana_opcion_2');
+    
+            $result['sabado'] = $this->User_model->save_meta($arr_sabado, "description = '{$arr_base['description']}' AND type_id = 100063");
+            if ( $result['sabado'] ) { $data['qty_saved']++; }
+
+            //domingo
+            $arr_domingo = $arr_base;
+            $arr_sabado['type_id'] = '100065';
+            $arr_sabado['type'] = 'agenda-recorrido-domingo';
+            $arr_sabado['text_1'] = $this->input->post('recorrido_domingo');
+            $arr_sabado['text_2'] = '';
+    
+            $result['domingo'] = $this->User_model->save_meta($arr_sabado, "description = '{$arr_base['description']}' AND type_id = 100065");
+            if ( $result['domingo'] ) { $data['qty_saved']++; }
+    
+            $data['result'] = $result;
+        } else {
+            $data['error'] = 'Recaptcha no validado';
+        }
+
+        //Salida JSON
+        $this->output->set_content_type('application/json')->set_output(json_encode($data));
+    }
 }

@@ -1,11 +1,11 @@
 <script>
 // VueApp
 //-----------------------------------------------------------------------------
-var directorioApp = createApp({
+var cancionesApp = createApp({
     data() {
         return {
             section: 'listado',
-            typeView: 'grid',
+            typeView: 'table',
             nombreElemento: 'persona',
             nombreElementos: 'personas',
             elementos: <?= json_encode($elementos) ?>,
@@ -26,8 +26,6 @@ var directorioApp = createApp({
             ],
             currentElement: <?= json_encode($elementos[0]) ?>,
             currentId: -1,
-            loadingFollowing: false,
-            followed: <?= json_encode($followed->result()) ?>,
         }
     },
     methods: {
@@ -73,28 +71,19 @@ var directorioApp = createApp({
             var nextElement = this.elementos[randomIndex];
             this.setCurrent(nextElement['id']);
         },
-        altFollow: function() {
-            this.loadingFollowing = true
-            axios.get(URL_API + 'users/alt_follow/' + this.currentElement.id)
-            .then(response => {
-                console.log(response.data)
-                this.followingStatus = response.data.status;
-                if (response.data.status == 1) {
-                    //Se agrega al array this.followed
-                    var newFollowed = {
-                        user_id: this.currentElement.id,
-                        username: this.currentElement.username
-                    }
-                    this.followed.push({user_id: this.currentElement.id});
-                    toastr['success']('Se agregó a tu listado de intereses culturales')
-                } else if (response.data.status == 2) {
-                    //Se elimina de this.followed
-                    this.followed = this.followed.filter(f => f.user_id != this.currentElement.id);
-                    toastr['info']('Se retiró de tu listado de intereses culturales')
-                }
-                this.loadingFollowing = false
-            })
-            .catch(function(error) {console.log(error)})
+        //Buscar un valor de un campo del directorio a partir de un username
+        directorioValue: function(username, field, defaultValue = '') {
+            const profile = this.directorio.find(profile => profile['username'] === username);
+            if (profile && profile.hasOwnProperty(field)) {
+                return profile[field];
+            }
+            return defaultValue;
+        },
+        youTubeLink: function(text){
+            return 'https://www.youtube.com/results?search_query=' + Pcrn.textToClass(text)
+        },
+        spotifyLink: function(text){
+            return 'https://open.spotify.com/search/' + Pcrn.textToClass(text)
         },
     },
     computed: {
@@ -107,11 +96,7 @@ var directorioApp = createApp({
                 listaFiltrada = PmlSearcher.getFilteredResults(this.q, listaFiltrada, fieldsToSearch)
             }
             return listaFiltrada
-        },
-        //Establecer si this.currentElement.id esta en this.followed.user_id
-        inFollowed: function(){
-            return this.followed.some(f => f.user_id == this.currentElement.id);
-        },
+        }
     },
     mounted() {
         // Escuchar evento global de teclado
@@ -123,23 +108,10 @@ var directorioApp = createApp({
                 this.nextRandomProfile();
             }
         });
-        // Sumar un valor aleatorio a elementos['puntaje'] entre 1 y 15
-        this.elementos.forEach(elemento => {
-            //elemento['puntaje'] = intval(elemento['puntaje']) + Math.floor(Math.random() * 15) + 1;
-            elemento['puntaje'] = elemento['puntaje'] * 1 + (Math.floor(Math.random() * 50) + 1);
-        });
-        // Redorderar elementos según puntaje
-        this.elementos.sort((a, b) => b.puntaje - a.puntaje);
-        // Establecer el primer elemento como el actual
-        this.setCurrent(this.elementos[0]['id']);
-        // Ubicación SanTru
-        var elementoSanTru = this.elementos.find(elemento => elemento['username'] == 'santiago.trujillo');
-        this.elementos = this.elementos.filter(elemento => elemento['username'] != 'santiago.trujillo');
-        this.elementos.splice(3, 0, elementoSanTru);
     },
     beforeUnmount() {
         // Importante: limpiar el listener si desmontas el componente
         window.removeEventListener("keydown", this.keyHandler);
     }
-}).mount('#directorioApp');
+}).mount('#cancionesApp');
 </script>

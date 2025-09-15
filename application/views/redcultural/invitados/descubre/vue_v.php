@@ -14,14 +14,21 @@ const funciones = [
         nombre: 'preguntas-relevantes',
         titulo_corto: 'Preguntas',
         titulo: 'Preguntas relevantes',
-        descripcion: 'Consolida en 5 grupos o categorías, las preguntas propuestas por los invitados sobre los retos de la cultura en Iberoamérica, muestralas en una lista con título y descripción.',
+        descripcion: 'Consolida en 5 grupos o categorías, las preguntas propuestas por los invitados sobre los retos de la cultura en Iberoamérica, muéstralas en una lista con título y descripción.',
+        active: true,
+    },
+    {   funcion_id: 25,
+        nombre: 'mis-pares',
+        titulo_corto: 'Mis pares',
+        titulo: 'Mis pares',
+        descripcion: '¿Quiénes son las 5 personas invitadas que más tiene afinidad cultural y temática conmigo? Haz una lista y explica brevemente por qué?',
         active: true,
     },
     {   funcion_id: 30,
         nombre: 'invitados-argentina',
         titulo_corto: 'Invitados por país',
         titulo: 'Invitados por país',
-        descripcion: 'Genera una tabla con las personas invitadas de Argentina, incluyendo nombre, username y una breve descripción de su relevancia cultural.',
+        descripcion: 'Genera una tabla con las personas invitadas de <?= $user_country ?>, incluyendo nombre, username y una breve descripción de su relevancia cultural.',
         active: true,
     },
     {   funcion_id: 40,
@@ -47,8 +54,8 @@ const maxTokens = <?= $max_tokens ?>;
 var chatApp = createApp({
     data(){
         return{
-            //section: 'contents',
-            section: 'generation',
+            section: 'contents',
+            //section: 'generation',
             sections: [
                 { name: 'contents', title: 'Contenidos' },
                 { name: 'generation', title: 'Generar' },
@@ -56,7 +63,7 @@ var chatApp = createApp({
             ],
             loading: false,
             messages: [],
-            userId: <?= $this->session->userdata('user_id') ?>,
+            userId: <?= $session_user_id ?>,
             currentContenido: {
                 id: 0,
                 solicitud: '',
@@ -66,13 +73,13 @@ var chatApp = createApp({
             lastMessage: {
                 id: 0, 
             },
-            user_input: '¿Cuáles son los intereses temáticos más frecuentes entre las personas invitadas al Encuentro?',
+            user_input: funciones[2].descripcion,
             responseText:'',
             responseHtml: '',
             tokens: <?= json_encode($tokens) ?>,
             funciones: funciones,
             functionId: 0,
-            currentFuncion: funciones[0], // Función activa por defecto
+            currentFuncion: funciones[2], // Función activa por defecto
             deleteConfirmationTexts : {
                 title: 'Eliminar contenido',
                 text: '¿Confirma la eliminación del contenido generado?',
@@ -90,12 +97,24 @@ var chatApp = createApp({
             this.getResponse()
         },
         getResponse: function() {
+            this.loading = true;
             if (!this.user_input) {
                 console.warn("El input está vacío");
+                this.loading = false;
                 return;
             }
 
-            this.loading = true;
+            if ( this.userId == 0 ) {
+                //toastr['info']('Es necesario iniciar sesión para generar contenidos con esta herramienta')
+                const modalEl = document.getElementById('sessionModal');
+                const modal = new bootstrap.Modal(modalEl, {
+                    backdrop: 'static', // opcional: evita cerrar al hacer click fuera
+                    keyboard: false     // opcional: evita cerrar con ESC
+                });
+                modal.show();
+                this.loading = false;
+                return;
+            }
 
             const formValues = new FormData();
             formValues.append('user_input', this.user_input.trim());

@@ -30,17 +30,17 @@
 
                     <?php if ( $this->session->userdata('logged') ) : ?>
                     <div v-if="user.id != appUid">
-                        <button class="btn btn-light w150p" v-show="followingStatus != 1" v-on:click="altFollow">
+                        <button class="btn btn-warning w150p" v-show="followingStatus != 1" v-on:click="altFollow">
                             <i class="far fa-circle"></i>
                             Me interesa
                         </button>
-                        <button class="btn btn-warning w150p" v-show="followingStatus == 1" v-on:click="altFollow">
+                        <button class="btn btn-primary w150p" v-show="followingStatus == 1" v-on:click="altFollow">
                             <i class="fas fa-check-circle"></i>
                             Te interesa
                         </button>
                     </div>
                     <?php else: ?>
-                    <a class="btn btn-light w150p" href="<?= RCI_URL_APP ?>accounts/login_code">
+                    <a class="btn btn-warning w150p" href="<?= RCI_URL_APP ?>accounts/login_link">
                         <i class="far fa-circle"></i>
                         Me interesa
                     </a>

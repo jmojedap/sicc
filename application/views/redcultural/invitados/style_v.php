@@ -73,4 +73,21 @@ td.profile-info {
     width: 100%;     /* ocupa todo el ancho de la imagen */
     text-align: center; /* centra el texto */
 }
+
+.bg-youtube {
+    color: white;
+    background-color: #FF0033;
+}
+.bg-spotify {
+    color: white;
+    background-color: #19AA67;
+}
+.bg-youtube:hover {
+    color: white;
+    background-color: #e0022eff;
+}
+.bg-spotify:hover {
+    color: white;
+    background-color: #14814eff;
+}
 </style>
