@@ -29,22 +29,22 @@
 
     .ficha-investigacion {
         border: 1px solid #f1f1f1;
-        border-radius: 6px;
+        border-radius: 2px;
         padding: 1em;
     }
 
     .label-linea-investigacion {
         display: inline-block;
-        border-radius: 10px;
+        border-radius: 2px;
         font-size: 0.9em;
         padding: 0 0.5em;
     }
 
-    .label-linea-investigacion.linea-sector-cultura{
+    .linea-sector-cultura{
         background-color: #E6CFF2;
         color: #5A3286;
     }
-    .label-linea-investigacion.linea-cultura-ciudadana{
+    .linea-cultura-ciudadana{
         background-color: #FFE5A0;
         color: #473821;
     }
@@ -118,6 +118,7 @@
         padding: 0.2em 0.5em;
     }
 
+    .entidad-sector { background-color: #6744adff; color: white; }
     .entidad-scrd { background-color: #5D4293; color: white; }
     .entidad-fuga { background-color: #F10096; color: white; }
     .entidad-idartes { background-color: #FFA800; color: white; }
@@ -127,4 +128,13 @@
     .entidad-canal-capital { background-color: #03A9F4; color: white; }
     .entidad-idipyba { background-color: #7AC36A; color: white; }
     .entidad-metro { background-color: #DB3737; color: white; }
+
+    .label-estado {
+        border-radius: 3px;
+        padding: 0.2em 0.5em;
+    }
+
+    .estado-1-sin-iniciar { background-color: #FFCFC9; color: #C63837;}
+    .estado-2-en-ejecucion { background-color: #BFE1F6; color: #3A79BD;}
+
 </style>

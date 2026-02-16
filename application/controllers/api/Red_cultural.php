@@ -223,8 +223,11 @@ class Red_cultural extends CI_Controller {
             $arr_base['user_id'] = 0;
             $arr_base['title'] = $this->input->post('display_name');
             $arr_base['description'] = $email;
+            $arr_base['text_3'] = $this->input->post('grupo_origen');
+            $arr_base['text_4'] = $this->input->post('grupo_edad');
             $arr_base['creator_id'] = 1;
             $arr_base['updater_id'] = 1;
+            $arr_base['updated_at'] = date('Y-m-d H:i:s');
 
             if ( ! is_null($user) ) {
                 $arr_base['user_id'] = $user->id;

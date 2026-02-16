@@ -44,6 +44,19 @@ class Users extends CI_Controller{
     }
 
     /**
+     * JSON
+     * Listado de users, según filtros de búsqueda
+     */
+    function googlesheet_array($fileId, $gid = 0)
+    {
+        $this->load->library('google_sheets');
+        $data = $this->google_sheets->sheetToArray($fileId, $gid);
+
+        //Salida JSON
+        $this->output->set_content_type('application/json')->set_output(json_encode($data));
+    }
+
+    /**
      * AJAX JSON
      * Eliminar un conjunto de users seleccionados
      * 2021-02-20

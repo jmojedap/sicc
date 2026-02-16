@@ -36,6 +36,14 @@ class Tools extends CI_Controller{
         $this->output->set_content_type('application/json')->set_output(json_encode($data));
     }
 
+    function test_session()
+    {
+        $this->load->library('session');
+        $data = $this->session->userdata();
+        //Salida JSON
+        $this->output->set_content_type('application/json')->set_output(json_encode($data));
+    }
+
     /**
      * Guarda un archivo JSON a partir de una  tabla de datos de una hoja de cálculo de 
      * googlesheet que sea pública

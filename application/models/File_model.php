@@ -253,7 +253,7 @@ class File_model extends CI_Model{
         $this->load->helper('string');  //Para activar función random_string
         
         $config['upload_path'] = PATH_UPLOADS . date('Y/m');    //Carpeta año y mes
-        $config['allowed_types'] = 'zip|gif|jpg|png|jpeg|pdf|json';
+        $config['allowed_types'] = 'zip|gif|jpg|png|jpeg|pdf|json|jfif';
         $config['max_size']	= '50000';       //Tamaño máximo en Kilobytes
         $config['max_width']  = '10000';     //Ancho máxima en pixeles
         $config['max_height']  = '10000';    //Altura máxima en pixeles
@@ -535,40 +535,58 @@ class File_model extends CI_Model{
     }
 
     /**
-     * Actualizar el campo files.position, para un archivo específico
-     * 2021-02-11
+     * Actualiza la posición de un archivo dentro de su grupo (table_id, related_1, album_id)
+     * 2026-01-28
      */
     function update_position($file_id, $new_position)
     {
-        $data['status'] = 0;   //Resultado por defecto
+        $data['status'] = 0;
 
-        //Identificar file
+        // 1. Obtener el archivo
         $file = $this->Db_model->row_id('files', $file_id);
+        if (!$file) return $data;
 
-        //Establecer posición máxima, según número de elementos
-        $condition = "table_id = {$file->table_id} AND related_1 = {$file->related_1} AND album_id = {$file->album_id}";
-        $max_position = $this->Db_model->num_rows('files', $condition);
+        // 2. Definir filtros comunes para asegurar que solo afectamos al grupo correcto
+        $where_group = [
+            'table_id'  => $file->table_id,
+            'related_1' => $file->related_1,
+            'album_id'  => $file->album_id
+        ];
 
-        if ( $new_position >= 0 && $new_position < $max_position ) {
-            if ( $new_position > $file->position ) {
-                //Si la posición aumenta, modificar anteriores
-                $sql = "UPDATE files SET position = (position-1)
-                    WHERE table_id = {$file->table_id} AND related_1 = {$file->related_1}
-                    AND position <= {$new_position} AND position > {$file->position} AND position > 0";
-                $this->db->query($sql);
+        // 3. Obtener el total para validar el rango
+        $max_position = $this->db->where($where_group)->count_all_results('files');
 
-            } else if ( $new_position < $file->position ) {
-                //Si la posición disminuye, modificar siguientes
-                $sql = "UPDATE files SET position = (position+1)
-                WHERE table_id = {$file->table_id} AND related_1 = {$file->related_1}
-                AND position >= {$new_position} AND position < {$file->position}";
-                $this->db->query($sql);
+        // Validar rango (asumiendo base 0)
+        if ($new_position >= 0 && $new_position < $max_position) {
+            
+            $this->db->trans_start(); // Inicio de Transacción
+
+            if ($new_position > $file->position) {
+                // Mover hacia abajo: los que están entre la posición vieja y la nueva bajan 1
+                $this->db->where($where_group)
+                        ->where('position <=', $new_position)
+                        ->where('position >', $file->position)
+                        ->set('position', 'position - 1', FALSE)
+                        ->update('files');
+
+            } else if ($new_position < $file->position) {
+                // Mover hacia arriba: los que están entre la nueva y la vieja suben 1
+                $this->db->where($where_group)
+                        ->where('position >=', $new_position)
+                        ->where('position <', $file->position)
+                        ->set('position', 'position + 1', FALSE)
+                        ->update('files');
             }
-    
-            //Actualizar position, del archivo
-            $this->db->query("UPDATE files SET position = {$new_position} WHERE id = {$file_id}");
-    
-            if ( $this->db->affected_rows() > 0) $data['status'] = 1;
+
+            // 4. Actualizar la posición del archivo objetivo
+            $this->db->where('id', $file_id)
+                    ->update('files', ['position' => $new_position]);
+
+            $this->db->trans_complete(); // Commit o Rollback automático
+
+            if ($this->db->trans_status() !== FALSE) {
+                $data['status'] = 1;
+            }
         }
 
         return $data;

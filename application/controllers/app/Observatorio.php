@@ -65,6 +65,7 @@ class Observatorio extends CI_Controller{
     {
         //Datos básicos de la exploración
         $data['head_title'] = 'Plan Anual de Investigaciones ' . $year;
+        $data['year'] = $year;
         
         $data['view_a'] = $this->views_folder . 'pai_v';
         if ( $year == 2024 ) {
@@ -73,18 +74,34 @@ class Observatorio extends CI_Controller{
                 ['nombre' => 'investigaciones', 'gid' => '1209666804'],
                 ['nombre' => 'productos', 'gid' => '102478999'],
                 ['nombre' => 'hallazgos', 'gid' => '352378717'],
+                ['nombre' => 'notas', 'gid' => '48170642'],
             ];
-            $basePath = PATH_CONTENT . 'json/pai_2024/';
-            $data['investigaciones'] = $this->App_model->getJsonContent($basePath . 'investigaciones.json');
-            $data['productos'] = $this->App_model->getJsonContent($basePath . 'productos.json');
-            $data['hallazgos'] = $this->App_model->getJsonContent($basePath . 'hallazgos.json');
-            $data['view_a'] = $this->views_folder . 'pai_2024/pai_2024_v';
         }
+        if ( $year == 2025 ) {
+            $data['fileId'] = '1E26lwaWDXqi6kvbjr_uOCvr6jVbs_85DHD571CvoBQ0';
+            $data['tablas'] = [
+                ['nombre' => 'investigaciones', 'gid' => '1209666804'],
+                ['nombre' => 'productos', 'gid' => '102478999'],
+                ['nombre' => 'hallazgos', 'gid' => '352378717'],
+                ['nombre' => 'notas', 'gid' => '48170642'],
+            ];
+        }
+
+        $basePath = PATH_CONTENT . "json/pai_{$year}/";
+        $data['investigaciones'] = $this->App_model->getJsonContent($basePath . 'investigaciones.json');
+        $data['productos'] = $this->App_model->getJsonContent($basePath . 'productos.json');
+        $data['hallazgos'] = $this->App_model->getJsonContent($basePath . 'hallazgos.json');
+        $data['notas'] = $this->App_model->getJsonContent($basePath . 'notas.json');
+        $data['view_a'] = $this->views_folder . "pai/pai_v";
 
         //Cargar vista
         $this->App_model->view('templates/easypml/minimal', $data);
     }
 
+    /**
+     * Encuesta Bienal de Culturas
+     * 2025-11-01
+     */
     function ebc()
     {
         //Datos básicos de la exploración

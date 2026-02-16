@@ -26,7 +26,6 @@
                         {{ user.city_name }}
                     </p>
                     <p><small class="">{{ user.team_1 }}</small></p>
-                    <p class="fst-italic" v-show="user.text_2.length > 2">"{{ user.text_2 }}"</p>
 
                     <?php if ( $this->session->userdata('logged') ) : ?>
                     <div v-if="user.id != appUid">
@@ -49,7 +48,7 @@
 
             </div>
 
-            <p class="mt-3">{{ user.about }}</p>
+            <p v-html="user.about" class="mt-3"></p>
 
             <table class="table table-borderless">
                 <tbody>

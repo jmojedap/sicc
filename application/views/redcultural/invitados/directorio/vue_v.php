@@ -135,7 +135,10 @@ var directorioApp = createApp({
         // Ubicación SanTru
         var elementoSanTru = this.elementos.find(elemento => elemento['username'] == 'santiago.trujillo');
         this.elementos = this.elementos.filter(elemento => elemento['username'] != 'santiago.trujillo');
-        this.elementos.splice(3, 0, elementoSanTru);
+        this.elementos.splice(2, 0, elementoSanTru);
+        var elementoDieMal = this.elementos.find(elemento => elemento['username'] == 'diego.maldonado');
+        this.elementos = this.elementos.filter(elemento => elemento['username'] != 'diego.maldonado');
+        this.elementos.splice(1, 0, elementoDieMal);
     },
     beforeUnmount() {
         // Importante: limpiar el listener si desmontas el componente

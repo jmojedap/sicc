@@ -11,10 +11,10 @@
 
         <div class="ml-auto">
             <div class="dropdown">
-                <a href="#" data-toggle="dropdown">
+                <a href="#" data-bs-toggle="dropdown">
                     <img src="<?= $this->session->userdata('picture') ?>" class="navbar-user-image" alt="User Image" onerror="this.src='<?= URL_IMG ?>users/sm_user.png'">
                 </a>
-                <ul class="dropdown-menu dropdown-menu-right">
+                <ul class="dropdown-menu dropdown-menu-end">
                     <a class="dropdown-item" href="<?= URL_APP . 'accounts/profile' ?>">Mi cuenta</a>
                     <a class="dropdown-item" href="<?= URL_APP . 'accounts/logout' ?>">Cerrar sesión</a>
                 </ul>

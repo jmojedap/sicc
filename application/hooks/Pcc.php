@@ -38,7 +38,7 @@ class Pcc {
                 // Salida JSON
                 echo json_encode([
                     'status' => false,
-                    'message' => 'Acceso denegado: no tiene permisos para ' . $mcf
+                    'message' => 'Acceso denegado: no tiene permisos para ' . $mcf,
                 ]);
                 exit; // Detener la ejecución
             } else {
@@ -78,9 +78,12 @@ class Pcc {
                 $userdata['module'] = $module;
             }
         } else {
+            $CI = &get_instance();
+            //$CI->load->library('session');
             //Request interno, validar sesión
-            $userdata['logged'] = $this->CI->session->userdata('logged');
-            $userdata['role'] = $this->CI->session->userdata('role');
+            $userdata['logged'] = $CI->session->userdata('logged');
+            $userdata['role'] = $CI->session->userdata('role');
+            $userdata['probando'] = $CI->session->userdata();
         }
 
         return $userdata;

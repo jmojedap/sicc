@@ -245,4 +245,27 @@ class Mediciones extends CI_Controller {
         $data['view_a'] = $view_a;
         $this->App_model->view('templates/easypml/empty', $data);
     }
+
+    function testing_danfo()
+    {
+        $this->load->model('Medicion_model');
+        $data['head_title'] = 'Testing danfo';
+        $data['view_a'] = $this->views_folder . 'danfo/danfo_v';
+
+        //Ruta del archivo de datos en JSON
+        $folder_path = PATH_CONTENT . 'datasets/mediciones/m182/';
+        //$file_path = $folder_path . 'cubo_localidad.json';
+        $data['secciones'] = file_get_contents($folder_path . 'secciones.json');
+        $data['secciones'] = json_encode($data['secciones']);
+        $data['preguntas'] = file_get_contents($folder_path . 'preguntas.json');
+        $data['preguntas'] = json_encode($data['preguntas']);
+        $data['cubo_localidad'] = file_get_contents($folder_path . 'cubo_localidad.json');
+        $data['cubo_localidad'] = json_encode($data['cubo_localidad']);
+        $data['variables'] = file_get_contents($folder_path . 'variables.json');
+        $data['variables'] = json_encode($data['variables']);
+        //$data['cubo_localidad'] = json_decode($data['cubo_localidad'], true);
+
+
+        $this->App_model->view(TPL_FRONT, $data);
+    }
 }
