@@ -137,25 +137,31 @@ class Geofocus extends CI_Controller
 
     /**
      * Obtener descripción en texto de la parametrización de la priorización del usuario
-     * 2026-07-16
+     * 2024-11-23
      */
     function get_descripcion($priorizacionId)
     {
-        $this->load->library('Gemini_client');
+        $apiKey = K_API_GEMINI;
+        $model_id = "gemini-2.5-flash-lite";
+        $url = "https://generativelanguage.googleapis.com/v1beta/models/{$model_id}:generateContent?key=" . $apiKey;
 
-        $request_settings = [
-            'model_id' => 'gemini-2.5-flash-lite',
-            'generate_content_format' => 'generateContent',
-            'api_key' => K_API_GEMINI
-        ];
-
-        $url = $this->gemini_client->build_url($request_settings);
-        $system_instruction_base = $this->gemini_client->system_instruction('geofocus-1');
-        $system_instruction_parts[] = ['text' => $system_instruction_base];
-        
+        $instruction = 'Genera un párrafo que describa y resuma en lenguaje natural la parametrización 
+            que un usuario realizó de una herramienta web de datos que realiza priorización geográfica 
+            de barrios de bogotá mediante la ponderación de diferentes variables culturales, demográficas 
+            y sociales. A cada variable se le asigna uno de dos tipo de priorización
+            (1. priorizar valores altos, 2. Priorizar valores bajos), 
+            y también se le asigna un peso o ponderación a cada variable, que va de 0 a 100.\nPara generar 
+            el texto ordena la descripción mencionando primero las variables a las que se les asignó mayor puntaje. 
+            Cuando se mencionen las ponderaciones no deben hacerse como porcentaje sino como puntos.
+            El párrafo será utilizado en un informe o reporte de análisis geográfico y debe iniciar 
+            con \"La priorización geográfica realizada ...\"\nDatos de cada variable:\n
+            1. Nombre de la variable\n
+            2. Descripción de la variable\n
+            3. Tipo de priorización seleccionada (Valores altos o valores bajos)\n
+            4. Peso/Ponderación asignada a la variable.';
         $inputUser = $this->input->post('texto_parametrizacion');
 
-        $request_data = [
+        $payload = [
             "contents" => [
                 [
                     "role" => "user",
@@ -168,7 +174,11 @@ class Geofocus extends CI_Controller
             ],
             "systemInstruction" => [
                 "role" => "user",
-                "parts" => $system_instruction_parts
+                "parts" => [
+                    [
+                        "text" => $instruction
+                    ]
+                ]
             ],
             "generationConfig" => [
                 "temperature" => 1,
@@ -179,10 +189,20 @@ class Geofocus extends CI_Controller
             ]
         ];
 
-        $payload = json_encode($request_data);
-        
-        $responseData = $this->gemini_client->execute_request($url, $payload);
-        $descripcion = $responseData['response']['candidates'][0]['content']['parts'][0]['text'] ?? '(Descripción no disponible)';
+        $jsonData = json_encode($payload);
+
+        $ch = curl_init($url);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+            'Content-Type: application/json',
+        ]);
+        curl_setopt($ch, CURLOPT_POST, 1);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonData);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+        $response = curl_exec($ch);
+        $arrResponse = json_decode($response, true);
+        log_message('error', json_encode($arrResponse));
+        $descripcion = $arrResponse['candidates'][0]['content']['parts'][0]['text'] ?? '(Descripción no disponible)';
 
         /* PARA PRUEBAS */
         //$descripcion = 'La priorización geográfica realizada se basó en la ponderación de siete variables. Las variables con mayor peso fueron: "Coeficiente expansión" (83 puntos), que prioriza barrios con mayor proporción de área de expansión; "Distancia a estaciones de Transmilenio" (80 puntos), priorizando barrios con menor distancia a estaciones; y "Subíndice de espacio público 2023" (75 puntos), priorizando barrios con valores altos en este subíndice. "Conteo homicidios por barrio" (67 puntos) también tuvo una ponderación importante, priorizando barrios con mayor número de homicidios. Las variables restantes fueron: "Área" (50 puntos), priorizando barrios con menor área; "Equipamientos Culturales" (50 puntos), priorizando barrios con mayor cantidad de equipamientos; y "Subíndice de cultura política y ciudadanía 2023" (21 puntos), priorizando barrios con valores bajos en este subíndice. (TTT)';
@@ -191,12 +211,14 @@ class Geofocus extends CI_Controller
 
         $aRow['descripcion_generada'] = $descripcion;
 
+        curl_close($ch);
+
         $aRow['updater_id'] = $this->session->userdata('user_id');
         $aRow['updated_at'] = date('Y-m-d H:i:s');
 
         $data['descripcion_generada'] = $aRow['descripcion_generada'];
         $data['saved_id'] = $this->Db_model->save('gf_priorizaciones', "id = {$priorizacionId}", $aRow);
-        $data['response'] = $responseData['response'] ?? [];
+        $data['response'] = $arrResponse;
 
         $this->output->set_content_type('application/json')->set_output(json_encode($data));
     }

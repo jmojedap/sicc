@@ -7,8 +7,24 @@ class Gemini_client {
 
     /**
      * Funciones para solicitar respuestas la API de Gemini
-     * Versión 2025-08-25
+     * Versión 2026-07-15
     */
+
+    /**
+     * Configuración por defecto para la generación de respuestas de la API de Gemini
+     * @return array $generationConfig :: Configuración por defecto para la generación de respuestas
+     * 2026-07-16
+     */
+    function generation_config_default()
+    {
+        $generationConfig = [
+            "temperature" => 1.6,
+            "maxOutputTokens" => 1000,
+            "responseMimeType" => "text/plain"
+        ];
+
+        return $generationConfig;
+    }
     
     /**
      * Recibe mensaje de usuario, genera respuesta y guarda los mensajes
@@ -19,7 +35,7 @@ class Gemini_client {
     function generate($request_settings)
     {
         // Solicitar respuesta a la API de Gemini
-        $request_settings['model_id'] = $request_settings['model'] ?? 'gemini-2.0-flash-lite';
+        $request_settings['model_id'] = $request_settings['model'] ?? 'gemini-2.5-flash-lite';
         $request_settings['generate_content_format'] = $request_settings['generate_content_format'] ?? 'generateContent';
         $request_settings['api_key'] = K_API_GEMINI;
 
@@ -32,11 +48,7 @@ class Gemini_client {
             "system_instruction" => [
                 'parts' => $request_settings['system_instruction_parts']
             ],
-            "generationConfig" => [
-                "temperature" => 1.6,
-                "maxOutputTokens" => 1000,
-                "responseMimeType" => "text/plain"
-            ],
+            "generationConfig" => $request_settings['generationConfig'] ?? $this->generation_config_default()
         ];
 
         $payload = json_encode($requestData);
@@ -135,7 +147,7 @@ class Gemini_client {
                         ]
                     ]
                 ],
-                'modelVersion' => 'gemini-2.0-flash-lite',
+                'modelVersion' => 'gemini-2.5-flash-lite',
                 'usageMetadata' => [
                     'promptTokenCount' => 61456,
                     'candidatesTokenCount' => 200

@@ -1,22 +1,23 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Acciones extends CI_Controller {
-        
-// Variables generales
+class Acciones extends CI_Controller
+{
+
+    // Variables generales
 //-----------------------------------------------------------------------------
     public $views_folder = 'app/acciones/';
     public $url_controller = URL_APP . 'acciones/';
 
-// Constructor
+    // Constructor
 //-----------------------------------------------------------------------------
-    
+
     function __construct()
     {
         parent::__construct();
 
         $this->load->model('Accion_model');
-        
+
         //Local time set
         date_default_timezone_set("America/Bogota");
     }
@@ -26,8 +27,8 @@ class Acciones extends CI_Controller {
      */
     function index($accion_id = 0)
     {
-        if ( $accion_id > 0 ) {
-            if ( $this->session->userdata('user_id') > 0 ) {
+        if ($accion_id > 0) {
+            if ($this->session->userdata('user_id') > 0) {
                 redirect("app/acciones/asistentes/{$accion_id}");
             } else {
                 redirect("app/acciones/info/{$accion_id}");
@@ -37,7 +38,7 @@ class Acciones extends CI_Controller {
         }
     }
 
-// EXPLORACIÓN
+    // EXPLORACIÓN
 //-----------------------------------------------------------------------------
 
     /** Exploración de acciones */
@@ -49,22 +50,22 @@ class Acciones extends CI_Controller {
         $filters['sf'] = 'general';  //Select format
 
         //Datos básicos de la exploración
-            $data = $this->Accion_model->explore_data($filters, $num_page, 60);
-            $data['cf'] = 'acciones/explorar/';
-            $data['controller'] = 'acciones/';
-            $data['views_folder'] = $this->views_folder . 'explorar/';      //Carpeta donde están las vistas de exploración
-            $data['head_title'] = 'Acciones CC';
-            $data['view_a'] = $data['views_folder'] . 'explore_v';
-            $data['nav_2'] = $data['views_folder'] . 'menu_v';
-        
+        $data = $this->Accion_model->explore_data($filters, $num_page, 60);
+        $data['cf'] = 'acciones/explorar/';
+        $data['controller'] = 'acciones/';
+        $data['views_folder'] = $this->views_folder . 'explorar/';      //Carpeta donde están las vistas de exploración
+        $data['head_title'] = 'Acciones CC';
+        $data['view_a'] = $data['views_folder'] . 'explore_v';
+        $data['nav_2'] = $data['views_folder'] . 'menu_v';
+
         //Opciones de filtros de búsqueda
-            $data['arrPrograma'] = $this->Item_model->arr_options('category_id = 221');
-            $data['arrEstrategia'] = $this->Item_model->arr_options('category_id = 222');
-            $data['arrPeriodo'] = $this->App_model->arr_periods('year IN (2024,2025) AND type_id = 7', 'DESC');
-            $data['arrLocalidad'] = $this->Item_model->arr_options('category_id = 121');
-            
+        $data['arrPrograma'] = $this->Item_model->arr_options('category_id = 221');
+        $data['arrEstrategia'] = $this->Item_model->arr_options('category_id = 222');
+        $data['arrPeriodo'] = $this->App_model->arr_periods('year IN (2025,2026) AND type_id = 7', 'DESC');
+        $data['arrLocalidad'] = $this->Item_model->arr_options('category_id = 121');
+
         //Cargar vista
-            $this->App_model->view(TPL_FRONT, $data);
+        $this->App_model->view(TPL_FRONT, $data);
     }
 
     /**
@@ -94,16 +95,16 @@ class Acciones extends CI_Controller {
 
         $data['query'] = $this->Accion_model->query_export($filters);
 
-        if ( $data['query']->num_rows() > 0 ) {
+        if ($data['query']->num_rows() > 0) {
             //Preparar datos
-                $data['sheet_name'] = 'acciones';
+            $data['sheet_name'] = 'acciones';
 
             //Objeto para generar archivo excel
-                $this->load->library('Excel');
-                $file_data['obj_writer'] = $this->excel->file_query($data);
+            $this->load->library('Excel');
+            $file_data['obj_writer'] = $this->excel->file_query($data);
 
             //Nombre de archivo
-                $file_data['file_name'] = date('Ymd_His') . '_' . $data['sheet_name'];
+            $file_data['file_name'] = date('Ymd_His') . '_' . $data['sheet_name'];
 
             $this->load->view('common/download_excel_file_v', $file_data);
         } else {
@@ -113,7 +114,7 @@ class Acciones extends CI_Controller {
         }
     }
 
-// REPORTES
+    // REPORTES
 //-----------------------------------------------------------------------------
 
     /**
@@ -136,14 +137,14 @@ class Acciones extends CI_Controller {
     function processes()
     {
         $data['processes'] = file_get_contents(PATH_RESOURCES . "config/process_ehc.json");
-    
+
         $data['head_title'] = 'Procesos del sistema';
-        $data['view_a'] = $this->views_folder .  'processes_v';
-        $data['nav_2'] = $this->views_folder .  'explorar/menu_v';        
+        $data['view_a'] = $this->views_folder . 'processes_v';
+        $data['nav_2'] = $this->views_folder . 'explorar/menu_v';
         $this->App_model->view(TPL_FRONT, $data);
     }
 
-// INFORMACIÓN
+    // INFORMACIÓN
 //-----------------------------------------------------------------------------
 
     function info($accion_id)
@@ -156,7 +157,7 @@ class Acciones extends CI_Controller {
         $this->App_model->view(TPL_FRONT, $data);
     }
 
-// CREACIÓN DE UNA ACCIÓN
+    // CREACIÓN DE UNA ACCIÓN
 //-----------------------------------------------------------------------------
 
     /**
@@ -175,9 +176,9 @@ class Acciones extends CI_Controller {
         $data['arrModalidad'] = $this->Item_model->arr_options('category_id = 510');
 
         //Variables generales
-            $data['head_title'] = 'Acciones CC';
-            $data['nav_2'] = $this->views_folder . 'explorar/menu_v';
-            $data['view_a'] = $this->views_folder . 'add/add_v';
+        $data['head_title'] = 'Acciones CC';
+        $data['nav_2'] = $this->views_folder . 'explorar/menu_v';
+        $data['view_a'] = $this->views_folder . 'add/add_v';
 
         $this->App_model->view(TPL_FRONT, $data);
     }
@@ -193,7 +194,7 @@ class Acciones extends CI_Controller {
         $this->output->set_content_type('application/json')->set_output(json_encode($data));
     }
 
-// EDICIÓN ACCIONES
+    // EDICIÓN ACCIONES
 //-----------------------------------------------------------------------------
 
     /**
@@ -232,28 +233,28 @@ class Acciones extends CI_Controller {
         $data = $this->Accion_model->basic($accion_id);
         $data['page_title'] = "Acción {$accion_id}) {$data['row']->nombre_accion}";
         $data['back_link'] = $this->url_controller . 'explorar';
-        $data['view_a'] = $this->views_folder . 'localizacion/localizacion_v';        
+        $data['view_a'] = $this->views_folder . 'localizacion/localizacion_v';
         $this->App_model->view(TPL_FRONT, $data);
     }
 
-// MAPA
+    // MAPA
 //-----------------------------------------------------------------------------
 
-function mapa()
-{
-    $data['head_title'] = 'Mapa de actividades';
-    $data['view_a'] = $this->views_folder . 'mapa/mapa_v_arcgis';
-    //$data['nav_2'] = $this->views_folder . 'explorar/menu_v';
-    
-    $this->load->model('Search_model');
-    $filters = $this->Search_model->filters();
-    $data['acciones'] = $this->Accion_model->get($filters,1,500);
+    function mapa()
+    {
+        $data['head_title'] = 'Mapa de actividades';
+        $data['view_a'] = $this->views_folder . 'mapa/mapa_v_arcgis';
+        //$data['nav_2'] = $this->views_folder . 'explorar/menu_v';
 
-    //$this->App_model->view(TPL_FRONT, $data);
-    $this->App_model->view(TPL_ADMIN, $data);
-}
+        $this->load->model('Search_model');
+        $filters = $this->Search_model->filters();
+        $data['acciones'] = $this->Accion_model->get($filters, 1, 500);
 
-// DETALLES
+        //$this->App_model->view(TPL_FRONT, $data);
+        $this->App_model->view(TPL_ADMIN, $data);
+    }
+
+    // DETALLES
 //-----------------------------------------------------------------------------
 
     function get_detalles()
@@ -262,7 +263,7 @@ function mapa()
         $this->output->set_content_type('application/json')->set_output(json_encode($data));
     }
 
-// EXPORTAR DATOS DE ACCIONES
+    // EXPORTAR DATOS DE ACCIONES
 //-----------------------------------------------------------------------------
 
     /**
@@ -280,7 +281,7 @@ function mapa()
         $this->App_model->view(TPL_FRONT, $data);
     }
 
-// REGISTRO DE USUARIOS
+    // REGISTRO DE USUARIOS
 //-----------------------------------------------------------------------------
 
     function usuarios()
@@ -321,16 +322,16 @@ function mapa()
         $this->load->model('User_model');
         $data['query'] = $this->User_model->search($filters);
 
-        if ( $data['query']->num_rows() > 0 ) {
+        if ($data['query']->num_rows() > 0) {
             //Preparar datos
-                $data['sheet_name'] = 'usuarios_cuidado';
+            $data['sheet_name'] = 'usuarios_cuidado';
 
             //Objeto para generar archivo excel
-                $this->load->library('Excel');
-                $file_data['obj_writer'] = $this->excel->file_query($data);
+            $this->load->library('Excel');
+            $file_data['obj_writer'] = $this->excel->file_query($data);
 
             //Nombre de archivo
-                $file_data['file_name'] = date('Ymd_His') . '_' . $data['sheet_name'];
+            $file_data['file_name'] = date('Ymd_His') . '_' . $data['sheet_name'];
 
             $this->load->view('common/download_excel_file_v', $file_data);
         } else {
@@ -406,16 +407,16 @@ function mapa()
         $this->load->model('User_model');
         $data['query'] = $this->Accion_model->details_asistentes();
 
-        if ( $data['query']->num_rows() > 0 ) {
+        if ($data['query']->num_rows() > 0) {
             //Preparar datos
-                $data['sheet_name'] = 'acciones_asistentes';
+            $data['sheet_name'] = 'acciones_asistentes';
 
             //Objeto para generar archivo excel
-                $this->load->library('Excel');
-                $file_data['obj_writer'] = $this->excel->file_query($data);
+            $this->load->library('Excel');
+            $file_data['obj_writer'] = $this->excel->file_query($data);
 
             //Nombre de archivo
-                $file_data['file_name'] = date('Ymd_His') . '_' . $data['sheet_name'];
+            $file_data['file_name'] = date('Ymd_His') . '_' . $data['sheet_name'];
 
             $this->load->view('common/download_excel_file_v', $file_data);
         } else {
@@ -438,7 +439,7 @@ function mapa()
         $data['arrIdentidadGenero'] = $this->Item_model->arr_options('category_id = 111');
         $data['arrTipoDocumento'] = $this->Item_model->arr_options('category_id = 53');
         $data['arrLocalidad'] = $this->Item_model->arr_options('category_id = 121');
-        
+
         $data['head_title'] .= ' - Asistentes';
         $data['page_title'] = "Acción {$accion_id}: {$data['row']->nombre_accion}";
         $data['view_a'] = $this->views_folder . 'asistentes_itinerantes/asistentes_itinerantes_v';
@@ -471,16 +472,16 @@ function mapa()
 
         $data['query'] = $this->Accion_model->details_asistentes_itinerantes();
 
-        if ( $data['query']->num_rows() > 0 ) {
+        if ($data['query']->num_rows() > 0) {
             //Preparar datos
-                $data['sheet_name'] = 'asistentes_itinerantes';
+            $data['sheet_name'] = 'asistentes_itinerantes';
 
             //Objeto para generar archivo excel
-                $this->load->library('Excel');
-                $file_data['obj_writer'] = $this->excel->file_query($data);
+            $this->load->library('Excel');
+            $file_data['obj_writer'] = $this->excel->file_query($data);
 
             //Nombre de archivo
-                $file_data['file_name'] = date('Ymd_His') . '_' . $data['sheet_name'];
+            $file_data['file_name'] = date('Ymd_His') . '_' . $data['sheet_name'];
 
             $this->load->view('common/download_excel_file_v', $file_data);
         } else {
@@ -490,7 +491,7 @@ function mapa()
         }
     }
 
-// POBLACIÓN BENEFICIARIA DE LAS ACCIONES
+    // POBLACIÓN BENEFICIARIA DE LAS ACCIONES
 //-----------------------------------------------------------------------------
 
     function poblacion_beneficiaria($accion_id)
@@ -499,7 +500,7 @@ function mapa()
 
         $data['arrGrupoPoblacion'] = $this->Item_model->arr_options('category_id = 251');
         $data['arrSexo'] = $this->Item_model->arr_options('category_id = 59 AND cod <= 2');
-        
+
         $data['head_title'] .= ' - Beneficiarios';
         $data['page_title'] = "Acción {$accion_id}: {$data['row']->nombre_accion}";
         $data['view_a'] = $this->views_folder . 'poblacion_beneficiaria/poblacion_beneficiaria_v';
@@ -509,7 +510,7 @@ function mapa()
         $this->App_model->view(TPL_FRONT, $data);
     }
 
-// ENTIDADES PARTICIPANTES DE LAS ACCIONES
+    // ENTIDADES PARTICIPANTES DE LAS ACCIONES
 //-----------------------------------------------------------------------------
 
     /**
@@ -523,7 +524,7 @@ function mapa()
         $data = $this->Accion_model->basic($accion_id);
 
         $data['arrTipoEntidad'] = $this->Item_model->arr_options('category_id = 256');
-        
+
         $data['head_title'] .= ' - Entidades';
         $data['page_title'] = "Acción {$accion_id}: {$data['row']->nombre_accion}";
         $data['view_a'] = $this->views_folder . 'entidades_participantes/entidades_participantes_v';
@@ -533,7 +534,7 @@ function mapa()
         $this->App_model->view(TPL_FRONT, $data);
     }
 
-// OTROS DESARROLLO Y DOCUMENTACIÓN
+    // OTROS DESARROLLO Y DOCUMENTACIÓN
 //-----------------------------------------------------------------------------
 
     /**
@@ -551,7 +552,7 @@ function mapa()
         $data['head_title'] = 'Diccionario de datos';
         $data['file_id'] = '1-MKsqbEVi9EH8v0ZVOUmZ4V0EQN1EDFGrKguoDIfH4I';
 
-        if ( $format == 'print' ) {
+        if ($format == 'print') {
             $data['view_a'] = $this->views_folder . "diccionario_print_v";
             $this->App_model->view('templates/print/main', $data);
         } else {
@@ -577,7 +578,7 @@ function mapa()
         $data['head_title'] = 'Diccionario de datos';
         $data['file_id'] = '12BNyPM73sw9qxELAiKPxofGDWgwXHT7gxdmN2Q-Snxw';
 
-        if ( $format == 'print' ) {
+        if ($format == 'print') {
             $data['view_a'] = $this->views_folder . "diccionario_print_v";
             $this->App_model->view('templates/print/main', $data);
         } else {

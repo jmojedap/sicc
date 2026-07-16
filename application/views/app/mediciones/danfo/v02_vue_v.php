@@ -64,8 +64,8 @@ var chartApp = createApp({
             variableIndice: 0,
             variable: {},
             sumatoriaFactor: 0,
-            section: 'chart',
-            //section: 'debug',
+            //section: 'chart',
+            section: 'debug',
             // Datos inyectados desde PHP
             //tablaDatos: [],
             tablasVariables: [],
@@ -96,16 +96,11 @@ var chartApp = createApp({
         },
         // Establecer sección actual
         setSeccion: function(newNumSeccion = null){
+            console.log(newNumSeccion, 'newNumSeccion');
+            
             if (newNumSeccion !== null) this.numSeccion = newNumSeccion;
             this.currentSeccion = this.secciones.find(s => s.num_seccion == this.numSeccion);
             this.updateUrl();
-
-            // Colapsar el menú de secciones si existe la instancia de Bootstrap
-            const collapseEl = document.getElementById('collapseSectionsList');
-            if (collapseEl) {
-                const bsCollapse = bootstrap.Collapse.getInstance(collapseEl) || new bootstrap.Collapse(collapseEl, { toggle: false });
-                bsCollapse.hide();
-            }
         },
         // Establecer pregunta actual
         setPregunta(newPreguntaIndice = null){
@@ -133,7 +128,7 @@ var chartApp = createApp({
                     this.setDonutChart();
                 } else {
                     //Destroy chart si existe
-                    if(Highcharts.chart("chart-container")) Highcharts.chart("chart-container").destroy();
+                    if(Highcharts.chart("container")) Highcharts.chart("container").destroy();
                     console.warn("Tipo de visualización no soportado:", this.pregunta.dataviz_chart_type);
                     this.loading = false;
                 }
@@ -224,7 +219,7 @@ var chartApp = createApp({
                     return { name: d.respuesta_v2, y: parseFloat(d.suma_factor) };
                 });
 
-                Highcharts.chart("chart-container", {
+                Highcharts.chart('container', {
                     chart: {
                         type: 'pie',
                     },
@@ -297,7 +292,7 @@ var chartApp = createApp({
                     return parseFloat(pct.toFixed(2)); // Retornar porcentaje con 2 decimales
                 });
 
-                Highcharts.chart("chart-container", {
+                Highcharts.chart('container', {
                     chart: {
                         type: 'bar'
                     },
@@ -364,7 +359,123 @@ var chartApp = createApp({
                 console.log(seriesData);
                 
                 // 6) Renderizar Highcharts
-                Highcharts.chart("chart-container", {
+                Highcharts.chart("container", {
+                    chart: { type: "bar" },
+                    title: { text: this.pregunta.nombre || '' }, 
+                    subtitle: {
+                        text: this.pregunta.enunciado_1 || ''
+                    },
+                    xAxis: { 
+                        categories: categories, 
+                        title: { text: null }, // Variables
+                        crosshair: true
+                    },
+                    yAxis: { 
+                        min: 0, 
+                        max: 100,
+                        title: { text: "Porcentaje (%)" } 
+                    },
+                    tooltip: {
+                        shared: true,
+                        pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.percentage:.1f}%</b> ({point.y:,.0f})<br/>',
+                        useHTML: true
+                    },
+                    legend: {
+                        layout: 'horizontal',
+                        align: 'center',
+                        verticalAlign: 'top'
+                    },
+                    plotOptions: {
+                        bar: {
+                            stacking: 'percent',
+                            pointPadding: 0.2,
+                            borderWidth: 0,
+                            dataLabels: {
+                                enabled: true,
+                                format: '{point.percentage:.1f}%',
+                                style: { textOutline: 'none' }
+                            }
+                        }
+                    },
+                    series: seriesData, //Respuestas como series
+                    credits: { enabled: false }
+                });
+
+            } catch (error) {
+                console.error("Error al procesar/graficar:", error);
+            } finally {
+                this.loading = false;
+            }
+        },
+        setBarMultipleChartOrg() {
+            try {
+                if (!this.respuestas || this.respuestas.length === 0) {
+                    console.warn("No hay datos para procesar");
+                    this.loading = false;
+                    return;
+                }
+
+                // 1) Crear DataFrame
+                const df = new dfd.DataFrame(this.respuestas);
+
+                // 2) Filtrar SOLO por la PREGUNTA seleccionada (ignorar variableIndice)
+                // Aseguramos tipo numérico para la comparación si es necesario
+                const filtrado = df.query(df['indice_pregunta'].eq(this.preguntaIndice));
+
+                if (filtrado.shape[0] === 0) {
+                    console.warn("El filtrado retornó 0 filas.");
+                    this.loading = false;
+                    // Limpiar gráfico si existe
+                    if(Highcharts.chart("container")) Highcharts.chart("container").destroy();
+                    return;
+                }
+
+                // 3) Agrupar por VARIABLE y RESPUESTA
+                const agrupado = filtrado.groupby(["indice_variable", "respuesta_v2"]).col(["suma_factor"]).sum();
+
+                // 4) Preparar ESTRUCTURA para Highcharts
+                // Eje X (Categorías): Las variables de la pregunta
+                // Series: Las posibles respuestas (ej: Sí, No)
+                
+                // Obtenemos las variables relevantes desde nuestro computed property para mantener orden
+                const vars = this.variables;
+                const categories = vars.map(v => v.enunciado_2 || v.variable_nombre || v.codigo_variable || `Var ${v.indice_variable}`);
+                const catIds = vars.map(v => v.indice_variable);
+
+                // Extraemos todas las respuestas únicas encontradas en los datos agrupados
+                const allResponses = [...new Set(agrupado['respuesta_v2'].values)].sort();
+                console.log(allResponses);
+
+                // Inicializar series
+                const seriesData = allResponses.map(resp => {
+                    return { name: resp, data: [] };
+                });
+
+                // 5) Rellenar datos (Valores ABSOLUTOS, Highcharts calcula %)
+                // Extraemos columnas del DF agrupado para iterar rápido
+                const g_vars = agrupado['indice_variable'].values;
+                const g_resps = agrupado['respuesta_v2'].values;
+                const g_vals = agrupado['suma_factor_sum'].values;
+
+                // Iterar por cada categoría (variable) del eje X
+                catIds.forEach((varId) => {
+                    const currentVarData = {}; // Mapa: respuesta -> valor
+
+                    for(let i=0; i < g_vars.length; i++) {
+                        if(g_vars[i] == varId) {
+                            currentVarData[g_resps[i]] = g_vals[i];
+                        }
+                    }
+
+                    // Push valor absoluto a cada serie
+                    seriesData.forEach(serie => {
+                        const val = currentVarData[serie.name] || 0;
+                        serie.data.push(val);
+                    });
+                });
+                
+                // 6) Renderizar Highcharts
+                Highcharts.chart("container", {
                     chart: { type: "bar" },
                     title: { text: this.pregunta.nombre || '' }, 
                     subtitle: {

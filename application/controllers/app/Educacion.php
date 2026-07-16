@@ -27,5 +27,12 @@ class Educacion extends CI_Controller{
         $this->App_model->view('templates/easypml/minimal', $data);
     }
 
+    function tablas_multiplicar()
+    {
+        $data['head_title'] = 'Tablas de Multiplicar';
+        $data['view_a'] = $this->views_folder . 'tablas_multiplicar/tablas_multiplicar';
+
+        $this->App_model->view('templates/easypml/minimal', $data);
+    }
 
 }

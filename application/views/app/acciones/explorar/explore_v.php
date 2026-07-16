@@ -19,7 +19,7 @@
             <?php if ( in_array($this->session->userdata('role'),[1,2,3,8]) ) : ?>
                 <a href="<?= URL_APP . "acciones/add" ?>" class="btn btn-primary w120p me-1"><i class="fa fa-plus"></i> Nueva</a>
             <?php endif; ?>
-            <a v-bind:href="`<?= URL_ADMIN . "{$controller}export/?" ?>` + strFilters"
+            <a v-bind:href="`<?= URL_APP . "{$controller}export/?" ?>` + strFilters"
                 class="btn btn-light only-lg me-1" v-bind:title="`Exportar ` + qtyResults + ` registros encontrados a Excel`">
                 <i class="fa fa-download"></i>
             </a>
