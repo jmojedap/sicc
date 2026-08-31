@@ -20,10 +20,15 @@
             </button>
         </div>
 
-        <button class="btn btn-lg btn-light w150p" v-on:click="clearForm()">
+        <button class="btn btn-lg btn-light w150p me-2" v-on:click="clearForm()">
             <i class="fas fa-plus"></i>
             Nueva
         </button>
+        <?php if ( in_array($this->session->userdata('role'), [1, 2, 3, 8]) ) : ?>
+            <a class="btn btn-lg btn-light w150p" v-bind:href="`<?= URL_APP ?>geofocus/variables`">
+                Variables
+            </a>
+        <?php endif; ?>
         
         <p class="text-center"><strong class="color-text-1">
             {{ elementosFiltrados.length }}</strong> resultados

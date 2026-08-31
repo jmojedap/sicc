@@ -34,7 +34,7 @@ class Gemini_client {
      */
     function generate($request_settings)
     {
-        // Solicitar respuesta a la API de Gemini
+        // Variables para la url y la configuración de la solicitud
         $request_settings['model_id'] = $request_settings['model'] ?? 'gemini-2.5-flash-lite';
         $request_settings['generate_content_format'] = $request_settings['generate_content_format'] ?? 'generateContent';
         $request_settings['api_key'] = K_API_GEMINI;

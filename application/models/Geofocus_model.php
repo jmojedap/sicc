@@ -372,65 +372,70 @@ class Geofocus_model extends CI_Model{
         return $query;
     }
 
-// DEPRECATED
+// GESTIÓN DE VARIABLES
 //-----------------------------------------------------------------------------
 
     /**
-     * Array con los puntajes seleccionados para ponderar cada variable
-     * con llave variable_id y valor puntaje
-     * @param array $variables :: array completo de una variable
-     * @return array $puntajes :: array simplificado solo id => puntaje
-     * 2024-09-14
+     * Devuelve listado de capas base disponibles para la priorización
+     * 2026-08-31
+     * @return array $gf_capas_base :: Listado de capas base disponibles
      */
-    function z_getArrayPuntajes($variables)
+    function capas_base()
     {
-        $puntajes = array_column($variables, 'puntaje', 'id');
-        return $puntajes;
+        $gf_capas_base = [
+            ['id' => 1, 'nombre' => 'Barrios de planeación 2023', 'key_capa' => 'barrios_planeacion_2023'],
+            ['id' => 2, 'nombre' => 'Barrios de planeación 2025', 'key_capa' => 'barrios_planeacion_2025'],
+        ];
+        return $gf_capas_base;
     }
 
     /**
-     * Actualizar el valor del campo gf_territorios_valor.valor_normalizado
-     * En una escala estandarizada mediante el método Z-score
-     * 2024-10-12
+     * Devuelve listado de variables y cantidad de registros en la tabla gf_territorios_valor
+     * @return object $variables :: Listado de variables con cantidad de registros
+     * 2026-08-31
      */
-    function z_normalizarVariable($variableId)
+    function get_variables()
     {
-        //Valor por defecto
-        $data = ['status' => 0, 'message' => 'No se ejecutó la normalización'];
+        $this->db->select('gf_variables.*, (SELECT COUNT(*) FROM gf_territorios_valor WHERE gf_territorios_valor.variable_id = gf_variables.id) AS qty_valores');
+        $this->db->order_by('gf_variables.id', 'ASC');
+        $variables = $this->db->get('gf_variables');
 
-        //Seleccionar valores
-        $this->db->where('variable_id', $variableId);
+        return $variables;
+    }
+
+    /**
+     * Actualizar el resumen estadístico de una variable en la tabla gf_variables
+     * @param int $variable_id :: ID de la variable a actualizar
+     * @return array $data :: Detalles de la actualización
+     * 2026-08-31
+     */
+    function update_variable_summary($variable_id)
+    {
+        // Valor inicial por defecto
+        $data = ['status' => 0, 'message' => 'No se actualizó el resumen estadístico', 'saved_id' => 0];
+
+        $this->db->select('gf_territorios_valor.valor AS value');
+        $this->db->where('variable_id', $variable_id);
         $valores = $this->db->get('gf_territorios_valor');
 
-        //Estadísticos de la variable
-        $valorSummary = $this->pml->field_summary($valores, 'valor');
+        $summary = $this->pml->field_summary($valores, 'value');
 
-        //Array inicial vacío para calcular
-        $valoresCalculados = [];
-        
-        if ( $valorSummary['std_dev'] > 0 )
-        {
-            //Recorrer valores y calcular valores estándar
-            foreach ($valores->result() as $rowValor) {
-                $aRow['id'] = $rowValor->id;
-                //Estandarización Z-Score
-                $aRow['valor_normalizado'] = ($rowValor->valor - $valorSummary['avg']) / $valorSummary['std_dev'];
-                $valoresCalculados[] =$aRow;
-            }
-    
-            // Actualización batch
-            $this->db->update_batch('gf_territorios_valor', $valoresCalculados, 'id');
+        $arr_row['min'] = $summary['min'];
+        $arr_row['max'] = $summary['max'];
+        $arr_row['media'] = $summary['avg'];
+        $arr_row['desviacion_estandar'] = $summary['std_dev'];
+        $arr_row['cantidad_valores'] = $summary['count'];
 
-            //Preparación de respuesta
-            $data = [
-                'status' => 1,
-                'message' => 'Variable normalizada',
-                'valorSummary' => $valorSummary,
-                'affectedRows' => $this->db->affected_rows(),
-                'valoresCalculados' => $valoresCalculados
-            ];
+        // Actualizar valores
+        $data['saved_id'] = $this->Db_model->save('gf_variables', "id = {$variable_id}", $arr_row);
+
+        if ( $data['saved_id'] > 0 ) {
+            $data['status'] = 1;
+            $data['message'] = 'Resumen estadístico actualizado';
         }
-    
+
         return $data;
     }
+
+    
 }

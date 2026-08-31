@@ -3,7 +3,7 @@ class Db_model extends CI_Model{
     
     /* Db, abreviatura de Data Base
      * Funciones complementarias para operación con base de datos
-     * Actualizada 2022-07-12
+     * Actualizada 2026-08-31
      */
       
     /**
@@ -124,10 +124,10 @@ class Db_model extends CI_Model{
      * Si un row con una $condition sql exists en una $table, se edita
      * Si no exists se inserta nuevo row. Devuelve el id del row editado o insertado
      * 
-     * @param type $table
-     * @param type $condition
-     * @param type $arr_row
-     * @return type
+     * @param string $table
+     * @param string $condition
+     * @param array $arr_row
+     * @return int
      */
     function save($table, $condition, $arr_row)
     {

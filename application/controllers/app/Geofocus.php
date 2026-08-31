@@ -148,4 +148,25 @@ class Geofocus extends CI_Controller{
             $this->output->set_content_type('application/json')->set_output(json_encode($data));
         }
     }
+
+// Gestión de Variables
+//-----------------------------------------------------------------------------
+
+    /**
+     * Exploración de variables de geofocus
+     */
+    function variables($section = 'lista', $variable_id = NULL)
+    {
+        $data['variables'] = $this->Geofocus_model->get_variables();
+        $data['arrEstadoVariable'] = $this->Item_model->arr_options('category_id = 42');
+        $data['section'] = $section;
+        $data['variable_id'] = $variable_id;
+        $data['capas_base'] = $this->Geofocus_model->capas_base();        
+
+        $data['head_title'] = 'Variables';
+        $data['view_a'] = $this->views_folder . 'variables/variables_v';
+
+        $this->App_model->view('templates/easypml/minimal', $data);
+    }
+
 }

@@ -136,68 +136,89 @@ class Geofocus extends CI_Controller
     }
 
     /**
-     * Obtener descripción en texto de la parametrización de la priorización del usuario
-     * 2026-07-16
+     * Genear con IA la descripción en texto de la parametrización de la priorización del usuario
+     * 2026-07-26
      */
     function get_descripcion($priorizacionId)
     {
         $this->load->library('Gemini_client');
 
-        $request_settings = [
-            'model_id' => 'gemini-2.5-flash-lite',
-            'generate_content_format' => 'generateContent',
-            'api_key' => K_API_GEMINI
-        ];
-
-        $url = $this->gemini_client->build_url($request_settings);
+        // Instrucción para geofocus
         $system_instruction_base = $this->gemini_client->system_instruction('geofocus-1');
         $system_instruction_parts[] = ['text' => $system_instruction_base];
+
+        $request_settings['system_instruction_parts'] = $system_instruction_parts;
         
+        // Contenidos enviados en la solicitud
         $inputUser = $this->input->post('texto_parametrizacion');
 
-        $request_data = [
-            "contents" => [
-                [
-                    "role" => "user",
-                    "parts" => [
-                        [
-                            "text" => "Parametrización realizada por el usuario:\n{$inputUser}"
-                        ]
+        $request_settings['contents'] = [
+            [
+                "role" => "user",
+                "parts" => [
+                    [
+                        "text" => "Parametrización realizada por el usuario:\n{$inputUser}"
                     ]
                 ]
-            ],
-            "systemInstruction" => [
-                "role" => "user",
-                "parts" => $system_instruction_parts
-            ],
-            "generationConfig" => [
-                "temperature" => 1,
-                "topK" => 40,
-                "topP" => 0.95,
-                "maxOutputTokens" => 8192,
-                "responseMimeType" => "text/plain"
             ]
         ];
 
-        $payload = json_encode($request_data);
+        // Sobre la generación de contenido
+        $request_settings['generationConfig'] = [
+            "temperature" => 1,
+            "topK" => 40,
+            "topP" => 0.95,
+            "maxOutputTokens" => 8192,
+            "responseMimeType" => "text/plain"
+        ];
         
-        $responseData = $this->gemini_client->execute_request($url, $payload);
-        $descripcion = $responseData['response']['candidates'][0]['content']['parts'][0]['text'] ?? '(Descripción no disponible)';
+        $responseData = $this->gemini_client->generate($request_settings);
 
-        /* PARA PRUEBAS */
-        //$descripcion = 'La priorización geográfica realizada se basó en la ponderación de siete variables. Las variables con mayor peso fueron: "Coeficiente expansión" (83 puntos), que prioriza barrios con mayor proporción de área de expansión; "Distancia a estaciones de Transmilenio" (80 puntos), priorizando barrios con menor distancia a estaciones; y "Subíndice de espacio público 2023" (75 puntos), priorizando barrios con valores altos en este subíndice. "Conteo homicidios por barrio" (67 puntos) también tuvo una ponderación importante, priorizando barrios con mayor número de homicidios. Las variables restantes fueron: "Área" (50 puntos), priorizando barrios con menor área; "Equipamientos Culturales" (50 puntos), priorizando barrios con mayor cantidad de equipamientos; y "Subíndice de cultura política y ciudadanía 2023" (21 puntos), priorizando barrios con valores bajos en este subíndice. (TTT)';
-        //$arrResponse = ['status' => 'Respuesta dummy'];
-        /** FIN PARA PRUEBAS */
-
-        $aRow['descripcion_generada'] = $descripcion;
-
+        // Datos de la fila que se va a actualizar
+        $aRow['descripcion_generada'] = $responseData['response_text'] ?? 'Ocurrió un error al obtener al generar la descripción.';
         $aRow['updater_id'] = $this->session->userdata('user_id');
         $aRow['updated_at'] = date('Y-m-d H:i:s');
 
+        // Datos de la respuesta
         $data['descripcion_generada'] = $aRow['descripcion_generada'];
         $data['saved_id'] = $this->Db_model->save('gf_priorizaciones', "id = {$priorizacionId}", $aRow);
-        $data['response'] = $responseData['response'] ?? [];
 
+        $this->output->set_content_type('application/json')->set_output(json_encode($data));
+    }
+
+// GESTIÓN DE VARIABLES
+//-----------------------------------------------------------------------------
+
+    /**
+     * Guardar datos de un registro de la tabla gf_variables
+     * 2026-08-31
+     */
+    function variables_save()
+    {
+        $arr_row = $this->Db_model->arr_row();
+        $saved_id = $this->Db_model->save_id('gf_variables', $arr_row);
+
+        $data['saved_id'] = $saved_id;
+
+        if ($saved_id) {
+            // Actualizar los campos de resumen estadístico de la tabla gf_variables
+            $data['summary_updated'] = $this->Geofocus_model->update_variable_summary($saved_id);
+        }
+
+        //Salida JSON
+        $this->output->set_content_type('application/json')->set_output(json_encode($data));
+    }
+
+
+    /**
+     * Actualiza los campos de resumen estadístico de la tabla gf_variables, a partir de los valores de gf_territorios_valor
+     * 2026-08-31
+     */
+    function update_variable_summary($variable_id)
+    {
+        $data = $this->Geofocus_model->update_variable_summary($variable_id);
+
+        //Salida JSON
         $this->output->set_content_type('application/json')->set_output(json_encode($data));
     }
 
