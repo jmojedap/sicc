@@ -20,7 +20,7 @@
 <div class="center_box_920">
 
     <div class="mb-2">
-        <a href="<?= URL_ADMIN . $back_destination ?>" class="btn btn-light">
+        <a href="<?= $back_destination ?>" class="btn btn-light">
             <i class="fa fa-caret-left"></i> Volver
         </a>
     </div>

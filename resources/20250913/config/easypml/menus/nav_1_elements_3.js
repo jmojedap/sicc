@@ -57,8 +57,8 @@ var nav_1_elements = [
                 text: 'Geofocus',
                 active: false,
                 icon: '',
-                cf: 'geofocus/priorizaciones',
-                sections: ['geofocus/priorizaciones'],
+                cf: 'geofocus/panel',
+                sections: ['geofocus/panel', 'geofocus/info', 'geofocus/variables', 'geofocus/capas_base', 'geofocus/capas_tematicas', 'geofocus/priorizaciones', 'geofocus/priorizacion'],
                 anchor: true
             },
         ],

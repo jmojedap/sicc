@@ -74,7 +74,7 @@ class Geofocus extends CI_Controller
     }
 
 
-    // Ejecución de cálculos
+// Ejecución de cálculos
 //-----------------------------------------------------------------------------
 
     /**
@@ -120,13 +120,17 @@ class Geofocus extends CI_Controller
         $this->output->set_content_type('application/json')->set_output(json_encode($data));
     }
 
+    /**
+     * Obtener los valores de la tabla gf_territorios_valor, para un campo y valor específico
+     * 2024-10-12
+     */
     function get_variable_valores($field = 'priorizacion_id', $fieldValue = 1)
     {
         $this->db->select('gf_territorios.poligono_id AS code, gf_territorios.nombre AS name, gf_territorios_valor.valor AS value');
         $this->db->join('gf_territorios', 'gf_territorios.poligono_id = gf_territorios_valor.poligono_id', 'left');
         $this->db->where($field, $fieldValue);
         $this->db->order_by('gf_territorios_valor.valor', 'DESC');
-        $this->db->limit(1200);
+        $this->db->limit(2000);
         $valores = $this->db->get('gf_territorios_valor');
 
         $data['valores'] = $valores->result();
@@ -217,6 +221,21 @@ class Geofocus extends CI_Controller
     function update_variable_summary($variable_id)
     {
         $data = $this->Geofocus_model->update_variable_summary($variable_id);
+
+        //Salida JSON
+        $this->output->set_content_type('application/json')->set_output(json_encode($data));
+    }
+
+
+    function upddate_variables_summary()
+    {
+        $variables = $this->Geofocus_model->get_variables();
+        $updating = [];
+        foreach ($variables->result() as $row) {
+            $updating[$row->id] = $this->Geofocus_model->update_variable_summary($row->id);
+        }
+
+        $data['updating'] = $updating;
 
         //Salida JSON
         $this->output->set_content_type('application/json')->set_output(json_encode($data));

@@ -143,19 +143,24 @@ class Geofocus_model extends CI_Model{
      */
     function calcularPriorizacion($settings)
     {
+        // Obtener las variables seleccionadas para esta solicitud de priorización.
         $variables = $settings['variables'];
 
+        // Organizar los parámetros de cálculo por ID de variable para poder
+        // consultar rápidamente su peso y el sentido de la priorización.
         $params['puntajes'] = array_column($variables, 'puntaje', 'id');
         $params['tipos_priorizacion'] = array_column($variables, 'tipo_priorizacion', 'id');    //Directa o inversa
         $params['sum_puntajes'] = array_sum($params['puntajes']);   //Para hacer división final
+        // Construir el filtro SQL que limita el cálculo a las variables seleccionadas.
         $params['condition'] = $this->getVariablesCondition($variables);
 
         //Identificar territorios para procesar
         $this->db->select('id, poligono_id, nombre');
-        $this->db->where('key_capa', 'barrios_planeacion_2023'); //PENDIENTE AJUSTE
+        $this->db->where('key_capa', $settings['priorizacion']['key_capa']);
         $territorios = $this->db->get('gf_territorios');
 
         $arrTerritorios = [];
+        // Preparar los datos comunes que tendrán todos los resultados de la priorización.
         $aRow = $this->getRowBaseTerritoriosValor($settings['priorizacion']);
 
         // Recorrer cada territorio, calcular valor ponderado y guardar.
@@ -164,21 +169,27 @@ class Geofocus_model extends CI_Model{
             $rowTerritorio['valor'] = $valorPonderado;
 
             //Completar row y guardar en DB
+            $aRow['territorio_id'] = $rowTerritorio['id'];
             $aRow['poligono_id'] = $rowTerritorio['poligono_id'];
             $aRow['valor'] = $valorPonderado;
-            $condition = "poligono_id = {$aRow['poligono_id']} AND priorizacion_id = {$aRow['priorizacion_id']}";
-            $rowTerritorio['row_id'] = $this->Db_model->save('gf_territorios_valor',$condition, $aRow);
+            // Si ya existe un resultado para el territorio y la priorización, se
+            // actualiza; en caso contrario, el método save crea el registro.
+            $condition = "territorio_id = {$aRow['territorio_id']} AND priorizacion_id = {$aRow['priorizacion_id']}";
+            $rowTerritorio['row_id'] = $this->Db_model->save('gf_territorios_valor', $condition, $aRow);
 
             $arrTerritorios[] = $rowTerritorio;
         }
 
+        // Estandarizar los resultados calculados para que puedan compararse entre sí.
         $this->normalizarValores('priorizacion_id', $settings['priorizacion']['id']);
 
         //Resumen para dar respuesta
+        // Asignar la posición de cada territorio según su valor de priorización.
         $data['cantidad_ordenados'] = $this->actualizarOrden('priorizacion_id', $aRow['priorizacion_id']);
         $data['variables'] = $variables;
         $data['params'] = $params;
         
+        // Recuperar el resultado final ya normalizado y ordenado para la respuesta.
         $territoriosPriorizados = $this->getPriorizacion($aRow['priorizacion_id']);
         $data['territorios'] = $territoriosPriorizados->result();
 
@@ -195,19 +206,26 @@ class Geofocus_model extends CI_Model{
      */
     function calcularValorPonderado($rowTerritorio, $params)
     {
+        // Consultar únicamente los valores de las variables seleccionadas que
+        // pertenecen al territorio que se está procesando.
         $this->db->where($params['condition']);
-        $this->db->where('poligono_id', $rowTerritorio['poligono_id']);
+        $this->db->where('territorio_id', $rowTerritorio['id']);
         $valores = $this->db->get('gf_territorios_valor');
 
+        // Obtener los pesos y el sentido directo o inverso indexados por variable.
         $puntajes = $params['puntajes'];
         $tiposPriorizacion = $params['tipos_priorizacion'];
 
+        // Acumular para cada variable: valor normalizado × peso × sentido de
+        // priorización. El sentido permite aumentar o invertir su aporte al total.
         $valorCalculado = 0;
         foreach ($valores->result() as $rowValor) {
             $valorCalculado += $rowValor->valor_normalizado * $puntajes[$rowValor->variable_id]
                 * $tiposPriorizacion[$rowValor->variable_id];
         }
 
+        // Dividir por la suma de los pesos para obtener el promedio ponderado.
+        // La validación evita una división por cero cuando no hay puntajes acumulados.
         if ( $params['sum_puntajes'] != 0) {
             $valorCalculado = $valorCalculado / $params['sum_puntajes'];
         }
@@ -258,7 +276,7 @@ class Geofocus_model extends CI_Model{
         $this->db->select('id');
         $this->db->where($campo, $valor);
         $this->db->order_by('valor', 'DESC');
-        $this->db->order_by('poligono_id', 'ASC');
+        $this->db->order_by('territorio_id', 'ASC');
         $valores = $this->db->get('gf_territorios_valor');
 
         $orden = 1;
@@ -275,12 +293,19 @@ class Geofocus_model extends CI_Model{
         return $this->db->affected_rows();
     }
 
+    /**
+     * Devuelve listado de territorios con sus valores calculados para una priorización específica
+     * @param int $priorizacionId :: ID de la priorización a consultar
+     * @param int $limit :: Límite de registros a devolver
+     * @return object :: Resultado de la consulta
+     * 2024-12-15
+     */
     function getPriorizacion($priorizacionId, $limit = 15)
     {
         $this->db->select('gf_territorios.*, 
             gf_territorios_valor.variable_id, variable_key, priorizacion_id, valor, valor_normalizado, orden');
         $this->db->where('priorizacion_id', $priorizacionId);
-        $this->db->join('gf_territorios', 'gf_territorios.poligono_id = gf_territorios_valor.poligono_id', 'left');
+        $this->db->join('gf_territorios', 'gf_territorios.id = gf_territorios_valor.territorio_id', 'left');
         $this->db->order_by('orden', 'ASC');
         $this->db->order_by('valor', 'DESC');
         $this->db->limit($limit);
@@ -383,8 +408,8 @@ class Geofocus_model extends CI_Model{
     function capas_base()
     {
         $gf_capas_base = [
-            ['id' => 1, 'nombre' => 'Barrios de planeación 2023', 'key_capa' => 'barrios_planeacion_2023'],
-            ['id' => 2, 'nombre' => 'Barrios de planeación 2025', 'key_capa' => 'barrios_planeacion_2025'],
+            ['id' => 1, 'nombre' => 'Barrios Bogotá 2023', 'key_capa' => 'barrios_planeacion_2023', 'cantidad_poligonos' => 1169],
+            ['id' => 2, 'nombre' => 'Barrios Bogotá 2025', 'key_capa' => 'sector_catastral_0526', 'cantidad_poligonos' => 1230],
         ];
         return $gf_capas_base;
     }
@@ -396,7 +421,7 @@ class Geofocus_model extends CI_Model{
      */
     function get_variables()
     {
-        $this->db->select('gf_variables.*, (SELECT COUNT(*) FROM gf_territorios_valor WHERE gf_territorios_valor.variable_id = gf_variables.id) AS qty_valores');
+        $this->db->select('gf_variables.*');
         $this->db->order_by('gf_variables.id', 'ASC');
         $variables = $this->db->get('gf_variables');
 
@@ -420,8 +445,8 @@ class Geofocus_model extends CI_Model{
 
         $summary = $this->pml->field_summary($valores, 'value');
 
-        $arr_row['min'] = $summary['min'];
-        $arr_row['max'] = $summary['max'];
+        $arr_row['minimo'] = $summary['min'];
+        $arr_row['maximo'] = $summary['max'];
         $arr_row['media'] = $summary['avg'];
         $arr_row['desviacion_estandar'] = $summary['std_dev'];
         $arr_row['cantidad_valores'] = $summary['count'];
@@ -433,6 +458,64 @@ class Geofocus_model extends CI_Model{
             $data['status'] = 1;
             $data['message'] = 'Resumen estadístico actualizado';
         }
+
+        return $data;
+    }
+
+    /**
+     * Importa valores de variable a la base de datos
+     * @param array $arr_sheet :: Datos de la hoja de excel con valores de variable
+     * @param object $row_variable :: Fila de la variable a la que se importan los valores
+     * @return array $data :: Detalles del resultado de la importación
+     * 2026-09-01
+     */
+    function import_variable_values($arr_sheet, $row_variable)
+    {
+        $data = array('qty_imported' => 0, 'results' => array());
+        
+        foreach ( $arr_sheet as $key => $row_data )
+        {
+            $data_import = $this->import_variable_values_row($row_data, $row_variable);
+            $data['qty_imported'] += $data_import['status'];
+            $data['results'][$key + 2] = $data_import;
+        }
+        
+        return $data;
+    }
+
+    /**
+     * Realiza la importación de una fila del archivo excel. Valida los campos, crea registro
+     * en la tabla gf_territorios_valor y devuelve el resultado de la operación
+     * @param array $row_data :: Datos de la fila del archivo excel
+     * 2026-09-01
+     */
+    function import_variable_values_row($row_data, $row_variable)
+    {
+        //Validar
+            $error_text = '';
+                            
+            if ( strlen($row_data[0]) == 0 ) { $error_text = 'La casilla `poligono_id` está vacía. '; }
+            if ( strlen($row_data[1]) == 0 ) { $error_text = 'La casilla `valor` está vacía. '; }
+
+        //Si no hay error
+            if ( $error_text == '' )
+            {                
+                $arr_row['territorio_id'] = $row_data[0];
+                $arr_row['variable_id'] = $row_variable->id;
+                $arr_row['variable_key'] = $row_variable->clave;
+                $arr_row['priorizacion_id'] = 0;
+                $arr_row['valor'] = $row_data[1];
+                $arr_row['valor_normalizado'] = $row_data[1];
+                $arr_row['orden'] = 1;
+
+                //Guardar en tabla gf_territorios_valor, si ya existe, se actualiza
+                $condition = "territorio_id = {$arr_row['territorio_id']} AND variable_id = {$arr_row['variable_id']}";
+                $imported_id = $this->Db_model->save('gf_territorios_valor', $condition, $arr_row);
+
+                $data = array('status' => 1, 'text' => 'Fila importada: ' . $imported_id, 'imported_id' => $imported_id);
+            } else {
+                $data = array('status' => 0, 'text' => $error_text, 'imported_id' => 0);
+            }
 
         return $data;
     }

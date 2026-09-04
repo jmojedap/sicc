@@ -45,25 +45,6 @@ class Items extends CI_Controller{
     }
 
     /**
-     * Vista filtra items por categoría, CRUD de items.
-     * DESACTIVADA 2025-06-30
-     */
-    function z_manage($category_id = '58')
-    {
-        //Variables específicas
-            $data['category_id'] = $category_id;
-            $data['categories'] = $this->Item_model->get_items('category_id = 0');
-        
-        //Array data generales
-            $data['head_title'] = 'Ítems';
-            $data['view_a'] = $this->views_folder . 'manage/manage_v';
-            $data['nav_2'] = $this->views_folder . 'menu_v';
-            
-        //Cargar vista
-            $this->App_model->view(TPL_ADMIN_5, $data);
-    }
-
-    /**
      * Exportar resultados de búsqueda
      * 2022-08-24
      */

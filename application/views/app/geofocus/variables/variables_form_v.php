@@ -9,6 +9,7 @@
             <form accept-charset="utf-8" method="POST" id="variables_form" @submit.prevent="handleSubmit">
                 <input v-if="fields.id" type="hidden" name="id" v-bind:value="fields.id">
                 <input type="hidden" name="puntaje" v-bind:value="fields.puntaje || '0'">
+                <input type="hidden" name="key_capa" v-bind:value="fields.key_capa">
 
                 <fieldset v-bind:disabled="loading">
                     <div class="mb-3 row">
@@ -29,7 +30,7 @@
                         </label>
                         <div class="col-md-8">
                             <select id="variable-key-capa" name="key_capa"
-                                v-model="fields.key_capa" class="form-select" required>
+                                v-model="fields.key_capa" class="form-select" required disabled>
                                 <option value="">[ Seleccione una capa base ]</option>
                                 <option v-for="capaBase in capasBase"
                                     v-bind:key="capaBase.key_capa" v-bind:value="capaBase.key_capa">
