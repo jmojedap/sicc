@@ -11,14 +11,14 @@ var sections = [
         id: 'geofocus_priorizaciones',
         text: 'Priorizaciones',
         cf: 'geofocus/priorizaciones/',
-        roles: [1,2,3,6,8],
+        roles: [1,2,3,6,8,99],
         anchor: true
     },
     {
         id: 'geofocus_variables',
         text: 'Variables',
         cf: 'geofocus/variables/',
-        roles: [1,2,3,6,8],
+        roles: [1,2,3,6,8,99],
         anchor: true
     },
 ]
@@ -32,6 +32,10 @@ nav_2.forEach((section,i) => {
     nav_2[i].class = ''
     if ( section.id == sectionId ) nav_2[i].class = 'active'
 })
+
+if ( sectionId == 'geofocus_variables_importar_valores' ) nav_2[2].class = 'active';
+if ( sectionId == 'geofocus_variables_importar_valores_e' ) nav_2[2].class = 'active';
+if ( sectionId == 'geofocus_priorizacion' ) nav_2[1].class = 'active';
 </script>
 
 <?php

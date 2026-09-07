@@ -5,7 +5,7 @@ var geofocusVariablesApp = createApp({
             section: <?= json_encode($section, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>,
             currentVariableId: <?= json_encode($variable_id, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>,
             currentVariable: {},
-            currentKeyCapa: null,
+            currentKeyCapa: <?= json_encode($key_capa, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>,
             loading: false,
             userRole: Number(APP_RID),
             temaFiltro: '',
@@ -28,6 +28,7 @@ var geofocusVariablesApp = createApp({
         selectCapa: function(capa){
             this.currentKeyCapa = capa.key_capa
             this.temaFiltro = ''
+            this.updateUrl('lista')
         },
         isCurrentCapa: function(capa){
             return String(capa.key_capa) === String(this.currentKeyCapa)
@@ -45,7 +46,7 @@ var geofocusVariablesApp = createApp({
         setCurrent: function(variableId){
             this.currentVariableId = variableId
             this.currentVariable = this.variables.find(variable => variable.id == variableId) || {}
-            this.fields = { ...this.currentVariable }
+            this.fields = { ...this.currentVariable, color: this.currentVariable.color || '#0084bf' }
 
             if ( this.currentVariable.key_capa ) {
                 this.currentKeyCapa = this.currentVariable.key_capa
@@ -60,6 +61,7 @@ var geofocusVariablesApp = createApp({
             this.fields = {
                 estado: '2',
                 puntaje: '0',
+                color: '#0084bf',
                 key_capa: defaultKeyCapa
             }
         },
@@ -84,7 +86,9 @@ var geofocusVariablesApp = createApp({
             }
         },
         updateUrl: function(newSection, variableId = null){
-            let newUrl = URL_APP + 'geofocus/variables/' + newSection
+            let newUrl = URL_APP + 'geofocus/variables/' +
+                encodeURIComponent(this.currentKeyCapa) + '/' +
+                encodeURIComponent(newSection)
             if ( variableId !== null && variableId !== '' && variableId !== undefined ) {
                 newUrl += '/' + encodeURIComponent(variableId)
             } else {
@@ -93,7 +97,11 @@ var geofocusVariablesApp = createApp({
 
             if ( window.location.href != newUrl ) {
                 window.history.pushState(
-                    { section: newSection, variable_id: variableId },
+                    {
+                        key_capa: this.currentKeyCapa,
+                        section: newSection,
+                        variable_id: variableId
+                    },
                     '',
                     newUrl
                 )
@@ -179,13 +187,19 @@ var geofocusVariablesApp = createApp({
         }
     },
     mounted(){
+        const requestedCapaExists = this.capasBase.some(capa =>
+            String(capa.key_capa) === String(this.currentKeyCapa)
+        )
+
+        if ( ! requestedCapaExists ) {
+            this.currentKeyCapa = this.capasBase.length > 0
+                ? this.capasBase[0].key_capa
+                : null
+        }
+
         if ( ! this.canEditVariables && this.section == 'form' ) {
             this.section = 'lista'
             this.updateUrl('lista')
-        }
-
-        if ( this.capasBase.length > 0 ) {
-            this.currentKeyCapa = this.capasBase[0].key_capa
         }
 
         if ( this.currentVariableId == 'add' ) {

@@ -187,10 +187,8 @@ var panelGeofocusApp = createApp({
         return{
             loading: false,
             sections: [
-                {key: 'capas_base', label: 'Capas geográficas base', description: 'Tipos de mapas: polígonos —barrios, localidades, UPZ u otros — sobre los que se proyectan las variables.', icon: 'fas fa-layer-group', url: '<?= URL_APP . "geofocus/capas_base" ?>'},
-                {key: 'variables', label: 'Variables', description: 'Consulta fenómenos de ciudad calculados por polígono. Los suscriptores solo leen; los editores pueden crear, modificar y cargar valores.', icon: 'fas fa-chart-pie', url: '<?= URL_APP . "geofocus/variables" ?>'},
-                {key: 'priorizaciones', label: 'Priorizaciones', description: 'Selecciona variables, asigna pesos, ejecuta el cálculo y obtén resultados territoriales.', icon: 'fas fa-list', url: '<?= URL_APP . "geofocus/priorizaciones" ?>'},
-                {key: 'info', label: 'Acerca de', description: 'Conoce el propósito y el funcionamiento de Geofocus.', icon: 'fas fa-map', url: '<?= URL_APP . "geofocus/info" ?>'},
+                {key: 'variables', label: 'Variables', description: 'Consulta fenómenos de ciudad calculados por polígono. Si eres usuario editor puedes crear, modificar y cargar variables y valores por territorio.', icon: 'fas fa-chart-pie', url: '<?= URL_APP . "geofocus/variables" ?>'},
+                {key: 'priorizaciones', label: 'Priorizaciones', description: 'Selecciona variables, asigna pesos, ejecuta el cálculo y obtén territorios priorizados según tu necesidad.', icon: 'fas fa-list', url: '<?= URL_APP . "geofocus/priorizaciones" ?>'},
             ],
         }
     },

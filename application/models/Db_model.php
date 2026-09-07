@@ -3,7 +3,7 @@ class Db_model extends CI_Model{
     
     /* Db, abreviatura de Data Base
      * Funciones complementarias para operación con base de datos
-     * Actualizada 2026-08-31
+     * Actualizada 2026-09-04
      */
       
     /**
@@ -218,7 +218,7 @@ class Db_model extends CI_Model{
 
     /**
      * Array from HTTP:POST, adding edition data
-     * 2021-06-02
+     * 2026-09-04
      */
     function arr_row($data_from_post = TRUE)
     {

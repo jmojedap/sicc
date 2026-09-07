@@ -43,7 +43,7 @@ class Geofocus extends CI_Controller{
      * Vista de exploración de capas geográficas base
      * 2026-09-02
      */
-    function capas_base()
+    function z_capas_base()
     {
         $data['capasBase'] = $this->Geofocus_model->capas_base();
         $data['variables'] = $this->Geofocus_model->get_variables()->result();
@@ -62,6 +62,7 @@ class Geofocus extends CI_Controller{
     function priorizaciones()
     {
         $data['elementos'] = $this->Geofocus_model->get_priorizaciones();
+        $data['capas_base'] = $this->Geofocus_model->capas_base();
 
         $data['head_title'] = 'Priorizaciones';
         $data['view_a'] = $this->views_folder . 'priorizaciones/priorizaciones_v';
@@ -81,11 +82,23 @@ class Geofocus extends CI_Controller{
     {
         $data = $this->Geofocus_model->basic($priorizacionId);
         $data['view_a'] = $this->views_folder . 'priorizacion/priorizacion_v';
+        $data['nav_2'] = $this->views_folder . 'geofocus_menu_v';
 
         $data['arrTemas'] = $this->Item_model->arr_options('category_id = 131');
 
-        $filePath = PATH_CONTENT . 'json/geofocus/variables.json';
-        $data['variables'] = $this->App_model->getJsonContent($filePath);
+        $condition_variables = "estado = 1 AND key_capa = '{$data['row']->key_capa}'";
+        $data['variables'] = $this->Geofocus_model->get_variables($condition_variables)->result();
+
+        // Identificar capa base de la priorización
+        $capas_base = $this->Geofocus_model->capas_base();
+        $data['capa_base'] = NULL;
+        foreach ($capas_base as $capa) {
+            if ( $capa['key_capa'] == $data['row']->key_capa ) {
+                $data['capa_base'] = $capa;
+                break;
+            }
+        }
+
         $data['localidades'] = $this->App_model->getJsonContent(PATH_CONTENT . 'json/sig/localidades.json');
         $data['territorios'] = $this->Geofocus_model->getPriorizacion($priorizacionId);
 
@@ -185,10 +198,11 @@ class Geofocus extends CI_Controller{
      * Exploración de variables de geofocus
      * 2026-08-31
      */
-    function variables($section = 'lista', $variable_id = NULL)
+    function variables($key_capa = 'sector_catastral_0526', $section = 'lista', $variable_id = NULL)
     {
         $data['variables'] = $this->Geofocus_model->get_variables();
         $data['arrEstadoVariable'] = $this->Item_model->arr_options('category_id = 42');
+        $data['key_capa'] = $key_capa;
         $data['section'] = $section;
         $data['variable_id'] = $variable_id;
         $data['capasBase'] = $this->Geofocus_model->capas_base();
@@ -252,6 +266,12 @@ class Geofocus extends CI_Controller{
         // Actualizar el orden de los valores
         $this->Geofocus_model->actualizarOrden('variable_id', $variable_id);
 
+        // Actualizar el campo gf_territorios_valor.poligono_id con el valor de gf_territorios.poligono_id
+        $this->Geofocus_model->actualizar_poligono_id($variable_id);
+
+        // Actualizar resumen de la variable
+        $this->Geofocus_model->update_variable_summary($variable_id);
+
         //Cargue de variables
             $data['status'] = $imported_data['status'];
             $data['message'] = $imported_data['message'];
@@ -263,7 +283,7 @@ class Geofocus extends CI_Controller{
             $data['head_title'] = 'Variable';
             $data['head_subtitle'] = 'Resultado de importación';
             $data['view_a'] = 'common/bs5/import_result_v';
-            //$data['nav_2'] = $this->views_folder . 'menu_v';
+            $data['nav_2'] = $this->views_folder . 'geofocus_menu_v';
 
         $this->App_model->view('templates/easypml/minimal', $data);
     }

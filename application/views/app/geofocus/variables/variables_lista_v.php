@@ -83,6 +83,7 @@
                         <thead>
                             <tr>
                                 <th scope="col" class="text-center">ID</th>
+                                <th scope="col" class="text-center">Color</th>
                                 <th scope="col">Clave</th>
                                 <th scope="col">Nombre</th>
                                 <th scope="col">Tema</th>
@@ -99,6 +100,15 @@
                             <tr v-for="variable in variablesFiltradas" v-bind:key="variable.id">
                                 <td class="text-center">
                                     <strong class="variable-id">{{ variable.id }}</strong>
+                                </td>
+                                <td class="text-center">
+                                    <span
+                                        class="variables-color-dot"
+                                        v-bind:style="{ backgroundColor: variable.color || '#0084bf' }"
+                                        v-bind:title="variable.color || '#0084bf'"
+                                        v-bind:aria-label="'Color ' + (variable.color || '#0084bf')"
+                                        role="img"
+                                    ></span>
                                 </td>
                                 <td><code>{{ displayValue(variable.clave) }}</code></td>
                                 <td>
@@ -165,7 +175,7 @@
                                 </td>
                             </tr>
                             <tr v-if="variablesFiltradas.length === 0">
-                                <td colspan="9" class="variables-layer-empty">
+                                <td colspan="10" class="variables-layer-empty">
                                     <span class="variables-layer-empty-icon" aria-hidden="true">
                                         <i class="fas fa-chart-pie"></i>
                                     </span>

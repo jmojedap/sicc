@@ -40,7 +40,22 @@
                         </div>
                     </div>
 
+
                     <div class="mb-1 row">
+                        <label for="variable-color" class="col-md-4 col-form-label text-end">
+                            Color de la variable <span class="text-danger">*</span>
+                        </label>
+                        <div class="col-md-8">
+                            <div class="d-flex align-items-center gap-2">
+                                <input id="variable-color" name="color" type="color"
+                                    class="form-control form-control-color"
+                                    v-model="fields.color" required
+                                    title="Color de la variable">
+                                <code>{{ fields.color || '#0084bf' }}</code>
+                            </div>
+                            <small class="text-form">Selecciona el color hexadecimal personalizado para la variable.</small>
+                        </div>
+                    </div>                    <div class="mb-1 row">
                         <label for="estado" class="col-md-4 col-form-label text-end">
                             Estado <span class="text-danger">*</span>
                         </label>

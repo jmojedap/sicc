@@ -67,6 +67,8 @@ class Geofocus_model extends CI_Model{
         if ( ! isset($arr_row['id']) || $arr_row['id'] == 0 ) 
         {
             //No existe, insertar
+            $arr_row['creator_id'] = $this->session->userdata('user_id');
+            $arr_row['created_at'] = date('Y-m-d H:i:s');
             $this->db->insert('gf_priorizaciones', $arr_row);
             $priorizacionId = $this->db->insert_id();
         } else {
@@ -408,8 +410,21 @@ class Geofocus_model extends CI_Model{
     function capas_base()
     {
         $gf_capas_base = [
-            ['id' => 1, 'nombre' => 'Barrios Bogotá 2023', 'key_capa' => 'barrios_planeacion_2023', 'cantidad_poligonos' => 1169],
-            ['id' => 2, 'nombre' => 'Barrios Bogotá 2025', 'key_capa' => 'sector_catastral_0526', 'cantidad_poligonos' => 1230],
+            [
+                'id' => 2,
+                'nombre' => 'Barrios Bogotá 2025',
+                'key_capa' => 'sector_catastral_0526',
+                'cantidad_poligonos' => 1230,
+                'archivo_mapa' => 'sector_catastral_0526.json',
+                'property_key' => 'poligono_id',
+            ],
+            [   'id' => 1,
+                'nombre' => 'Barrios Bogotá 2023',
+                'key_capa' => 'barrios_planeacion_2023',
+                'cantidad_poligonos' => 1169,
+                'archivo_mapa' => 'barrios_bogota_geofocus_urbano.json',
+                'property_key' => 'ID_BARRIO',
+            ],
         ];
         return $gf_capas_base;
     }
@@ -419,9 +434,12 @@ class Geofocus_model extends CI_Model{
      * @return object $variables :: Listado de variables con cantidad de registros
      * 2026-08-31
      */
-    function get_variables()
+    function get_variables($condition = NULL)
     {
         $this->db->select('gf_variables.*');
+        if ( ! is_null($condition) ) {
+            $this->db->where($condition);
+        }
         $this->db->order_by('gf_variables.id', 'ASC');
         $variables = $this->db->get('gf_variables');
 
@@ -520,5 +538,21 @@ class Geofocus_model extends CI_Model{
         return $data;
     }
 
-    
+    /**
+     * Función para actualizar el campo gf_territorios_valor.poligono_id de la tabla gf_territorios_valor, a partir del campo gf_territorios.poligono_id
+     * Esta actualización es necesaria para relacionar el polígono en la base de datos con el polígono en el mapa geojson, ya que el polígono puede cambiar de ID en la tabla gf_territorios, y se requiere mantener la relación con los valores de la variable.
+     * 2026-09-04
+     * @param int $variable_id :: ID de la variable a actualizar    
+     * @return int $affected_rows :: Cantidad de registros actualizados
+     */
+    function actualizar_poligono_id($variable_id)
+    {
+        $sql = "UPDATE gf_territorios_valor AS v
+            JOIN gf_territorios AS t ON v.territorio_id = t.id
+            SET v.poligono_id = t.poligono_id
+            WHERE v.variable_id = {$variable_id}";
+
+        $this->db->query($sql);
+        return $this->db->affected_rows();
+    }   
 }

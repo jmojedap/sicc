@@ -1,16 +1,16 @@
     <!-- Modal detalles de la variable actual -->
     <div class="modal fade" id="detallesModal" tabindex="-1" aria-labelledby="detallesModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-centered">
-            <div class="modal-content">
+            <div class="modal-content geofocus-priority-modal">
                 <div class="modal-header">
                     <h5 class="modal-title" id="detallesModalLabel">{{ currentVariable.nombre }}</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <p>
+                    <p class="geofocus-priority-modal-description">
                         {{ currentVariable.descripcion }}
                     </p>
-                    <table class="table table-borderless">
+                    <table class="table table-sm table-borderless geofocus-priority-modal-table">
                         <tr>
                             <td class="td-title">Tema</td>
                             <td>{{ currentVariable.tema }}</td>

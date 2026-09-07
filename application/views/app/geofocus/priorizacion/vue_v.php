@@ -15,6 +15,7 @@ var priorizacionApp = createApp({
             section: 'variables',
             //section: 'mapa',
             loading: false,
+            capaBase: <?= json_encode($capa_base) ?>,
             priorizacion: <?= json_encode($row) ?>,
             display: {
                 descripcion: false
@@ -23,7 +24,17 @@ var priorizacionApp = createApp({
             currentTema: 'Cultura',
             currentVariableId: 0,
             currentVariable: {
-                'id': 0, 'nombre': '', 'descripcion': '', 'tema': '', 'anio_valores': '', 'descripcion_calculo': '', 'entidad': '', 'unidad_medida': '', 'minimo': '', 'media': '', 'desviacion_estandar': ''
+                'id': 0, 'nombre': '',
+                'descripcion': '',
+                'tema': '',
+                'anio_valores': '',
+                'descripcion_calculo': '',
+                'entidad': '',
+                'unidad_medida': '',
+                'minimo': '',
+                'media': '',
+                'desviacion_estandar': '',
+                'color': ''
             },
             tipoInformacion: 'variable',
             variables: <?= json_encode($variables) ?>,
@@ -180,6 +191,7 @@ var priorizacionApp = createApp({
                     min: parseFloat(response.data['summary']['min']),
                     max: parseFloat(response.data['summary']['max']),
                     tickInterval: (parseFloat(response.data['summary']['max']) - parseFloat(response.data['summary']['min']))/5,
+                    stops: [[0, '#F1EEF6'], [0.65, ]]
                 });
             })
             .catch(function(error) { console.log(error) })

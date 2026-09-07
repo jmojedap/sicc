@@ -1,14 +1,16 @@
 <script>
     // Declara la variable en el ámbito global, accesible para VueApp
+    const capaBase = <?= json_encode($capa_base) ?>;
     let mapChartBogota;
     let barrios;
     let variableId = <?= $row->id ?>;
+    let poligonoColor = '#AA0066';  // Color del polígono
     const URL_CONTENT = '<?= URL_CONTENT ?>';
 
     // Preparación del mapa
     //-----------------------------------------------------------------------------
     (async () => {
-        const mapData = await fetch(URL_CONTENT + 'maps/barrios_bogota_geofocus_urbano.json')
+        const mapData = await fetch(URL_CONTENT + 'maps/' + capaBase['archivo_mapa'])
         .then(response => response.json());
         barrios = Highcharts.geojson(mapData, 'map');
 
@@ -57,7 +59,7 @@
                 min: parseFloat(territoriosData['summary']['min']),
                 max: parseFloat(territoriosData['summary']['max']),
                 tickInterval: (parseFloat(territoriosData['summary']['max']) - parseFloat(territoriosData['summary']['min']))/5,
-                stops: [[0, '#F1EEF6'], [0.65, '#AA0066']],
+                stops: [[0, '#F1EEF6'], [0.65, poligonoColor]],
                 labels: {
                     format: '{value}'
                 }
@@ -76,7 +78,7 @@
             series: [
                 {
                     data: territoriosData['valores'],
-                    joinBy: ['ID_BARRIO', 'code'],
+                    joinBy: [capaBase['property_key'], 'code'],
                     name: 'Puntaje',
                     tooltip: {
                         valueSuffix: ''

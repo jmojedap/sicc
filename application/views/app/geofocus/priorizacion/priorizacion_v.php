@@ -1,16 +1,14 @@
 <script src="<?= URL_RESOURCES ?>assets/highcharts/highmaps.js"></script>
 
-
 <!-- <link rel="stylesheet" href="<?= URL_RESOURCES ?>css/sicc/geofocus.css"> -->
-<?php $this->load->view('app/geofocus/priorizacion/test_style_v') ?>
+<?php $this->load->view('app/geofocus/geofocus_style_v') ?>
 
 <?php $this->load->view('app/geofocus/priorizacion/mapa_script_v') ?>
 
-<div id="priorizacionApp">
-    <div class="container">
-
-
-        <ul class="nav nav-tabs mb-2">
+<div id="priorizacionApp" class="geofocus-priority-page">
+    <div class="container geofocus-priority-shell">
+        <nav class="geofocus-priority-navigation" aria-label="Secciones de la priorización">
+        <ul class="nav nav-pills">
             <li class="nav-item">
                 <a class="nav-link pointer" href="<?= URL_APP ?>geofocus/priorizaciones/"><i
                         class="fas fa-arrow-left"></i> Priorizaciones</a>
@@ -28,6 +26,7 @@
                     v-bind:class="{'active': section == 'mapa' }">Mapa</a>
             </li>
         </ul>
+        </nav>
 
         <?php $this->load->view('app/geofocus/priorizacion/variables_v') ?>
         <?php $this->load->view('app/geofocus/priorizacion/territorios_v') ?>

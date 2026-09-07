@@ -1,7 +1,7 @@
 <script>
 const elementos = <?= json_encode($elementos->result()) ?>;
 const newElement = {
-    id:0, nombre: '', descripcion:''
+    id:0, nombre: '', descripcion:'', key_capa: ''
 }
 
 // VueApp
@@ -13,6 +13,7 @@ var priorizacionesApp = createApp({
             nombreElemento: 'priorizacion',
             nombreElementos: 'priorizaciones',
             elementos: elementos,
+            capasBase: <?= json_encode($capas_base) ?>,
             loading: false,
             fields: {},
             q: '',
@@ -32,6 +33,12 @@ var priorizacionesApp = createApp({
         },
         clearSearch: function(){
             this.q = ''
+        },
+        capaBaseNombre: function(keyCapa){
+            const capaBase = this.capasBase.find(capa =>
+                String(capa.key_capa) === String(keyCapa)
+            )
+            return capaBase ? capaBase.nombre : (keyCapa || 'Sin capa base')
         },
         textToClass: function(prefix='', inputText){
             return prefix + Pcrn.textToClass(inputText)

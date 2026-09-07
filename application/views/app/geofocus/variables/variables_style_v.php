@@ -25,6 +25,15 @@
     font-weight: 700;
 }
 
+.variables-color-dot {
+    display: inline-block;
+    width: 1.15rem;
+    height: 1.15rem;
+    border: 2px solid #fff;
+    border-radius: 50%;
+    box-shadow: 0 0 0 1px #cbd2da;
+    vertical-align: middle;
+}
 .geofocus-base-option.is-active .variables-layer-option-count {
     border-color: #cfc0e7;
     color: #654a98;
