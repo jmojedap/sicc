@@ -108,13 +108,25 @@ class Geofocus extends CI_Controller
     }
 
     /**
-     * Actualizar el valor de la gf_territorios_valor.valor_normalizado
-     * En una escala estandarizada mediante el método Z-score
-     * 2024-10-12
+     * Recalcular los valores de una variable, normalizando y actualizando los campos de resumen estadístico
+     * 2025-09-10
      */
-    function normalizar_variable($variableId)
+    function recalcular_variable($variable_id)
     {
-        $data = $this->Geofocus_model->normalizarValores('variable_id', $variableId);
+        // Normalizar valores de la variable
+        $this->Geofocus_model->normalizarValores('variable_id', $variable_id);
+
+        // Actualizar el orden de los valores
+        $this->Geofocus_model->actualizarOrden('variable_id', $variable_id);
+
+        // Actualizar el campo gf_territorios_valor.poligono_id con el valor de gf_territorios.poligono_id
+        $this->Geofocus_model->actualizar_poligono_id($variable_id);
+
+        // Actualizar resumen de la variable
+        $this->Geofocus_model->update_variable_summary($variable_id);
+
+        $data['status'] = 1;
+        $data['message'] = "Variable con ID {$variable_id} recalculada y normalizada correctamente.";
 
         //Salida JSON
         $this->output->set_content_type('application/json')->set_output(json_encode($data));
@@ -122,19 +134,49 @@ class Geofocus extends CI_Controller
 
     /**
      * Obtener los valores de la tabla gf_territorios_valor, para un campo y valor específico
-     * 2024-10-12
+     * 2026-09-18
      */
     function get_variable_valores($field = 'priorizacion_id', $fieldValue = 1)
     {
+        $allowedFields = ['priorizacion_id', 'variable_id'];
+        if (!in_array($field, $allowedFields, true)) {
+            $data = [
+                'status' => 0,
+                'message' => 'Campo de consulta no permitido',
+                'valores' => [],
+                'summary' => ['sum' => 0, 'avg' => 0, 'min' => 0, 'max' => 0, 'count' => 0, 'std_dev' => 0]
+            ];
+            $this->output
+                ->set_status_header(400)
+                ->set_content_type('application/json')
+                ->set_output(json_encode($data));
+            return;
+        }
+
         $this->db->select('gf_territorios.poligono_id AS code, gf_territorios.nombre AS name, gf_territorios_valor.valor AS value');
-        $this->db->join('gf_territorios', 'gf_territorios.poligono_id = gf_territorios_valor.poligono_id', 'left');
-        $this->db->where($field, $fieldValue);
+        $this->db->join('gf_territorios', 'gf_territorios.id = gf_territorios_valor.territorio_id', 'left');
+        $this->db->where('gf_territorios_valor.' . $field, (int) $fieldValue);
         $this->db->order_by('gf_territorios_valor.valor', 'DESC');
-        $this->db->limit(2000);
         $valores = $this->db->get('gf_territorios_valor');
 
-        $data['valores'] = $valores->result();
-        $data['summary'] = $this->pml->field_summary($valores, 'value');
+        $data['valores'] = [];
+        foreach ($valores->result_array() as $row) {
+            $data['valores'][] = [
+                'code' => is_null($row['code']) ? null : (string) $row['code'],
+                'name' => $row['name'],
+                'value' => is_numeric($row['value']) ? (float) $row['value'] : null
+            ];
+        }
+
+        $summary = $this->pml->field_summary($valores, 'value');
+        $data['summary'] = [
+            'sum' => (float) $summary['sum'],
+            'avg' => (float) $summary['avg'],
+            'min' => (float) $summary['min'],
+            'max' => (float) $summary['max'],
+            'count' => (int) $summary['count'],
+            'std_dev' => (float) $summary['std_dev']
+        ];
         //Salida JSON
         $this->output->set_content_type('application/json')->set_output(json_encode($data));
     }

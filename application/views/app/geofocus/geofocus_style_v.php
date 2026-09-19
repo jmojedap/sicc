@@ -17,6 +17,8 @@
 .tema-seguridad { background-color: #F4A8C5; }
 .tema-ambiente { background-color: #8CBE23; color: #FFF; }
 .tema-consumo-de-agua { background-color: #1361C4; color: #FFF; }
+.tema-recreacion-y-deporte { background-color: #F6B26B; }
+.tema-equipamientos { background-color: #A4C2F4; }
 
 /* Vista de variables */
 #geofocusVariablesApp {
@@ -774,8 +776,7 @@
     outline-offset: 1px;
 }
 
-.geofocus-priority-section,
-.geofocus-priority-map {
+.geofocus-priority-section {
     margin: 1rem 0 2rem;
     min-width: 0;
 }
@@ -874,42 +875,6 @@
     font-variant-numeric: tabular-nums;
 }
 
-.geofocus-priority-map {
-    align-items: stretch;
-    min-height: 620px;
-    overflow: hidden;
-}
-
-.geofocus-priority-map.hidden-map {
-    min-height: 0;
-    margin: 0;
-    border: 0;
-}
-
-.geofocus-priority-map #map-container {
-    width: calc(100% - 340px);
-    min-width: 0;
-    max-width: none;
-    margin: 0;
-    background: #fcfcfc;
-}
-
-.geofocus-priority-map #map-info {
-    width: 340px;
-    min-width: 300px;
-    padding: 1.25rem;
-    border-left: 1px solid #edf0f3;
-    background: #fff;
-}
-
-.geofocus-priority-map-filters {
-    display: grid;
-    gap: 0.6rem;
-    margin-bottom: 1.25rem;
-    padding-bottom: 1.25rem;
-    border-bottom: 1px solid #edf0f3;
-}
-
 .geofocus-priority-map-copy h2 {
     margin-bottom: 0.65rem;
     color: #252a32;
@@ -944,6 +909,183 @@
 .geofocus-priority-map-notes {
     padding-top: 0.9rem;
     border-top: 1px solid #edf0f3;
+}
+
+.geofocus-priority-map-page {
+    margin: 1rem 0 0.5rem;
+}
+
+.geofocus-priority-map-card {
+    overflow: hidden;
+}
+
+.geofocus-priority-map-controls {
+    display: grid;
+    grid-template-columns: auto minmax(150px, 0.75fr) minmax(280px, 1.6fr) minmax(190px, 0.9fr);
+    gap: 0.55rem;
+    align-items: end;
+    padding: 0.55rem 0.85rem;
+    border-bottom: 1px solid #edf0f3;
+    background: #fbfcfd;
+}
+
+.geofocus-priority-map-controls > .btn {
+    white-space: nowrap;
+}
+
+.geofocus-priority-map-controls .form-label {
+    margin-bottom: 0.15rem;
+    color: #68727e;
+    font-size: 0.75rem;
+    font-weight: 650;
+}
+
+.geofocus-priority-map-alert {
+    margin: 0.75rem 0.85rem 0;
+}
+
+.geofocus-priority-map-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(280px, 340px);
+    min-height: max(560px, calc(100vh - 210px));
+}
+
+.geofocus-priority-map-canvas-wrap {
+    position: relative;
+    min-width: 0;
+    min-height: max(560px, calc(100vh - 210px));
+    background: #eef1f4;
+}
+
+.geofocus-priority-map-canvas,
+.geofocus-priority-map-canvas .maplibregl-map {
+    width: 100%;
+    height: 100%;
+    min-height: max(560px, calc(100vh - 210px));
+}
+
+.geofocus-priority-map-loading {
+    position: absolute;
+    z-index: 5;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.55rem;
+    background: rgba(255, 255, 255, 0.82);
+    color: #654a98;
+    font-size: 0.9rem;
+    font-weight: 650;
+}
+
+.geofocus-priority-map-legend {
+    position: absolute;
+    z-index: 3;
+    right: 1rem;
+    bottom: 1rem;
+    width: 200px;
+    padding: 0.65rem 0.75rem;
+    border: 1px solid rgba(213, 219, 225, 0.95);
+    border-radius: 0.35rem;
+    background: rgba(255, 255, 255, 0.94);
+    color: #59636e;
+    box-shadow: 0 0.2rem 0.75rem rgba(52, 58, 64, 0.14);
+    font-size: 0.72rem;
+}
+
+.geofocus-priority-map-legend-title {
+    margin-bottom: 0.35rem;
+    color: #3f4650;
+    font-weight: 650;
+}
+
+.geofocus-priority-map-legend-gradient {
+    height: 0.65rem;
+    border: 1px solid #cbd2da;
+    border-radius: 0.2rem;
+}
+
+.geofocus-priority-map-legend-labels {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 0.2rem;
+    color: #707985;
+    font-size: 0.68rem;
+}
+
+.geofocus-priority-map-legend small {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    margin-top: 0.35rem;
+    color: #707985;
+}
+
+.geofocus-priority-map-no-data-swatch {
+    display: inline-block;
+    width: 0.65rem;
+    height: 0.65rem;
+    border: 1px solid #bdc5cd;
+    border-radius: 0.15rem;
+    background: #dfe4e8;
+}
+
+.geofocus-priority-map-info {
+    overflow-y: auto;
+    max-height: max(560px, calc(100vh - 210px));
+    padding: 1rem;
+    border-left: 1px solid #edf0f3;
+    background: #fff;
+}
+
+.geofocus-priority-map-context {
+    margin-bottom: 0.9rem;
+    padding-bottom: 0.8rem;
+    border-bottom: 1px solid #edf0f3;
+}
+
+.geofocus-priority-map-context h1 {
+    margin: 0.15rem 0 0.45rem;
+    color: #252a32;
+    font-size: 1.08rem;
+    line-height: 1.25;
+}
+
+.geofocus-priority-map-context p {
+    margin: 0;
+    color: #66717d;
+    font-size: 0.8rem;
+}
+
+.geofocus-priority-map-context p strong,
+.geofocus-priority-map-context p small {
+    display: block;
+}
+
+.geofocus-priority-map-context p small {
+    margin-top: 0.2rem;
+    color: #7a838e;
+}
+
+.geofocus-priority-map-info .geofocus-priority-map-details {
+    display: grid;
+    grid-template-columns: minmax(90px, auto) minmax(0, 1fr);
+    gap: 0.45rem 0.8rem;
+    margin: 1rem 0 0;
+    padding-top: 0.9rem;
+    border-top: 1px solid #edf0f3;
+    font-size: 0.8rem;
+}
+
+.geofocus-priority-map-info .geofocus-priority-map-details dt {
+    color: #707985;
+    font-weight: 650;
+}
+
+.geofocus-priority-map-info .geofocus-priority-map-details dd {
+    margin: 0;
+    color: #343a40;
+    overflow-wrap: anywhere;
 }
 
 .geofocus-priority-modal {
@@ -996,6 +1138,25 @@
 }
 
 @media (max-width: 991.98px) {
+    .geofocus-priority-map-controls {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .geofocus-priority-map-controls > .btn {
+        justify-self: start;
+    }
+
+    .geofocus-priority-map-layout {
+        grid-template-columns: 1fr;
+        min-height: 0;
+    }
+
+    .geofocus-priority-map-info {
+        max-height: none;
+        border-top: 1px solid #edf0f3;
+        border-left: 0;
+    }
+
     .geofocus-priority-section-header {
         align-items: flex-start;
         flex-direction: column;
@@ -1006,28 +1167,20 @@
         justify-content: flex-start;
     }
 
-    .geofocus-priority-map {
-        min-height: 0;
-        flex-direction: column;
-    }
-
-    .geofocus-priority-map #map-container,
-    .geofocus-priority-map #map-info {
-        width: 100%;
-        min-width: 0;
-    }
-
-    .geofocus-priority-map #map-container {
-        min-height: 520px;
-    }
-
-    .geofocus-priority-map #map-info {
-        border-top: 1px solid #edf0f3;
-        border-left: 0;
-    }
 }
 
 @media (max-width: 767.98px) {
+    .geofocus-priority-map-controls {
+        grid-template-columns: 1fr;
+        padding: 0.65rem 0.75rem;
+    }
+
+    .geofocus-priority-map-canvas-wrap,
+    .geofocus-priority-map-canvas,
+    .geofocus-priority-map-canvas .maplibregl-map {
+        min-height: 430px;
+    }
+
     .geofocus-priority-page {
         padding-bottom: 1.5rem;
     }
@@ -1036,17 +1189,12 @@
         margin-top: 1rem;
     }
 
-    .geofocus-priority-section-body,
-    .geofocus-priority-map #map-info {
+    .geofocus-priority-section-body {
         padding: 1rem;
     }
 
     .geofocus-priority-actions .btn {
         flex: 1 1 auto;
-    }
-
-    .geofocus-priority-map #map-container {
-        min-height: 430px;
     }
 
     .geofocus-priority-modal .modal-header,

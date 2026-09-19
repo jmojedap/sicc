@@ -1,9 +1,8 @@
-<script src="<?= URL_RESOURCES ?>assets/highcharts/highmaps.js"></script>
+<link href="https://unpkg.com/maplibre-gl@2.4.0/dist/maplibre-gl.css" rel="stylesheet" />
+<script src="https://unpkg.com/maplibre-gl@2.4.0/dist/maplibre-gl.js"></script>
 
 <!-- <link rel="stylesheet" href="<?= URL_RESOURCES ?>css/sicc/geofocus.css"> -->
 <?php $this->load->view('app/geofocus/geofocus_style_v') ?>
-
-<?php $this->load->view('app/geofocus/priorizacion/mapa_script_v') ?>
 
 <div id="priorizacionApp" class="geofocus-priority-page">
     <div class="container geofocus-priority-shell">

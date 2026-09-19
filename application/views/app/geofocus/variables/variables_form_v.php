@@ -97,9 +97,25 @@
                             Tema <span class="text-danger">*</span>
                         </label>
                         <div class="col-md-8">
-                            <input id="variable-tema" name="tema" type="text" class="form-control"
-                                v-model.trim="fields.tema" required maxlength="150"
-                                placeholder="Ej. Cultura Ciudadana">
+                            <select id="variable-tema" name="tema" class="form-select"
+                                v-model="fields.tema" required>
+                                <option value="">[ Seleccione un tema ]</option>
+                                <option v-for="optionTema in arrTemas"
+                                    v-bind:key="optionTema.cod" v-bind:value="optionTema.name">
+                                    {{ optionTema.name }}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="mb-1 row">
+                        <label for="variable-subtema" class="col-md-4 col-form-label text-end">
+                            Subtema <span class="text-danger">*</span>
+                        </label>
+                        <div class="col-md-8">
+                            <input id="variable-subtema" name="subtema" type="text" class="form-control"
+                                v-model.trim="fields.subtema" required maxlength="20"
+                                placeholder="Subtema (máximo 20 caracteres)">
                         </div>
                     </div>
 

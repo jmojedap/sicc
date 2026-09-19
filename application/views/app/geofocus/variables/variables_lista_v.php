@@ -39,54 +39,62 @@
 
         <main v-if="currentCapa" class="geofocus-base-content">
             <header class="geofocus-base-content-header">
-                <div>
+                <div class="variables-layer-title">
                     <h1>{{ currentCapa.nombre }}</h1>
+                    <small>
+                        <i class="fas fa-draw-polygon me-1" aria-hidden="true"></i>
+                        {{ currentCapa.cantidad_poligonos }} pol&iacute;gonos
+                    </small>
+                </div>
+                <div class="variables-layer-header-actions">
+                    <button type="button" class="btn btn-outline-primary"
+                        v-on:click="openMap()" v-bind:disabled="variablesDeCapa.length === 0">
+                        <i class="fas fa-map-marked-alt me-1" aria-hidden="true"></i>
+                        Ver mapa
+                    </button>
+                    <button v-if="canEditVariables" type="button" class="btn btn-primary" v-on:click="openCreateForm">
+                        <i class="fas fa-plus me-1" aria-hidden="true"></i>
+                        Nueva variable
+                    </button>
                 </div>
             </header>
 
             <section class="geofocus-base-variables variables-layer-content" aria-labelledby="variables-layer-title">
                 <div class="geofocus-base-section-heading variables-layer-heading">
-                    <div>
-                        <h2 id="variables-layer-title">Variables incluidas <span class="variables-layer-count">({{ variablesFiltradas.length }} de {{ variablesDeCapa.length }})</span></h2>
-                    </div>
-                    <div class="variables-layer-heading-actions">
-                        <button v-if="canEditVariables" type="button" class="btn btn-primary" v-on:click="openCreateForm">
-                            <i class="fas fa-plus me-1" aria-hidden="true"></i>
-                            Nueva variable
+                    <div class="variables-layer-toolbar">
+                        <div>
+                            <label for="filtro-tema" class="form-label">Filtrar por tema</label>
+                            <select id="filtro-tema" class="form-select form-select-sm" v-model="temaFiltro">
+                                <option value="">Todos los temas</option>
+                                <option v-for="tema in temas" v-bind:key="tema" v-bind:value="tema">
+                                    {{ tema }}
+                                </option>
+                            </select>
+                        </div>
+                        <button
+                            v-if="temaFiltro"
+                            type="button"
+                            class="btn btn-light btn-sm"
+                            v-on:click="temaFiltro = ''"
+                        >
+                            <i class="fas fa-times me-1" aria-hidden="true"></i>
+                            Limpiar filtro
                         </button>
                     </div>
-                </div>
-
-                <div class="variables-layer-toolbar">
-                    <div>
-                        <label for="filtro-tema" class="form-label">Filtrar por tema</label>
-                        <select id="filtro-tema" class="form-select form-select-sm" v-model="temaFiltro">
-                            <option value="">Todos los temas</option>
-                            <option v-for="tema in temas" v-bind:key="tema" v-bind:value="tema">
-                                {{ tema }}
-                            </option>
-                        </select>
+                    <div class="variables-layer-heading-title">
+                        <h2 id="variables-layer-title">Variables incluidas <span class="variables-layer-count">({{ variablesFiltradas.length }} de {{ variablesDeCapa.length }})</span></h2>
                     </div>
-                    <button
-                        v-if="temaFiltro"
-                        type="button"
-                        class="btn btn-light btn-sm"
-                        v-on:click="temaFiltro = ''"
-                    >
-                        <i class="fas fa-times me-1" aria-hidden="true"></i>
-                        Limpiar filtro
-                    </button>
                 </div>
 
                 <div class="table-responsive variables-layer-table">
                     <table class="table table-sm table-hover align-middle mb-0">
                         <thead>
                             <tr>
-                                <th scope="col" class="text-center">ID</th>
-                                <th scope="col" class="text-center">Color</th>
+                                <th scope="col" class="text-center"></th>
                                 <th scope="col">Clave</th>
                                 <th scope="col">Nombre</th>
                                 <th scope="col">Tema</th>
+                                <th scope="col">Subtema</th>
                                 <th scope="col" class="text-center">Estado</th>
                                 <th scope="col" class="text-center">Año</th>
                                 <th scope="col" class="text-center">Cantidad de valores</th>
@@ -98,9 +106,6 @@
                         </thead>
                         <tbody>
                             <tr v-for="variable in variablesFiltradas" v-bind:key="variable.id">
-                                <td class="text-center">
-                                    <strong class="variable-id">{{ variable.id }}</strong>
-                                </td>
                                 <td class="text-center">
                                     <span
                                         class="variables-color-dot"
@@ -119,6 +124,7 @@
                                         {{ displayValue(variable.tema) }}
                                     </span>
                                 </td>
+                                <td>{{ displayValue(variable.subtema) }}</td>
                                 <td class="text-center">
                                     <span
                                         v-if="String(variable.estado) === '1'"
@@ -144,6 +150,15 @@
                                 <td class="text-end text-nowrap">
                                     <button
                                         type="button"
+                                        class="a4 me-1"
+                                        v-on:click="openMap(variable.id)"
+                                        v-bind:aria-label="'Ver ' + variable.nombre + ' en el mapa'"
+                                        title="Ver en mapa"
+                                    >
+                                        <i class="fas fa-map-marked-alt" aria-hidden="true"></i>
+                                    </button>
+                                    <button
+                                        type="button"
                                         v-if="canEditVariables"
                                         class="a4 me-1"
                                         v-on:click="openForm(variable.id)"
@@ -163,7 +178,7 @@
                                     </a>
                                     <button
                                         type="button"
-                                        class="a4"
+                                        class="a4 me-1"
                                         v-on:click="setCurrent(variable.id)"
                                         data-bs-toggle="modal"
                                         data-bs-target="#variableDetalleModal"
@@ -171,6 +186,15 @@
                                         title="Ver detalles"
                                     >
                                         <i class="fas fa-eye" aria-hidden="true"></i>
+                                    </button>
+                                    <button
+                                        type="button"
+                                        class="a4"
+                                        v-on:click="recalcularVariable(variable)"
+                                        v-bind:aria-label="'Recalcular variable ' + variable.nombre"
+                                        title="Recalcular variable"
+                                    >
+                                        <i class="fas fa-sync-alt" aria-hidden="true"></i>
                                     </button>
                                 </td>
                             </tr>

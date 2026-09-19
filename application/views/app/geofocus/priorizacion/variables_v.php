@@ -117,8 +117,8 @@
                                                 </a>
                                             </li>
                                             <li v-show="userRole <= 2">
-                                                <button class="dropdown-item" v-on:click="normalizarVariable(variable)" type="button" title="Normalizar valores de la variable">
-                                                    Normalizar
+                                                <button class="dropdown-item" v-on:click="recalcularVariable(variable)" type="button" title="Normalizar valores de la variable">
+                                                    Recalcular variable
                                                 </button>
                                             </li>
                                         </ul>

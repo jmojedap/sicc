@@ -40,22 +40,6 @@ class Geofocus extends CI_Controller{
     }
 
     /**
-     * Vista de exploración de capas geográficas base
-     * 2026-09-02
-     */
-    function z_capas_base()
-    {
-        $data['capasBase'] = $this->Geofocus_model->capas_base();
-        $data['variables'] = $this->Geofocus_model->get_variables()->result();
-
-        $data['head_title'] = 'Esquemas territoriales';
-        $data['view_a'] = $this->views_folder . 'capas_base/capas_base_v';
-        $data['nav_2'] = $this->views_folder . 'geofocus_menu_v';
-
-        $this->App_model->view('templates/easypml/minimal', $data);
-    }
-
-    /**
      * Vista de exploración de priorizaciones geográficas creadas por los usuarios
      * 2026-09-02
      */
@@ -82,7 +66,7 @@ class Geofocus extends CI_Controller{
     {
         $data = $this->Geofocus_model->basic($priorizacionId);
         $data['view_a'] = $this->views_folder . 'priorizacion/priorizacion_v';
-        $data['nav_2'] = $this->views_folder . 'geofocus_menu_v';
+        //$data['nav_2'] = $this->views_folder . 'geofocus_menu_v';
 
         $data['arrTemas'] = $this->Item_model->arr_options('category_id = 131');
 
@@ -98,6 +82,7 @@ class Geofocus extends CI_Controller{
                 break;
             }
         }
+        $data['rotaciones'] = $this->Geofocus_model->rotaciones();
 
         $data['localidades'] = $this->App_model->getJsonContent(PATH_CONTENT . 'json/sig/localidades.json');
         $data['territorios'] = $this->Geofocus_model->getPriorizacion($priorizacionId);
@@ -202,10 +187,12 @@ class Geofocus extends CI_Controller{
     {
         $data['variables'] = $this->Geofocus_model->get_variables();
         $data['arrEstadoVariable'] = $this->Item_model->arr_options('category_id = 42');
+        $data['arrTemas'] = $this->Item_model->arr_options('category_id = 131');
         $data['key_capa'] = $key_capa;
         $data['section'] = $section;
         $data['variable_id'] = $variable_id;
         $data['capasBase'] = $this->Geofocus_model->capas_base();
+        $data['rotaciones'] = $this->Geofocus_model->rotaciones();
 
         $data['head_title'] = 'Variables';
         $data['view_a'] = $this->views_folder . 'variables/variables_v';

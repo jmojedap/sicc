@@ -13,6 +13,9 @@
                         <span class="badge bg-primary" v-show="currentVariable.tema">
                             {{ currentVariable.tema }}
                         </span>
+                        <span class="badge bg-light text-dark border" v-show="currentVariable.subtema">
+                            {{ currentVariable.subtema }}
+                        </span>
                         <span class="badge bg-light text-dark border" v-show="currentVariable.anio_valores">
                             Año {{ currentVariable.anio_valores }}
                         </span>
@@ -38,6 +41,12 @@
                 <section class="mb-4">
                     <h3 class="detail-section-title">Información general</h3>
                     <dl class="row detail-list mb-0">
+                        <dt class="col-sm-4 col-lg-3">Tema</dt>
+                        <dd class="col-sm-8 col-lg-9">{{ displayValue(currentVariable.tema) }}</dd>
+
+                        <dt class="col-sm-4 col-lg-3">Subtema</dt>
+                        <dd class="col-sm-8 col-lg-9">{{ displayValue(currentVariable.subtema) }}</dd>
+
                         <dt class="col-sm-4 col-lg-3">Entidad</dt>
                         <dd class="col-sm-8 col-lg-9">{{ displayValue(currentVariable.entidad) }}</dd>
 

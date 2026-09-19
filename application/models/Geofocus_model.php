@@ -415,18 +415,40 @@ class Geofocus_model extends CI_Model{
                 'nombre' => 'Barrios Bogotá 2025',
                 'key_capa' => 'sector_catastral_0526',
                 'cantidad_poligonos' => 1230,
-                'archivo_mapa' => 'sector_catastral_0526.json',
+                'archivo_mapa' => 'sector_catastral_0526_urbano_mapa.json',
                 'property_key' => 'poligono_id',
+                'center' => [-74.12, 4.65],
+                'zoom' => 11,
+                'rotacion' => 'transmilenio'
             ],
             [   'id' => 1,
                 'nombre' => 'Barrios Bogotá 2023',
                 'key_capa' => 'barrios_planeacion_2023',
                 'cantidad_poligonos' => 1169,
-                'archivo_mapa' => 'barrios_bogota_geofocus_urbano.json',
+                'archivo_mapa' => 'barrios_bogota_geofocus_mapa.json',
                 'property_key' => 'ID_BARRIO',
+                'center' => [-74.10, 4.65],
+                'zoom' => 10,
+                'rotacion' => 'vertical'
             ],
         ];
         return $gf_capas_base;
+    }
+
+    /**
+     * Opciones de rotaciones para el mapa de variables y priorización
+     * 2026-09-18
+     */
+    function rotaciones()
+    {
+        $gf_rotaciones = [
+            ['id' => 1, 'key' => 'transmilenio', 'nombre' => 'Horizontal Transmilenio', 'value' => 110],
+            ['id' => 2, 'key' => 'vertical', 'nombre' => 'Vertical', 'value' => 0],
+            ['id' => 3, 'key' => 'horizontal-b', 'nombre' => 'Horizontal 90°', 'value' => 90],
+            ['id' => 4, 'key' => 'autopista_norte_horizontal', 'nombre' => 'Autopista Norte Horizontal', 'value' => 99],
+        ];
+        return $gf_rotaciones;
+
     }
 
     /**
