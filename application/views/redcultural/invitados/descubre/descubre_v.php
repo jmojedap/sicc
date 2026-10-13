@@ -55,7 +55,7 @@
                                 <img src="<?= URL_IMG ?>icons/ia-generate.png" alt="Generar" style="width: 20px;">
                             </button>
                         </div>
-                        <fieldset>
+                    </fieldset>
                 </form>
 
             </div>
@@ -63,7 +63,7 @@
                 <div class="center_box_750">
                     <div class="tools-bar my-2 d-flex justify-content-end">
                         <button class="btn btn-sm btn-warning" title="Agregar a los contenidos públicos"
-                            v-on:click="updateContentStatus(lastMessage.id, 1)" v-bind:disabled="messages.length == 0"
+                            v-on:click="updateContentStatus(lastMessage.id, 1)" v-bind:disabled="loading || !lastMessage.id"
                             target="_blank">
                             <i class="fas fa-save"></i> Guardar
                         </button>
@@ -75,6 +75,10 @@
                             v-bind:style="`width: ${percentUsageTokens}%`">
                             {{ percentUsageTokens }}% usado
                         </div>
+                    </div>
+                    <!-- 2026-10-10: mostrar errores sin reemplazar el contenido generado previamente. -->
+                    <div v-if="responseError" class="alert alert-danger" role="alert">
+                        {{ responseError }}
                     </div>
                     <div v-show="loading" class="text-center p-4">
                         <div class="spinner-border text-secondary" role="status">

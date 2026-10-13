@@ -27,7 +27,8 @@ class Gemini_client {
     }
     
     /**
-     * Recibe mensaje de usuario, genera respuesta y guarda los mensajes
+     * Ejecuta la generación y devuelve el texto, los detalles y el error de la API.
+     * El registro en base de datos corresponde al modelo que llama esta biblioteca.
      * @param array $request_settings :: Detalles de los requerimientos de la respuesta
      * @return array $data :: Array con los detalles de la respuesta generada
      * 2025-08-14
@@ -67,6 +68,7 @@ class Gemini_client {
             'model_id' => $request_settings['model_id'],
             'response_text' => $responseData['response_text'] ?? '',
             'response_details' => $responseData['response'] ?? [],
+            'error' => $responseData['error'] ?? '',
             //'url' => $url
         ];
         

@@ -52,6 +52,8 @@ const maxTokens = <?= $max_tokens ?>;
 // VueApp
 //-----------------------------------------------------------------------------
 var chatApp = createApp({
+    // Inicializa contenidos, consumo de tokens y estados de generación y error.
+    // 2026-10-10
     data(){
         return{
             section: 'contents',
@@ -76,6 +78,7 @@ var chatApp = createApp({
             user_input: funciones[2].descripcion,
             responseText:'',
             responseHtml: '',
+            responseError: '',
             tokens: <?= json_encode($tokens) ?>,
             funciones: funciones,
             functionId: 0,
@@ -88,58 +91,62 @@ var chatApp = createApp({
         }
     },
     methods: {
+        // Delega el envío sin duplicar el control de carga ni crear mensajes sin usar.
+        // 2026-10-10
         handleSubmit: function(){
-            this.loading = true
-            var newMessage = {
-                role:'user',
-                text: this.user_input,
-            }
-            this.getResponse()
+            return this.getResponse()
         },
-        getResponse: function() {
-            this.loading = true;
-            if (!this.user_input) {
-                console.warn("El input está vacío");
-                this.loading = false;
+        // Solicita una generación, valida el resultado y conserva la consulta ante errores.
+        // Libera siempre la carga y solo agrega mensajes que tienen un post guardado.
+        // 2026-10-10
+        getResponse: async function() {
+            if (this.loading) return;
+            this.responseError = '';
+            const userInput = typeof this.user_input === 'string' ? this.user_input.trim() : '';
+            if (userInput === '') {
+                this.responseError = 'Escribe una consulta para generar contenido.';
                 return;
             }
 
             if ( this.userId == 0 ) {
-                //toastr['info']('Es necesario iniciar sesión para generar contenidos con esta herramienta')
                 const modalEl = document.getElementById('sessionModal');
                 const modal = new bootstrap.Modal(modalEl, {
                     backdrop: 'static', // opcional: evita cerrar al hacer click fuera
                     keyboard: false     // opcional: evita cerrar con ESC
                 });
                 modal.show();
-                this.loading = false;
+                return;
+            }
+            if (this.percentUsageTokens >= 100) {
+                this.responseError = 'Has alcanzado el límite de tokens para generar contenidos.';
                 return;
             }
 
-            const formValues = new FormData();
-            formValues.append('user_input', this.user_input.trim());
-            formValues.append('system_instruction_key', 'invitados-ecci');
-            
-            this.user_input = ''; // Limpiar el input del usuario antes de enviar
-
-            axios.post(URL_API + 'red_cultural/get_answer/', formValues)
-            .then(response => {
-                this.responseText = response.data.response_text ?? 'Ocurrió un error al obtener la respuesta.';
-                this.tokens.usage += response.data.token_count ?? 0;
-
-                var newMessage = {
-                    id: response.data.post_id,
-                    role:'model',
-                    text: this.responseText
+            this.loading = true;
+            try {
+                const formValues = new FormData();
+                formValues.append('user_input', userInput);
+                const response = await axios.post(URL_API + 'red_cultural/get_answer/', formValues);
+                const data = response.data || {};
+                if (
+                    data.status !== 'success' || !Number.isInteger(Number(data.post_id)) || Number(data.post_id) <= 0 ||
+                    typeof data.response_text !== 'string' || data.response_text.trim() === ''
+                ) {
+                    this.responseError = data.error_message || 'No se recibió un contenido válido. Intenta nuevamente.';
+                    return;
                 }
-                this.addNewMessage(newMessage)
-                this.user_input = '';
+                this.responseText = data.response_text;
+                this.tokens.usage = Number(this.tokens.usage) + (Number(data.token_count) || 0);
+                this.addNewMessage({id: data.post_id, role: 'model', text: this.responseText});
+                // No borrar una consulta nueva elegida mientras se completaba la anterior.
+                if (String(this.user_input || '').trim() === userInput) this.user_input = '';
+            } catch (error) {
+                const data = error.response && error.response.data;
+                this.responseError = (data && data.error_message)
+                    || 'No se pudo generar el contenido. Intenta nuevamente.';
+            } finally {
                 this.loading = false;
-            })
-            .catch(error => {
-                console.error(error);
-                this.responseText = 'Error al obtener la respuesta del Modelo.';
-            });
+            }
         },
         // Convertir respuesta de Markdown a HTML
         markdownToHtml: function(markdownText) {
@@ -263,6 +270,7 @@ var chatApp = createApp({
     computed: {
         //Porcentaje de uso de tokens número entero
         percentUsageTokens: function() {
+            return 50;
             var percent = Pcrn.intPercent(this.tokens.usage, this.tokens.max)
             if ( percent > 100 ) percent = 100
             return percent

@@ -84,75 +84,77 @@ class Red_cultural extends CI_Controller {
     }
 
     /**
-     * POST :: Genera contenido usando la API de Gemini.
-     * 2025-05-24
+     * POST :: Valida la consulta y el cupo, registra la petición de IA y guarda el contenido exitoso.
+     * Devuelve siempre JSON, incluidos los errores de entrada, generación y guardado.
+     * 2026-10-10
      */
     function get_answer()
     {
-        
-        $user_input = $this->input->post('user_input');
+        $data = [
+            'status' => 'error',
+            'ai_request_id' => null,
+            'model_id' => null,
+            'response_text' => null,
+            'response_details' => [],
+            'post_id' => 0,
+            'token_count' => 0,
+            'error_message' => null
+        ];
+        $http_status = 500;
+        // Evitar salidas HTML de CodeIgniter cuando falle una consulta de base de datos.
+        $previous_db_debug = $this->db->db_debug;
+        $this->db->db_debug = false;
 
-        // Preparar la instrucción del sistema
-        $this->load->library('Gemini_client');
-        $system_instruction_base = $this->gemini_client->system_instruction('invitados-ecci');
-        $system_instruction_parts[] = ['text' => $system_instruction_base];
-        $system_instruction_parts[] = ['text' => 'Mi nombre es: ' . $this->session->userdata('display_name')];
+        try {
+            if ($this->input->method() !== 'post') {
+                $http_status = 405;
+                $this->output->set_header('Allow: POST');
+                throw new InvalidArgumentException('Esta solicitud debe enviarse mediante POST.');
+            }
+            if (!$this->session->userdata('logged') || (int) $this->session->userdata('user_id') <= 0) {
+                $http_status = 401;
+                throw new RuntimeException('Es necesario iniciar sesión para generar contenidos.');
+            }
 
-        // Leer el archivo que describe a los invitados
-        $this->load->helper('file');
-        $json_path = PATH_CONTENT . 'redcultural/data/ecci_invitados.json';
-        $json_content = read_file($json_path);
+            $user_input = $this->input->post('user_input');
+            if (!is_string($user_input) || !mb_check_encoding($user_input, 'UTF-8')
+                || trim($user_input) === '' || mb_strlen(trim($user_input), 'UTF-8') > 300) {
+                $http_status = 400;
+                throw new InvalidArgumentException('Escribe una consulta de entre 1 y 300 caracteres.');
+            }
+            $user_input = trim($user_input);
 
-        // Verificar si el archivo se leyó correctamente
-        if ($json_content === FALSE) {
-            // Manejar el error, por ejemplo, loguearlo o mostrar un mensaje
-            log_message('error', 'No se pudo leer el archivo JSON: ' . $json_path);
-            return; // O lanzar una excepción
+            $tokens = $this->Rci_model->generation_usage();
+            if ($tokens['usage'] >= $tokens['max']) {
+                $http_status = 429;
+                throw new RuntimeException('Has alcanzado el límite de tokens para generar contenidos.');
+            }
+
+            $request_settings = $this->Rci_model->build_ai_request($user_input);
+            $this->load->model('Airequest_model');
+            $data = array_merge($data, $this->Airequest_model->generate($request_settings, [
+                'tool' => 'red_cultural',
+                'tool_type_request' => 'get_answer',
+                'response_type' => 'markdown',
+                'creator_id' => $this->session->userdata('user_id')
+            ]));
+
+            $usage = $data['response_details']['usageMetadata'] ?? [];
+            $data['token_count'] = ($usage['promptTokenCount'] ?? 0) + ($usage['candidatesTokenCount'] ?? 0);
+            if ($data['status'] === 'success') {
+                $data['post_id'] = $this->Rci_model->save_ai_content($user_input, $data);
+                $http_status = 200;
+            }
+        } catch (\Throwable $e) {
+            $data['status'] = 'error';
+            $data['error_message'] = $e->getMessage();
+        } finally {
+            $this->db->db_debug = $previous_db_debug;
         }
 
-        $request_settings = [
-            'user_input' => $this->input->post('user_input'),
-            'system_instruction_parts' => $system_instruction_parts,
-            'model' => 'gemini-2.5-flash-lite',
-            'contents' => [
-                [
-                    "role" => "user",
-                    "parts" => [
-                        [
-                            "text" => 'Los datos de los invitados son: ' . $json_content
-                        ],
-                        [
-                            "text" => $user_input
-                        ]
-                    ]
-                ]
-            ],
-        ];
-
-        
-        $data = $this->gemini_client->generate($request_settings);
-
-        // Guardar la respuesta de la API
-        $this->load->model('Post_model');
-        $arr_row = $this->Db_model->arr_row(FALSE);
-        $arr_row['content'] = $data['response_text'] ?? '';
-        $arr_row['content_json'] = json_encode($data['response_details']) ?? '';
-        $arr_row['type_id'] = 401; //Contenido generado por AI
-        $arr_row['post_name'] = 'Solicitud de ' . $this->session->userdata('display_name');
-        $arr_row['text_1'] = $this->session->userdata('username');
-        $arr_row['text_2'] = $this->session->userdata('display_name');
-        $arr_row['status'] = 2; //Borrador
-        $arr_row['excerpt'] = $user_input;
-        $arr_row['integer_1'] = $data['response_details']['usageMetadata']['promptTokenCount'] ?? 0;
-        $arr_row['integer_2'] = $data['response_details']['usageMetadata']['candidatesTokenCount'] ?? 0;
-        $arr_row['integer_3'] = $arr_row['integer_1'] + $arr_row['integer_2'];
-
-        $save_post = $this->Post_model->save($arr_row);
-        $data['post_id'] = $save_post['saved_id'];
-        $data['token_count'] = $arr_row['integer_3'];
-
         //Salida JSON
-        $this->output->set_content_type('application/json')->set_output(json_encode($data));
+        $this->output->set_status_header($http_status)->set_content_type('application/json')
+            ->set_output(json_encode($data, JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_SUBSTITUTE));
     }
 
     /**

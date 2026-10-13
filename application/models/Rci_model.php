@@ -235,6 +235,138 @@ class Rci_model extends CI_Model{
     }
 
     /**
+     * Construye la solicitud de Descubre con contexto validado y configuración propia.
+     * Compacta el JSON y excluye correos y campos vacíos, conservando todos los invitados.
+     * @param string $user_input :: Consulta validada por el controlador.
+     * @return array :: Parámetros para Airequest_model::generate().
+     * 2026-10-10
+     */
+    public function build_ai_request($user_input)
+    {
+        $json_path = PATH_CONTENT . 'redcultural/data/ecci_invitados.json';
+        if (!is_file($json_path) || !is_readable($json_path)) {
+            throw new RuntimeException('No se pudo leer la información de los invitados.');
+        }
+        $json_content = file_get_contents($json_path);
+        if ($json_content === false) {
+            throw new RuntimeException('No se pudo leer la información de los invitados.');
+        }
+        $guests = json_decode($json_content, true);
+        if (json_last_error() !== JSON_ERROR_NONE || !is_array($guests) || empty($guests)) {
+            throw new RuntimeException('La información de los invitados no contiene un JSON válido.');
+        }
+        foreach ($guests as &$guest) {
+            if (!is_array($guest)) {
+                throw new RuntimeException('La información de los invitados tiene una estructura inválida.');
+            }
+            unset($guest['Correo electrónico']);
+            $guest = array_filter($guest, function ($value) {
+                return $value !== null && (!is_string($value) || trim($value) !== '');
+            });
+        }
+        unset($guest);
+        $json_content = json_encode(array_values($guests), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+        if ($json_content === false) {
+            throw new RuntimeException('No se pudo preparar el contexto de los invitados.');
+        }
+
+        $instruction_path = PATH_CONTENT . 'ai_system_instructions/invitados-ecci.md';
+        if (!is_file($instruction_path) || !is_readable($instruction_path)) {
+            throw new RuntimeException('No se pudo leer la instrucción de generación.');
+        }
+        $this->load->library('Gemini_client');
+        $instruction = $this->gemini_client->system_instruction('invitados-ecci');
+        if (trim($instruction) === '') {
+            throw new RuntimeException('La instrucción de generación está vacía.');
+        }
+
+        return [
+            'model' => 'gemini-2.5-flash-lite',
+            'system_instruction_parts' => [
+                ['text' => $instruction],
+                ['text' => 'Mi nombre es: ' . $this->session->userdata('display_name')],
+                ['text' => 'Entrega la respuesta en Markdown. Usa los datos disponibles y no inventes información.']
+            ],
+            'contents' => [[
+                'role' => 'user',
+                'parts' => [
+                    ['text' => 'Los datos de los invitados son: ' . $json_content],
+                    ['text' => $user_input]
+                ]
+            ]],
+            'generationConfig' => [
+                'temperature' => 0.5,
+                'maxOutputTokens' => 2048,
+                'responseMimeType' => 'text/plain'
+            ]
+        ];
+    }
+
+    /**
+     * Guarda una generación exitosa como post de tipo 401 en estado borrador.
+     * Conserva los campos de tokens usados por el historial y detecta errores de guardado.
+     * @param string $user_input :: Consulta que originó el contenido.
+     * @param array $result :: Resultado exitoso de Airequest_model::generate().
+     * @return int :: ID del post guardado.
+     * 2026-10-10
+     */
+    public function save_ai_content($user_input, array $result)
+    {
+        if (($result['status'] ?? '') !== 'success' || trim($result['response_text'] ?? '') === '') {
+            throw new InvalidArgumentException('Solo se pueden guardar generaciones exitosas.');
+        }
+        $content_json = json_encode($result['response_details'], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+        if ($content_json === false) {
+            throw new RuntimeException('No se pudo serializar la respuesta para guardar el contenido.');
+        }
+        $this->load->model('Post_model');
+        $arr_row = $this->Db_model->arr_row(false);
+        $usage = $result['response_details']['usageMetadata'] ?? [];
+        $arr_row['content'] = $result['response_text'];
+        $arr_row['content_json'] = $content_json;
+        $arr_row['type_id'] = 401;
+        $arr_row['post_name'] = 'Solicitud de ' . $this->session->userdata('display_name');
+        $arr_row['text_1'] = $this->session->userdata('username');
+        $arr_row['text_2'] = $this->session->userdata('display_name');
+        $arr_row['status'] = 2; // Borrador; la publicación sigue siendo una acción del usuario.
+        $arr_row['excerpt'] = $user_input;
+        $arr_row['integer_1'] = $usage['promptTokenCount'] ?? 0;
+        $arr_row['integer_2'] = $usage['candidatesTokenCount'] ?? 0;
+        $arr_row['integer_3'] = $arr_row['integer_1'] + $arr_row['integer_2'];
+
+        $previous_db_debug = $this->db->db_debug;
+        $this->db->db_debug = false;
+        try {
+            $saved = $this->Post_model->save($arr_row);
+        } finally {
+            $this->db->db_debug = $previous_db_debug;
+        }
+        if (empty($saved['saved_id'])) {
+            throw new RuntimeException('La respuesta fue generada, pero no se pudo guardar el contenido.');
+        }
+        return (int) $saved['saved_id'];
+    }
+
+    /**
+     * Devuelve el límite de Descubre y el consumo de posts 401 del usuario actual.
+     * Para roles mayores a 3 considera las últimas 24 horas, como en la interfaz existente.
+     * @return array :: max y usage, compartidos por la vista y el endpoint.
+     * 2026-10-10
+     */
+    public function generation_usage()
+    {
+        $user_id = (int) $this->session->userdata('user_id');
+        $condition = "creator_id = {$user_id} AND type_id = 401";
+        if ((int) $this->session->userdata('role') > 3) {
+            $condition .= ' AND created_at >= NOW() - INTERVAL 24 HOUR';
+        }
+        return [
+            'max' => 350000,
+            'usage' => $user_id > 0 ? $this->used_tokens($condition) : 0
+        ];
+    }
+
+    /**
      * Cantidad de tokens utilizados en la generación de contenidos AI
      * 2025-09-02
      */

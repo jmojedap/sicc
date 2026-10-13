@@ -52,10 +52,12 @@
                         <i class="fas fa-map-marked-alt me-1" aria-hidden="true"></i>
                         Ver mapa
                     </button>
-                    <button v-if="canEditVariables" type="button" class="btn btn-primary" v-on:click="openCreateForm">
-                        <i class="fas fa-plus me-1" aria-hidden="true"></i>
-                        Nueva variable
-                    </button>
+                    <?php if ( in_array($this->session->userdata('role'), [1,2,3]) ) : ?>
+                        <button v-if="canEditVariables" type="button" class="btn btn-primary" v-on:click="openCreateForm">
+                            <i class="fas fa-plus me-1" aria-hidden="true"></i>
+                            Nueva variable
+                        </button>
+                    <?php endif; ?>
                 </div>
             </header>
 
@@ -157,25 +159,8 @@
                                     >
                                         <i class="fas fa-map-marked-alt" aria-hidden="true"></i>
                                     </button>
-                                    <button
-                                        type="button"
-                                        v-if="canEditVariables"
-                                        class="a4 me-1"
-                                        v-on:click="openForm(variable.id)"
-                                        v-bind:aria-label="'Editar ' + variable.nombre"
-                                        title="Editar variable"
-                                    >
-                                        <i class="fas fa-pencil-alt" aria-hidden="true"></i>
-                                    </button>
-                                    <a
-                                        v-if="canEditVariables"
-                                        class="a4 me-1"
-                                        v-bind:href="`<?= URL_APP . "geofocus/variables_importar_valores/" ?>` + variable.id"
-                                        v-bind:aria-label="'Importar datos de ' + variable.nombre"
-                                        title="Importar datos"
-                                    >
-                                        <i class="fas fa-file-import" aria-hidden="true"></i>
-                                    </a>
+                                    
+                                    
                                     <button
                                         type="button"
                                         class="a4 me-1"
@@ -188,13 +173,33 @@
                                         <i class="fas fa-eye" aria-hidden="true"></i>
                                     </button>
                                     <button
+                                        v-if="canEditVariables"
                                         type="button"
-                                        class="a4"
+                                        class="a4 me-1"
                                         v-on:click="recalcularVariable(variable)"
                                         v-bind:aria-label="'Recalcular variable ' + variable.nombre"
                                         title="Recalcular variable"
                                     >
                                         <i class="fas fa-sync-alt" aria-hidden="true"></i>
+                                    </button>
+                                    <a
+                                        v-if="canEditVariables"
+                                        class="a4 me-1"
+                                        v-bind:href="`<?= URL_APP . "geofocus/variables_importar_valores/" ?>` + variable.id"
+                                        v-bind:aria-label="'Importar datos de ' + variable.nombre"
+                                        title="Importar datos"
+                                    >
+                                        <i class="fas fa-file-import" aria-hidden="true"></i>
+                                    </a>
+                                    <button
+                                        type="button"
+                                        v-if="canEditVariables"
+                                        class="a4 me-1"
+                                        v-on:click="openForm(variable.id)"
+                                        v-bind:aria-label="'Editar ' + variable.nombre"
+                                        title="Editar variable"
+                                    >
+                                        <i class="fas fa-pencil-alt" aria-hidden="true"></i>
                                     </button>
                                 </td>
                             </tr>

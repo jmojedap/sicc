@@ -1,7 +1,8 @@
 <div v-show="section == 'mapa'" class="geofocus-priority-map-page">
     <section class="geofocus-base-content geofocus-priority-map-card"
         aria-labelledby="priority-map-title">
-        <div class="geofocus-priority-map-controls">
+        <!-- 2026-10-12: bloquear los controles durante la petición y el revelado del resultado real. -->
+        <fieldset class="geofocus-priority-map-controls" v-bind:disabled="loading">
             <button type="button" class="btn btn-sm"
                 v-bind:class="mapMode == 'priorizacion' ? 'btn-primary' : 'btn-light'"
                 v-on:click="showPrioritizationMap">
@@ -32,6 +33,16 @@
                     </option>
                 </select>
             </div>
+            <div class="geofocus-priority-map-top-control">
+                <label for="priority-map-top" class="form-label">Polígonos destacados</label>
+                <select id="priority-map-top" class="form-select form-select-sm"
+                    v-model="mapTopPoligonos" v-on:change="changeMapTopPoligonos">
+                    <option v-for="option in arrTopsPoligonos" v-bind:key="option.nombre"
+                        v-bind:value="option.valor">
+                        {{ option.nombre }}
+                    </option>
+                </select>
+            </div>
 
             <div>
                 <label for="priority-map-rotation" class="form-label">Orientaci&oacute;n</label>
@@ -44,7 +55,7 @@
                     </option>
                 </select>
             </div>
-        </div>
+        </fieldset>
 
         <div v-if="mapError" class="alert alert-danger geofocus-priority-map-alert" role="alert">
             <i class="fas fa-exclamation-circle me-1" aria-hidden="true"></i>
@@ -53,7 +64,12 @@
 
         <div class="geofocus-priority-map-layout">
             <div class="geofocus-priority-map-canvas-wrap">
-                <div v-show="mapLoading" class="geofocus-priority-map-loading" role="status">
+                <!-- 2026-10-12: loader de tres barras con texto fijo durante todo el cálculo y el revelado. -->
+                <div v-if="loading" class="geofocus-priority-calculation-status" role="status" aria-live="polite">
+                    <div class="geofocus-priority-process-loader" aria-hidden="true"></div>
+                    <span>Calculando</span>
+                </div>
+                <div v-show="mapLoading && !loading" class="geofocus-priority-map-loading" role="status">
                     <i class="fas fa-spinner fa-spin" aria-hidden="true"></i>
                     <span>Cargando mapa...</span>
                 </div>
@@ -71,7 +87,13 @@
                         <span>{{ formatNumber(mapScale.min) }}</span>
                         <span>{{ formatNumber(mapScale.max) }}</span>
                     </div>
-                    <small><span class="geofocus-priority-map-no-data-swatch"></span> Sin dato</small>
+                    <small v-if="mapTopPoligonos !== null" class="geofocus-priority-map-top-summary">
+                        <i class="fas fa-highlighter" aria-hidden="true"></i>
+                        {{ mapHighlightedCount }} polígonos destacados
+                    </small>
+                    <small><span class="geofocus-priority-map-no-data-swatch"></span>
+                        {{ mapTopPoligonos === null ? 'Sin dato' : 'Fuera del top o sin dato' }}
+                    </small>
                 </div>
             </div>
 
@@ -91,9 +113,35 @@
                 <div class="geofocus-priority-map-copy" v-if="mapMode == 'priorizacion'">
                     <h2>{{ priorizacion.nombre }}</h2>
                     <p>{{ priorizacion.descripcion }}</p>
-                    <p v-if="descripcion.texto">
-                        {{ descripcion.texto }}
-                    </p>
+                    <!-- 2026-10-12: generar solo si falta la descripción; abrir el artículo de Resultados desde este panel. -->
+                    <div class="d-flex flex-wrap gap-2 mb-3">
+                        <button v-if="!descripcion.texto.trim()" type="button" class="btn btn-light"
+                            v-on:click="getDescripcionPriorizacion()"
+                            title="Generar una descripción de las variables, sentidos y ponderaciones calculados"
+                            v-bind:disabled="!isEditable() || Number(userId) <= 0 || loading || descripcion.loading || aiVariablesConfig.loading || priorizacionPendienteDeCalculo">
+                            <img src="<?= URL_IMG ?>icons/ia-generate.png" alt="" class="geofocus-priority-ai-icon">
+                            Generar descripción
+                        </button>
+                        <button type="button" class="btn btn-light" v-on:click="setSection('resultados')"
+                            v-bind:disabled="loading">
+                            Ver resultados
+                        </button>
+                    </div>
+                    <!-- 2026-10-12: reservar la descripción recibida durante la animación y mostrarla al finalizar. -->
+                    <div v-if="!loading" aria-live="polite" v-bind:aria-busy="descripcion.loading">
+                        <div v-if="descripcion.error" class="alert alert-danger" role="alert">
+                            {{ descripcion.error }}
+                        </div>
+                        <div v-if="descripcion.loading"
+                            class="geofocus-priority-description-loading" role="status">
+                            <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+                            <span>Generando análisis…</span>
+                        </div>
+                        <div v-else-if="descriptionVisible"
+                            v-bind:key="'map-description-' + descripcion.texto"
+                            class="geofocus-priority-markdown animate__animated animate__fadeInUp animate__faster"
+                            v-html="descripcionHtml"></div>
+                    </div>
                 </div>
 
                 <div class="geofocus-priority-map-copy" v-else-if="currentVariable">

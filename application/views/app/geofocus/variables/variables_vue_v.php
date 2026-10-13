@@ -740,7 +740,7 @@ var geofocusVariablesApp = createApp({
         // ===== Propiedades calculadas generales =====
         // Determina si el usuario puede editar variables.
         canEditVariables: function(){
-            return [1, 2, 3, 8].includes(this.userRole)
+            return [1, 2, 3].includes(this.userRole)
         },
         // Obtiene la capa base actualmente seleccionada.
         currentCapa: function(){

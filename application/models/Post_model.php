@@ -237,11 +237,13 @@ class Post_model extends CI_Model{
     }
 
     /**
-     * Guardar un registro en la tabla posts
-     * 2022-07-27
+     * Guarda un registro en posts y devuelve saved_id = 0 si falla la escritura.
+     * Conserva el ID cuando una actualización exitosa no cambia los valores existentes.
+     * 2026-10-10
      */
     function save($arr_row = null)
     {
+        $post_id = 0;
         //Verificar si hay array con registro
         if ( is_null($arr_row) ) $arr_row = $this->Db_model->arr_row();
 
@@ -250,14 +252,17 @@ class Post_model extends CI_Model{
         {
             //No existe, insertar
             $arr_row['slug'] = $this->Db_model->unique_slug($arr_row['post_name'],'posts');
-            $this->db->insert('posts', $arr_row);
-            $post_id = $this->db->insert_id();
+            if ($this->db->insert('posts', $arr_row)) {
+                $post_id = $this->db->insert_id();
+            }
         } else {
             //Ya existe, editar
-            $post_id = $arr_row['id'];
+            $existing_id = $arr_row['id'];
             unset($arr_row['id']);
 
-            $this->db->where('id', $post_id)->update('posts', $arr_row);
+            if ($this->db->where('id', $existing_id)->update('posts', $arr_row)) {
+                $post_id = $existing_id;
+            }
         }
 
         $data['saved_id'] = $post_id;

@@ -78,11 +78,13 @@ class Geofocus extends CI_Controller
 //-----------------------------------------------------------------------------
 
     /**
-     * Calcular la priorización
-     * 2024-09-14
+     * Calcula y guarda la configuración del escenario, e invalida la descripción anterior.
+     * Informa éxito solo cuando la cabecera se guarda para actualizar el estado de la interfaz.
+     * 2026-10-11
      */
     function calcular_priorizacion()
     {
+        $http_status = 200;
         // Obtener el contenido JSON enviado por POST
         $jsonData = file_get_contents("php://input");
         $settings = json_decode($jsonData, true);
@@ -95,8 +97,17 @@ class Geofocus extends CI_Controller
             // Preparar los datos para insertar en la base de datos
             $aRow['configuracion'] = json_encode($settings['variables']); // Guardar el JSON original
             $aRow['id'] = $settings['priorizacion']['id'];
+            $aRow['descripcion_generada'] = '';
+            $aRow['updater_id'] = $this->session->userdata('user_id');
+            $aRow['updated_at'] = date('Y-m-d H:i:s');
             $data['saved_id'] = $this->Geofocus_model->save_priorizacion($aRow);
+            $data['status'] = $data['saved_id']['saved_id'] > 0 ? 'success' : 'error';
+            if ($data['status'] === 'error') {
+                $http_status = 500;
+                $data['message'] = 'No se pudo guardar la configuración calculada.';
+            }
         } else {
+            $http_status = 400;
             $data = [
                 'status' => 'error',
                 'message' => 'Datos JSON inválidos'
@@ -104,7 +115,7 @@ class Geofocus extends CI_Controller
         }
 
         //Salida JSON
-        $this->output->set_content_type('application/json')->set_output(json_encode($data));
+        $this->output->set_status_header($http_status)->set_content_type('application/json')->set_output(json_encode($data));
     }
 
     /**
@@ -182,15 +193,16 @@ class Geofocus extends CI_Controller
     }
 
     /**
-     * Genear con IA la descripción en texto de la parametrización de la priorización del usuario
-     * 2026-07-26
+     * Generar con IA la descripción en texto de la parametrización de la priorización del usuario
+     * Registra la petición mediante Airequest_model y guarda la descripción solo si tiene éxito.
+     * 2026-10-10
      */
     function get_descripcion($priorizacionId)
     {
-        $this->load->library('Gemini_client');
+        $this->load->model('Airequest_model');
 
         // Instrucción para geofocus
-        $system_instruction_base = $this->gemini_client->system_instruction('geofocus-1');
+        $system_instruction_base = $this->Airequest_model->system_instruction('geofocus-2');
         $system_instruction_parts[] = ['text' => $system_instruction_base];
 
         $request_settings['system_instruction_parts'] = $system_instruction_parts;
@@ -218,18 +230,206 @@ class Geofocus extends CI_Controller
             "responseMimeType" => "text/plain"
         ];
         
-        $responseData = $this->gemini_client->generate($request_settings);
+        // El modelo ejecuta la API y registra la solicitud, la respuesta y los errores.
+        try {
+            $responseData = $this->Airequest_model->generate($request_settings, [
+                'tool' => 'geofocus',
+                'tool_type_request' => 'get_descripcion',
+                'response_type' => 'plain_text',
+                'creator_id' => $this->session->userdata('user_id')
+            ]);
+        } catch (\Throwable $e) {
+            $responseData = [
+                'status' => 'error',
+                'ai_request_id' => null,
+                'response_text' => null,
+                'error_message' => $e->getMessage()
+            ];
+        }
 
-        // Datos de la fila que se va a actualizar
-        $aRow['descripcion_generada'] = $responseData['response_text'] ?? 'Ocurrió un error al obtener al generar la descripción.';
-        $aRow['updater_id'] = $this->session->userdata('user_id');
-        $aRow['updated_at'] = date('Y-m-d H:i:s');
+        $data = [
+            'status' => $responseData['status'],
+            'ai_request_id' => $responseData['ai_request_id'],
+            'descripcion_generada' => $responseData['response_text'],
+            'saved_id' => 0,
+            'error_message' => $responseData['error_message']
+        ];
 
-        // Datos de la respuesta
-        $data['descripcion_generada'] = $aRow['descripcion_generada'];
-        $data['saved_id'] = $this->Db_model->save('gf_priorizaciones', "id = {$priorizacionId}", $aRow);
+        // Conservar la descripción anterior cuando falle la generación o su registro.
+        if ($responseData['status'] === 'success') {
+            $aRow = [
+                'descripcion_generada' => $responseData['response_text'],
+                'updater_id' => $this->session->userdata('user_id'),
+                'updated_at' => date('Y-m-d H:i:s')
+            ];
+            $data['saved_id'] = $this->Db_model->save(
+                'gf_priorizaciones', 'id = ' . (int) $priorizacionId, $aRow
+            );
+        } else {
+            // Activar el manejo de errores de Axios sin reemplazar el texto en pantalla.
+            $this->output->set_status_header(500);
+        }
 
         $this->output->set_content_type('application/json')->set_output(json_encode($data));
+    }
+
+    /**
+     * POST :: Recibe priorizacion_id y prompt y devuelve una propuesta de configuración generada con IA.
+     * Valida el acceso, consulta el catálogo de la capa y registra la petición mediante Airequest_model.
+     * Valida la propuesta contra el catálogo vigente para permitir su aceptación en la interfaz.
+     * Admite JSON directo o un único bloque Markdown de código que lo envuelva.
+     * @return void :: Salida JSON con status, ai_request_id, contexto, configuracion y error_message.
+     * 2026-10-11
+     */
+    function get_ai_variables_config()
+    {
+        $data = [
+            'status' => 'error',
+            'ai_request_id' => null,
+            'priorizacion_id' => null,
+            'key_capa' => null,
+            'configuracion' => null,
+            'configuracion_validada' => false,
+            'error_message' => null
+        ];
+        $http_status = 500;
+        $previous_db_debug = $this->db->db_debug;
+        $this->db->db_debug = false;
+
+        try {
+            if ($this->input->method() !== 'post') {
+                $http_status = 405;
+                $this->output->set_header('Allow: POST');
+                throw new InvalidArgumentException('Esta solicitud debe enviarse mediante POST.');
+            }
+            $user_id = (int) $this->session->userdata('user_id');
+            if (!$this->session->userdata('logged') || $user_id <= 0) {
+                $http_status = 401;
+                throw new RuntimeException('Es necesario iniciar sesión para solicitar una configuración.');
+            }
+
+            $priorizacion_id = filter_var($this->input->post('priorizacion_id'), FILTER_VALIDATE_INT,
+                ['options' => ['min_range' => 1]]);
+            $prompt = $this->input->post('prompt');
+            if ($priorizacion_id === false || !is_string($prompt)
+                || !mb_check_encoding($prompt, 'UTF-8') || trim($prompt) === '') {
+                $http_status = 400;
+                throw new InvalidArgumentException('Envía un priorizacion_id válido y un prompt con contenido.');
+            }
+            $data['priorizacion_id'] = $priorizacion_id;
+            $priorizacion = $this->Db_model->row_id('gf_priorizaciones', $priorizacion_id);
+            if (!$priorizacion) {
+                $http_status = 404;
+                throw new RuntimeException('La priorización solicitada no existe.');
+            }
+            $is_admin = in_array((int) $this->session->userdata('role'), [1, 2], true);
+            if (!$is_admin && (int) $priorizacion->creator_id !== $user_id) {
+                $http_status = 403;
+                throw new RuntimeException('No tienes permiso para configurar esta priorización.');
+            }
+
+            // La capa y los indicadores proceden del servidor, no de campos enviados por el cliente.
+            $data['key_capa'] = $priorizacion->key_capa;
+            $catalog = $this->Geofocus_model->get_ai_variables_catalog($priorizacion->key_capa);
+            $available_ids = [];
+            foreach ($catalog as $variable) {
+                if ($variable['cantidad_valores'] > 0) $available_ids[] = $variable['id'];
+            }
+            if (empty($available_ids)) {
+                $http_status = 422;
+                throw new RuntimeException('La capa no tiene variables activas con mediciones reportadas.');
+            }
+
+            // El esquema permite una selección vacía para objetivos que requieren aclaración.
+            $schema = [
+                'type' => 'object',
+                'properties' => [
+                    'variables' => [
+                        'type' => 'array',
+                        'maxItems' => count($available_ids),
+                        'items' => [
+                            'type' => 'object',
+                            'properties' => [
+                                'id' => ['type' => 'integer', 'enum' => $available_ids],
+                                'tipo_priorizacion' => ['type' => 'integer', 'enum' => [1, -1]],
+                                'puntaje' => ['type' => 'integer', 'minimum' => 1, 'maximum' => 100]
+                            ],
+                            'required' => ['id', 'tipo_priorizacion', 'puntaje'],
+                            'additionalProperties' => false
+                        ]
+                    ],
+                    'observaciones' => ['type' => 'string']
+                ],
+                'required' => ['variables', 'observaciones'],
+                'additionalProperties' => false
+            ];
+            $input_json = json_encode([
+                'priorizacion_id' => $priorizacion_id,
+                'key_capa' => $priorizacion->key_capa,
+                'prompt' => trim($prompt),
+                'catalogo_variables' => $catalog
+            ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+            if ($input_json === false) {
+                throw new RuntimeException('No se pudo preparar el catálogo para la solicitud de IA.');
+            }
+
+            $this->load->model('Airequest_model');
+            $instruction = $this->Airequest_model->system_instruction('geofocus-variables-config-1');
+            if (trim($instruction) === '') {
+                throw new RuntimeException('La instrucción de configuración de variables está vacía.');
+            }
+            $request_settings = [
+                'model' => 'gemini-2.5-flash-lite',
+                'system_instruction_parts' => [['text' => $instruction]],
+                'contents' => [['role' => 'user', 'parts' => [['text' => $input_json]]]],
+                'generationConfig' => [
+                    'temperature' => 0.2,
+                    'maxOutputTokens' => 4096,
+                    'responseFormat' => [
+                        // responseFormat usa el enum de v1beta para el formato de texto.
+                        'text' => ['mimeType' => 'APPLICATION_JSON', 'schema' => $schema]
+                    ]
+                ]
+            ];
+            $response = $this->Airequest_model->generate($request_settings, [
+                'tool' => 'geofocus',
+                'tool_type_request' => 'get_ai_variables_config',
+                'response_type' => 'other',
+                'creator_id' => $user_id
+            ]);
+            $data['ai_request_id'] = $response['ai_request_id'];
+            if ($response['status'] !== 'success') {
+                throw new RuntimeException($response['error_message'] ?: 'No se pudo generar la configuración.');
+            }
+
+            // Separar errores de JSON del rechazo de una propuesta que no cumple las reglas de la capa.
+            // 2026-10-11: quitar solo el envoltorio externo; conservar el texto original en ai_requests.
+            $response_text = trim($response['response_text']);
+            if (preg_match('/\A```(?:json)?[ \t]*\R(.*?)\R```[ \t]*\z/is', $response_text, $matches)) {
+                $response_text = trim($matches[1]);
+            }
+            $config = json_decode($response_text);
+            if (json_last_error() !== JSON_ERROR_NONE) {
+                $http_status = 502;
+                throw new RuntimeException('Gemini no devolvió un JSON válido.');
+            }
+            try {
+                $data['configuracion'] = $this->Geofocus_model->validate_ai_variables_config($config, $priorizacion->key_capa);
+            } catch (InvalidArgumentException $e) {
+                $http_status = 422;
+                throw $e;
+            }
+            $data['configuracion_validada'] = true;
+            $data['status'] = 'success';
+            $http_status = 200;
+        } catch (\Throwable $e) {
+            $data['error_message'] = $e->getMessage();
+        } finally {
+            $this->db->db_debug = $previous_db_debug;
+        }
+
+        $this->output->set_status_header($http_status)->set_content_type('application/json')
+            ->set_output(json_encode($data, JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_SUBSTITUTE));
     }
 
 // GESTIÓN DE VARIABLES

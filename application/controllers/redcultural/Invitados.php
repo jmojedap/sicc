@@ -148,13 +148,15 @@ class Invitados extends CI_Controller {
 
     /**
      * Vista de chat, generar con IA información sobre los invitados
-     * 2025-08-28
+     * Prepara Descubre con el mismo límite y consumo de tokens validados por la API.
+     * 2026-10-10
      */
     function descubre()
     {
         $data['head_title'] = 'Descubre a los Invitados';
         $data['view_a'] = $this->views_folder . 'descubre/descubre_v';
-        $data['max_tokens'] = 20000;
+        $data['tokens'] = $this->Rci_model->generation_usage();
+        $data['max_tokens'] = $data['tokens']['max'];
 
         $this->load->model('Search_model');
         $filters = $this->Search_model->filters();
@@ -166,12 +168,6 @@ class Invitados extends CI_Controller {
         $filters['status'] = 1; //Publicado
         $data['contenidos'] = $this->Post_model->get($filters, 1, 50);
 
-        //Lapso de creación en las ultimas 24 horas
-        $usage_condition = "creator_id = {$this->session->userdata('user_id')}";
-        if ( $this->session->userdata('role') > 3 ) {
-            $usage_condition .= " AND created_at >= NOW() - INTERVAL 24 HOUR";
-        }
-
         $data['session_user_id'] = 0;
         $data['user_country'] = 'Colombia';
 
@@ -181,11 +177,6 @@ class Invitados extends CI_Controller {
             if ( $user_row->role != 11 ) $data['user_country'] == $user_row->text_2;
         }
 
-
-        $data['tokens'] = [
-            'max' => 350000,
-            'usage' => $this->Rci_model->used_tokens($usage_condition)
-        ];
 
         $this->App_model->view(RCI_TPL_APP, $data);
     }

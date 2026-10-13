@@ -41,7 +41,7 @@ class Geofocus_model extends CI_Model{
 
     /**
      * Devolver listado de priorizaciones en la base de datos
-     * 2024-10-17
+     * 2026-10-12
      */
     function get_priorizaciones()
     {
@@ -49,17 +49,22 @@ class Geofocus_model extends CI_Model{
         $this->db->limit(150);
         $this->db->order_by('updated_at', 'DESC');
         $this->db->join('users', 'gf_priorizaciones.creator_id = users.id', 'left');
+
+        if ( ! in_array($this->session->userdata('role'), [1,2,3]) ) {
+            $this->db->where('gf_priorizaciones.creator_id', $this->session->userdata('user_id'));
+        }
         
         $priorizaciones = $this->db->get('gf_priorizaciones');
         return $priorizaciones;
     }
 
     /**
-     * Guardar un registro en la tabla gf_priorizaciones
-     * 2024-10-28
+     * Guarda la cabecera de una priorización y devuelve saved_id = 0 cuando falla la escritura.
+     * 2026-10-11
      */
     function save_priorizacion($arr_row = null)
     {
+        $priorizacionId = 0;
         //Verificar si hay array con registro
         if ( is_null($arr_row) ) $arr_row = $this->Db_model->arr_row();
 
@@ -69,14 +74,17 @@ class Geofocus_model extends CI_Model{
             //No existe, insertar
             $arr_row['creator_id'] = $this->session->userdata('user_id');
             $arr_row['created_at'] = date('Y-m-d H:i:s');
-            $this->db->insert('gf_priorizaciones', $arr_row);
-            $priorizacionId = $this->db->insert_id();
+            if ($this->db->insert('gf_priorizaciones', $arr_row)) {
+                $priorizacionId = $this->db->insert_id();
+            }
         } else {
             //Ya existe, editar
-            $priorizacionId = $arr_row['id'];
+            $existing_id = $arr_row['id'];
             unset($arr_row['id']);
 
-            $this->db->where('id', $priorizacionId)->update('gf_priorizaciones', $arr_row);
+            if ($this->db->where('id', $existing_id)->update('gf_priorizaciones', $arr_row)) {
+                $priorizacionId = $existing_id;
+            }
         }
 
         $data['saved_id'] = $priorizacionId;
@@ -429,7 +437,7 @@ class Geofocus_model extends CI_Model{
                 'property_key' => 'ID_BARRIO',
                 'center' => [-74.10, 4.65],
                 'zoom' => 10,
-                'rotacion' => 'vertical'
+                'rotacion' => 'horizontal-b'
             ],
         ];
         return $gf_capas_base;
@@ -469,6 +477,80 @@ class Geofocus_model extends CI_Model{
     }
 
     /**
+     * Prepara el catálogo compacto de variables activas de una capa para enviarlo a la IA.
+     * Incluye solo metadatos de interpretación, sin valores territoriales ni configuración del usuario.
+     * cantidad_valores proviene del resumen guardado: cero indica que no se reportan mediciones;
+     * el resumen debe mantenerse actualizado mediante update_variable_summary().
+     * @param string $key_capa :: Clave de la capa territorial de la priorización.
+     * @return array :: Variables ordenadas por ID, con id y cantidad_valores como enteros.
+     * 2026-10-10
+     */
+    public function get_ai_variables_catalog($key_capa)
+    {
+        if (!is_string($key_capa) || trim($key_capa) === '') {
+            throw new InvalidArgumentException('La capa territorial es obligatoria para preparar el catálogo de IA.');
+        }
+
+        $this->db->select('id, clave, nombre, descripcion, tema, unidad_medida, descripcion_calculo, cantidad_valores');
+        $this->db->where('estado', 1);
+        $this->db->where('key_capa', trim($key_capa));
+        $this->db->order_by('id', 'ASC');
+        $query = $this->db->get('gf_variables');
+        if ($query === false) {
+            throw new RuntimeException('No se pudo consultar el catálogo de variables para IA.');
+        }
+
+        $catalog = $query->result_array();
+        foreach ($catalog as &$variable) {
+            $variable['id'] = (int) $variable['id'];
+            $variable['cantidad_valores'] = (int) $variable['cantidad_valores'];
+        }
+        unset($variable);
+
+        return $catalog;
+    }
+
+    /**
+     * Valida el contrato y los criterios de una propuesta IA contra el catálogo vigente de la capa.
+     * Rechaza ID ajenos o repetidos, variables inactivas o sin mediciones, sentidos y pesos inválidos.
+     * Una selección vacía es válida para comunicar que el objetivo necesita aclaración.
+     * @param object $config :: Objeto JSON decodificado con variables y observaciones.
+     * @param string $key_capa :: Capa de la priorización obtenida por el servidor.
+     * @return object :: Propuesta validada, sin modificar pesos ni metadatos.
+     * 2026-10-11
+     */
+    public function validate_ai_variables_config($config, $key_capa)
+    {
+        if (!is_object($config) || !isset($config->variables) || !is_array($config->variables)
+            || !isset($config->observaciones) || !is_string($config->observaciones)
+            || count(get_object_vars($config)) !== 2) {
+            throw new InvalidArgumentException('La propuesta debe contener únicamente variables y observaciones válidas.');
+        }
+
+        // Consultar de nuevo porque el catálogo puede haber cambiado durante la generación.
+        $catalog = array_column($this->get_ai_variables_catalog($key_capa), null, 'id');
+        $selected_ids = [];
+        foreach ($config->variables as $variable) {
+            if (!is_object($variable) || count(get_object_vars($variable)) !== 3
+                || !isset($variable->id, $variable->tipo_priorizacion, $variable->puntaje)
+                || !is_int($variable->id) || $variable->id <= 0
+                || !is_int($variable->tipo_priorizacion) || !in_array($variable->tipo_priorizacion, [1, -1], true)
+                || !is_int($variable->puntaje) || $variable->puntaje < 1 || $variable->puntaje > 100) {
+                throw new InvalidArgumentException('Cada variable debe tener un ID entero, sentido 1 o -1 y peso entero de 1 a 100.');
+            }
+            if (isset($selected_ids[$variable->id])) {
+                throw new InvalidArgumentException('La propuesta contiene variables repetidas.');
+            }
+            if (!isset($catalog[$variable->id]) || $catalog[$variable->id]['cantidad_valores'] <= 0) {
+                throw new InvalidArgumentException('La variable ' . $variable->id . ' no está activa con mediciones en la capa actual.');
+            }
+            $selected_ids[$variable->id] = true;
+        }
+
+        return $config;
+    }
+
+    /**
      * Actualizar el resumen estadístico de una variable en la tabla gf_variables
      * @param int $variable_id :: ID de la variable a actualizar
      * @return array $data :: Detalles de la actualización
@@ -489,6 +571,7 @@ class Geofocus_model extends CI_Model{
         $arr_row['maximo'] = $summary['max'];
         $arr_row['media'] = $summary['avg'];
         $arr_row['desviacion_estandar'] = $summary['std_dev'];
+        $arr_row['sumatoria'] = $summary['sum'];
         $arr_row['cantidad_valores'] = $summary['count'];
 
         // Actualizar valores
