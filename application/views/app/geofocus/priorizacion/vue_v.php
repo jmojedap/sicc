@@ -83,7 +83,8 @@ var priorizacionApp = createApp({
             // 2026-10-12: filtros de la tabla independientes del mapa y de la selección para calcular.
             variablesFilters: {
                 onlySelected: false,
-                tema: ''
+                tema: '',
+                q: ''
             },
             territorios: <?= json_encode($territorios->result()) ?>,
             localidades: <?= json_encode($localidades) ?>,
@@ -118,7 +119,8 @@ var priorizacionApp = createApp({
                 'Identifica los barrios con más equipamientos deportivos para atletismo',
                 'Selecciona los barrios con menor cantidad de equipamientos culturales de arte y exposiciones.',
                 'Priorizar los barrios con mayor cantidad de equipamientos de gimnasio y menor área de canchas y campos',
-                'Barrios con las mejores condiciones de equipamientos relacionados con Lectura y Bibliotecas'
+                'Barrios con las mejores condiciones de equipamientos relacionados con Lectura y Bibliotecas',
+                'Barrios con mayor disponibilidad de equipamientos culturales y alejados de estaciones de Trasmilenio'
             ]
         }
     },
@@ -1202,7 +1204,12 @@ var priorizacionApp = createApp({
         // Obtiene las filas visibles para informar cuando los filtros no tienen coincidencias.
         // 2026-10-12
         variablesFiltradas: function(){
-            return this.variables.filter(variable => this.matchesVariableFilters(variable))
+            const variables = this.variables.filter(variable => this.matchesVariableFilters(variable))
+            const q = this.variablesFilters.q.trim()
+            if (q.length > 0) {
+                return PmlSearcher.getFilteredResults(q, variables, ['nombre', 'clave', 'descripcion', 'palabras_clave', 'tema', 'anio_valores'])
+            }
+            return variables
         },
         // Lista los temas presentes en las variables disponibles de esta priorización.
         // 2026-10-12

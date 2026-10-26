@@ -1,7 +1,7 @@
 <!-- Modal -->
 <div class="modal fade" id="profileModal" tabindex="-1" aria-labelledby="profileModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-xl">
-        <div class="modal-content">
+        <div class="modal-content" v-if="currentElement">
             <div class="perfil">
                 <div class="perfil-body">
                     <div class="row">
@@ -11,8 +11,8 @@
                                     class="card-img-top object-fit-cover" :alt="currentElement.display_name"
                                     v-bind:onerror="`this.src='<?= URL_IMG ?>redcultural/user.png'`">
                                 <div class="overlay-text">
-                                    {{ currentProfile['pregunta_retos'].slice(0, 200) }}
-                                    <span v-show="currentProfile['pregunta_retos'].length > 200">...</span>
+                                    {{ (currentProfile['pregunta_retos'] || '').slice(0, 200) }}
+                                    <span v-show="(currentProfile['pregunta_retos'] || '').length > 200">...</span>
                                 </div>
                             </div>
                         </div>
@@ -62,8 +62,8 @@
                                         {{ paisTo(currentElement['pais_origen']) }}
                                     </p>
                                     <p>
-                                        <span v-html="currentElement['perfil'].slice(0, 480)"></span>
-                                        <span class="color-text-1" v-if="currentElement['perfil'].length > 480">...</span>
+                                        <span v-html="(currentElement['perfil'] || '').slice(0, 480)"></span>
+                                        <span class="color-text-1" v-if="(currentElement['perfil'] || '').length > 480">...</span>
                                     </p>
                                     <span class="resaltar-2">Intereses</span>
                                     <br>

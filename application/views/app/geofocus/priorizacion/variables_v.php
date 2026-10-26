@@ -18,6 +18,9 @@
                         <option value="">Todos los temas</option>
                         <option v-for="tema in variablesTemas" v-bind:key="tema" v-bind:value="tema">{{ tema }}</option>
                     </select>
+                    <label for="priority-variable-search" class="visually-hidden">Filtrar variables</label>
+                    <input id="priority-variable-search" type="search" class="form-control form-control-sm"
+                        v-model="variablesFilters.q" placeholder="Filtrar variables">
                 </div>
                 <button type="button" class="btn btn-primary btn-lg geofocus-priority-calculate" v-on:click="validateSubmit"
                     v-bind:disabled="loading || descripcion.loading || aiVariablesConfig.loading || !isEditable()">
@@ -58,7 +61,7 @@
                             </thead>
                             <tbody>
                                 <!-- 2026-10-12: aplicar el color de selección y sentido a todas las columnas de la fila. -->
-                                <tr v-for="(variable, key) in variables" v-bind:key="variable.id" v-show="matchesVariableFilters(variable)"
+                                <tr v-for="(variable, key) in variables" v-bind:key="variable.id" v-show="variablesFiltradas.includes(variable)"
                                     v-bind:class="variableClass(variable)"
                                     v-bind:style="{'--variable-color': variable.color || '#0084bf'}" v-bind:data-variable-id="variable.id">
                                     <td class="text-center">

@@ -3,14 +3,16 @@
 //-----------------------------------------------------------------------------
 var directorioApp = createApp({
     data() {
+        const elementos = <?= json_encode(array_values($elementos ?? [])) ?>;
+        const directorio = <?= json_encode($directorio ?? []) ?>;
         return {
             section: 'listado',
             typeView: 'grid',
             nombreElemento: 'persona',
             nombreElementos: 'personas',
-            elementos: <?= json_encode($elementos) ?>,
-            directorio: <?= json_encode($directorio) ?>,
-            currentProfile: <?= json_encode($directorio[0]) ?>,
+            elementos: elementos.filter(elemento => elemento && elemento.id != null),
+            directorio: Array.isArray(directorio) ? directorio.filter(Boolean) : [],
+            currentProfile: {},
             paises: paises,
             loading: false,
             q: '',
@@ -24,7 +26,7 @@ var directorioApp = createApp({
                 { value: 'experiencia', text: 'Experiencia', enabled: false },
                 { value: 'intereses', text: 'Intereses', enabled: true }
             ],
-            currentElement: <?= json_encode($elementos[0]) ?>,
+            currentElement: null,
             currentId: -1,
             loadingFollowing: false,
             followed: <?= json_encode($followed->result()) ?>,
@@ -42,10 +44,12 @@ var directorioApp = createApp({
             return prefix + Pcrn.textToClass(inputText)
         },
         setCurrent: function(personaId){
-            this.currentId = personaId
-            this.currentElement = this.elementos.find(elemento => elemento['id'] == personaId)
-            console.log(this.currentElement['username'])
-            this.currentProfile = this.directorio.find(profile => profile['username'] == this.currentElement['username'])
+            const elemento = this.elementos.find(elemento => elemento.id == personaId)
+            if (!elemento) return
+
+            this.currentId = elemento.id
+            this.currentElement = elemento
+            this.currentProfile = this.directorio.find(profile => profile.username == elemento.username) || {}
         },
         textToClass: function(text){
             return Pcrn.textToClass(text)
@@ -60,7 +64,7 @@ var directorioApp = createApp({
             this.visibleInfo = infoType;
         },
         nextOrPreviusProfile: function(step = 1){
-            const currentIndex = this.elementos.findIndex(elemento => elemento['id'] === this.currentId);
+            const currentIndex = this.elementos.findIndex(elemento => elemento['id'] == this.currentId);
             const nextIndex = currentIndex + step;
 
             if (nextIndex >= 0 && nextIndex < this.elementos.length) {
@@ -68,12 +72,14 @@ var directorioApp = createApp({
             }
         },
         nextRandomProfile: function() {
+            if (this.elementos.length === 0) return;
             // Get a random profile from the directorio
             const randomIndex = Math.floor(Math.random() * this.elementos.length);
             var nextElement = this.elementos[randomIndex];
             this.setCurrent(nextElement['id']);
         },
         altFollow: function() {
+            if (!this.currentElement) return
             this.loadingFollowing = true
             axios.get(URL_API + 'users/alt_follow/' + this.currentElement.id)
             .then(response => {
@@ -96,6 +102,11 @@ var directorioApp = createApp({
             })
             .catch(function(error) {console.log(error)})
         },
+        keyHandler: function(event) {
+            if (event.key === 'ArrowRight' || event.key === 'ArrowLeft') {
+                this.nextRandomProfile();
+            }
+        },
     },
     computed: {
         elementosFiltrados: function() {
@@ -110,19 +121,13 @@ var directorioApp = createApp({
         },
         //Establecer si this.currentElement.id esta en this.followed.user_id
         inFollowed: function(){
+            if (!this.currentElement) return false;
             return this.followed.some(f => f.user_id == this.currentElement.id);
         },
     },
     mounted() {
         // Escuchar evento global de teclado
-        window.addEventListener("keydown", (event) => {
-            if (event.key === "ArrowRight") {
-                this.nextRandomProfile();
-            }
-            if (event.key === "ArrowLeft") {
-                this.nextRandomProfile();
-            }
-        });
+        window.addEventListener("keydown", this.keyHandler);
         // Sumar un valor aleatorio a elementos['puntaje'] entre 1 y 15
         this.elementos.forEach(elemento => {
             //elemento['puntaje'] = intval(elemento['puntaje']) + Math.floor(Math.random() * 15) + 1;
@@ -131,14 +136,20 @@ var directorioApp = createApp({
         // Redorderar elementos según puntaje
         this.elementos.sort((a, b) => b.puntaje - a.puntaje);
         // Establecer el primer elemento como el actual
-        this.setCurrent(this.elementos[0]['id']);
+        if (this.elementos.length > 0) {
+            this.setCurrent(this.elementos[0]['id']);
+        }
         // Ubicación SanTru
         var elementoSanTru = this.elementos.find(elemento => elemento['username'] == 'santiago.trujillo');
-        this.elementos = this.elementos.filter(elemento => elemento['username'] != 'santiago.trujillo');
-        this.elementos.splice(2, 0, elementoSanTru);
+        if (elementoSanTru) {
+            this.elementos = this.elementos.filter(elemento => elemento['username'] != 'santiago.trujillo');
+            this.elementos.splice(2, 0, elementoSanTru);
+        }
         var elementoDieMal = this.elementos.find(elemento => elemento['username'] == 'diego.maldonado');
-        this.elementos = this.elementos.filter(elemento => elemento['username'] != 'diego.maldonado');
-        this.elementos.splice(1, 0, elementoDieMal);
+        if (elementoDieMal) {
+            this.elementos = this.elementos.filter(elemento => elemento['username'] != 'diego.maldonado');
+            this.elementos.splice(1, 0, elementoDieMal);
+        }
     },
     beforeUnmount() {
         // Importante: limpiar el listener si desmontas el componente

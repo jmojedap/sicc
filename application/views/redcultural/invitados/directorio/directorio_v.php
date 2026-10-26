@@ -92,10 +92,10 @@
                     </h5>
                     <p>{{ elemento['rol_actividad'] }}</p>
                     <p v-show="visibleInfo == 'perfil'">
-                        {{ elemento['perfil'].slice(0, 380) }} <span v-if="elemento['perfil'].length > 380">...</span>
+                        {{ (elemento['perfil'] || '').slice(0, 380) }} <span v-if="(elemento['perfil'] || '').length > 380">...</span>
                     </p>
                     <p v-show="visibleInfo == 'intereses'">
-                        {{ elemento['intereses'].slice(0, 380) }} <span v-if="elemento['intereses'].length > 380">...</span>
+                        {{ (elemento['intereses'] || '').slice(0, 380) }} <span v-if="(elemento['intereses'] || '').length > 380">...</span>
                     </p>
                     <?php if ( in_array($this->session->userdata('role'), [1]) ) : ?>
                     <br>

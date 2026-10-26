@@ -714,7 +714,8 @@
 }
 
 .geofocus-priority-table-filters .btn { white-space: nowrap; }
-.geofocus-priority-table-filters .form-select { width: 190px; max-width: 100%; }
+.geofocus-priority-table-filters .form-select,
+.geofocus-priority-table-filters .form-control { width: 190px; max-width: 100%; }
 .geofocus-priority-table-toolbar > .geofocus-priority-calculate { margin-left: auto; flex-shrink: 0; }
 
 /* 2026-10-11: jerarquía principal para Calcular; la selección con IA conserva un botón secundario. */
@@ -895,7 +896,8 @@
 @media (max-width: 767.98px) {
     .geofocus-priority-calculate { width: 100%; }
     .geofocus-priority-table-filters { width: 100%; }
-    .geofocus-priority-table-filters .form-select { flex: 1 1 140px; width: auto; }
+    .geofocus-priority-table-filters .form-select,
+    .geofocus-priority-table-filters .form-control { flex: 1 1 140px; width: auto; }
 }
 /* 2026-10-11: detalle de priorización sin marcos, sombras ni separadores decorativos.
    Estas reglas se limitan a esta pantalla para conservar las otras vistas de GeoFocus. */

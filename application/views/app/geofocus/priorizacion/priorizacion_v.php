@@ -1,3 +1,4 @@
+<script src="<?= URL_RESOURCES ?>js/pml_searcher.js"></script>
 <link href="https://unpkg.com/maplibre-gl@2.4.0/dist/maplibre-gl.css" rel="stylesheet" />
 <script src="https://unpkg.com/maplibre-gl@2.4.0/dist/maplibre-gl.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
