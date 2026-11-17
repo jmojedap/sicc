@@ -60,7 +60,8 @@ class Geofocus extends CI_Controller{
 
     /**
      * Vista de la herramienta de priorización geográfica distrital
-     * 2024-08-17
+     * Obtiene consumo y límite desde Airequest_model para mostrar el mismo cupo aplicado al generar.
+     * 2026-11-17
      */
     function priorizacion($priorizacionId)
     {
@@ -86,6 +87,11 @@ class Geofocus extends CI_Controller{
 
         $data['localidades'] = $this->App_model->getJsonContent(PATH_CONTENT . 'json/sig/localidades.json');
         $data['territorios'] = $this->Geofocus_model->getPriorizacion($priorizacionId);
+
+        // 2026-11-17: consultar una sola vez el consumo y reutilizar el límite centralizado del modelo.
+        $this->load->model('Airequest_model');
+        $data['user_token_totals'] = $this->Airequest_model->get_token_usage($this->session->userdata('user_id'));
+        $data['max_tokens'] = $data['user_token_totals']['max_tokens'];
 
         $this->App_model->view('templates/easypml/minimal', $data);
     }

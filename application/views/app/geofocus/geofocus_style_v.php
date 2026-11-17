@@ -620,6 +620,10 @@
     padding: 0;
 }
 
+/* 2026-11-17: indicador discreto de consumo del cupo de tokens de los últimos siete días. */
+.geofocus-priority-token-progress { height: 6px; background: #ede9f4; border-radius: 6px; }
+.geofocus-priority-token-progress .progress-bar { background-color: #654a98; }
+
 .geofocus-priority-assistant h2 {
     margin-bottom: 0.35rem;
     font-size: 1rem;
@@ -716,7 +720,14 @@
 .geofocus-priority-table-filters .btn { white-space: nowrap; }
 .geofocus-priority-table-filters .form-select,
 .geofocus-priority-table-filters .form-control { width: 190px; max-width: 100%; }
-.geofocus-priority-table-toolbar > .geofocus-priority-calculate { margin-left: auto; flex-shrink: 0; }
+/* 2026-11-17: opción de IA junto al cálculo, sin vincular el botón principal al cupo de tokens. */
+.geofocus-priority-calculation-actions { margin-left: auto; display: flex; align-items: center; flex-wrap: wrap; gap: 0.75rem 1rem; }
+.geofocus-priority-calculation-actions .geofocus-priority-calculate { flex-shrink: 0; }
+.geofocus-priority-description-option { max-width: 240px; color: #59636e; font-size: 0.82rem; }
+.geofocus-priority-description-option small { padding-left: 1.5rem; margin-top: 0.2rem; color: #78808d; }
+@media (max-width: 575.98px) {
+    .geofocus-priority-calculation-actions { width: 100%; justify-content: space-between; }
+}
 
 /* 2026-10-11: jerarquía principal para Calcular; la selección con IA conserva un botón secundario. */
 .geofocus-priority-calculate {

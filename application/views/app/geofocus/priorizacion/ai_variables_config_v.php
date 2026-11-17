@@ -1,6 +1,26 @@
 <!-- 2026-10-12: prompt, instrucciones y observaciones comparten la columna izquierda de Variables. -->
 <section v-if="isEditable() && Number(userId) > 0" class="geofocus-priority-assistant"
     aria-labelledby="priority-ai-config-title" v-bind:aria-busy="aiVariablesConfig.loading">
+    <?php
+        // 2026-11-17: comparar consumo y límite sin dividir por cero; la barra ocupa como máximo el 100%.
+        $tokens_used = max(0, (int) ($user_token_totals['total_tokens'] ?? 0));
+        $token_limit = max(0, (int) ($max_tokens ?? 0));
+        $token_usage_percentage = $token_limit > 0 ? round($tokens_used / $token_limit * 100, 1) : 0;
+        $token_bar_percentage = min(100, $token_usage_percentage);
+        // 2026-11-17: mostrar los datos solo en el tooltip y conservar una descripción accesible de la barra.
+        $token_usage_tooltip = 'Uso de tokens (últimos 7 días): '
+            . ($token_limit > 0 ? number_format($token_usage_percentage, 1, ',', '.') . '%' : 'límite no disponible')
+            . '. Solicitudes realizadas: ' . number_format((int) ($user_token_totals['total_requests'] ?? 0), 0, ',', '.') . '.';
+    ?>
+    <div class="mb-3 py-1" title="<?= htmlspecialchars($token_usage_tooltip, ENT_QUOTES, 'UTF-8') ?>">
+        <div class="progress geofocus-priority-token-progress" role="progressbar" tabindex="0"
+            aria-label="Uso de tokens de los últimos 7 días"
+            aria-valuemin="0" aria-valuemax="100" aria-valuenow="<?= $token_bar_percentage ?>"
+            aria-valuetext="<?= htmlspecialchars($token_usage_tooltip, ENT_QUOTES, 'UTF-8') ?>">
+            <div class="progress-bar <?= $token_limit > 0 && $tokens_used >= $token_limit ? 'bg-danger' : '' ?>"
+                style="width: <?= $token_bar_percentage ?>%"></div>
+        </div>
+    </div>
     <form @submit.prevent="getAiVariablesConfig">
         <fieldset v-bind:disabled="loading || descripcion.loading || aiVariablesConfig.loading">
             <h2 id="priority-ai-config-title"><label for="priority-ai-config-prompt">¿Qué quieres priorizar?</label></h2>

@@ -118,7 +118,7 @@
                         <button v-if="!descripcion.texto.trim()" type="button" class="btn btn-light"
                             v-on:click="getDescripcionPriorizacion()"
                             title="Generar una descripción de las variables, sentidos y ponderaciones calculados"
-                            v-bind:disabled="!isEditable() || Number(userId) <= 0 || loading || descripcion.loading || aiVariablesConfig.loading || priorizacionPendienteDeCalculo">
+                            v-bind:disabled="!isEditable() || Number(userId) <= 0 || !canGenerateDescription || loading || descripcion.loading || aiVariablesConfig.loading || priorizacionPendienteDeCalculo">
                             <img src="<?= URL_IMG ?>icons/ia-generate.png" alt="" class="geofocus-priority-ai-icon">
                             Generar descripción
                         </button>
@@ -127,6 +127,9 @@
                             Ver resultados
                         </button>
                     </div>
+                    <p v-if="!canGenerateDescription && !descripcion.texto.trim() && !loading" class="small text-muted">
+                        Cupo de IA agotado. El mapa y los resultados calculados siguen disponibles.
+                    </p>
                     <!-- 2026-10-12: reservar la descripción recibida durante la animación y mostrarla al finalizar. -->
                     <div v-if="!loading" aria-live="polite" v-bind:aria-busy="descripcion.loading">
                         <div v-if="descripcion.error" class="alert alert-danger" role="alert">

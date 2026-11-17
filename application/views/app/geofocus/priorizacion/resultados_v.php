@@ -86,7 +86,7 @@
             </div>
             <div v-else-if="descripcion.texto" class="geofocus-priority-markdown geofocus-results-analysis"
                 v-html="descripcionHtml"></div>
-            <p v-else class="geofocus-results-note">La descripción aún no se ha generado. Puedes solicitarla desde Mapa.</p>
+            <p v-else class="geofocus-results-note">Los resultados están disponibles sin descripción de IA. Puedes solicitarla desde Mapa si tienes cupo de tokens.</p>
         </section>
 
         <section class="geofocus-results-section" aria-labelledby="results-territories-title">
